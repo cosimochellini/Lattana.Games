@@ -10,6 +10,7 @@
   "dependencies": {
     "@sanity/client": "^1.150.7",
     "core-js": "^3.6.5",
+    "sort-es": "^1.1.4",
     "vue": "^3.0.0-0",
     "vue-router": "^4.0.0-0"
   },

@@ -7913,6 +7913,11 @@ sockjs@0.3.20:
     uuid "^3.4.0"
     websocket-driver "0.6.5"
 
+sort-es@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/sort-es/-/sort-es-1.1.4.tgz#04e5d723fbfc4678676ef6f8e82462d64092bc60"
+  integrity sha512-uIFMjj3cteluFyqFqDMYh0GvbK0XVQRHfpp4w1WR/MGG9XIvYqLNjqeBTUCXS81oeHrJjH4+A4mfNp+0yps/eQ==
+
 sort-keys@^1.0.0:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/sort-keys/-/sort-keys-1.1.2.tgz#441b6d4d346798f1b4e49e8920adfba0e543f9ad"
