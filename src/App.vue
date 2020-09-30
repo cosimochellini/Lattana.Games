@@ -28,6 +28,6 @@
   color: #42b983;
 }
 body {
-  @apply bg-gray-200;
+  @apply bg-gradient-to-r from-gray-200 to-gray-400 h-full;
 }
 </style>

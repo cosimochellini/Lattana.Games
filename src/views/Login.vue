@@ -1,21 +1,24 @@
 <template>
-  <div class="w-full max-w-xl h-full m-auto">
-    <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-      <label class="label">Name</label>
+  <div class="w-full max-w-xl h-full m-auto pt-4">
+    <span class="text-2xl font-extrabold leading-6"
+      >Sign in with your credentials</span
+    >
+    <form class="rounded px-8 pt-6 pb-8 mb-4">
       <input
         type="text"
         v-model="form.name"
-        class="inputForm"
+        class="rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
+        placeholder="Name (nikname or email)"
         autocomplete="email"
       />
-      <label class="label">Pin</label>
       <input
         type="tel"
+        placeholder="Pin (your personal pin)"
         v-model="form.pin"
-        class="inputForm"
+        class="rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
         autocomplete="current-password"
       />
-      <button @click.prevent="login" class="loginButton">login</button>
+      <button @click.prevent="login" class="loginButton w-full">Sign in</button>
     </form>
   </div>
 </template>
@@ -58,7 +61,7 @@ export default defineComponent({
 }
 
 .inputForm {
-  @apply shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight mb-2;
+  @apply w-full py-2 px-3 appearance-none border-gray-300 text-gray-900 leading-tight;
 }
 
 .inputForm:focus {
@@ -66,7 +69,7 @@ export default defineComponent({
 }
 
 .loginButton {
-  @apply bg-gradient-to-l from-teal-400 to-blue-500 m-2 text-white font-bold py-2 px-4 rounded;
+  @apply bg-gradient-to-r from-purple-600 to-purple-800 py-2 my-4 text-white font-bold rounded;
 }
 
 .loginButton:hover {
@@ -76,5 +79,4 @@ export default defineComponent({
 .loginButton:focus {
   @apply shadow-outline outline-none;
 }
-
 </style>
