@@ -1,26 +1,22 @@
-import Home from "../views/Home.vue";
 import { createRouter, createWebHashHistory } from "vue-router";
+import { isAuthorized } from "@/services/authService";
 
 const routes = [
   {
     path: "/",
     name: "Home",
-    component: Home,
+    component: () => import("../views/Home.vue"),
+    meta: { requiresAuth: true },
   },
   {
     path: "/about",
     name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import("../views/About.vue"),
+    meta: { requiresAuth: true },
   },
   {
     path: "/login",
     name: "Login",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import("../views/Login.vue"),
   },
 ];
@@ -30,4 +26,17 @@ const router = createRouter({
   routes,
 });
 
+router.beforeEach((to, from) => {
+  // instead of having to check every route record with
+  // to.matched.some(record => record.meta.requiresAuth)
+  if (to.meta.requiresAuth && !isAuthorized()) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    return {
+      path: "/login",
+      // save the location we were at to come back later
+      query: { redirect: to.fullPath },
+    };
+  }
+});
 export default router;

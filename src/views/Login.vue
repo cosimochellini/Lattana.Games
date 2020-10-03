@@ -1,6 +1,6 @@
 <template>
   <div class="w-full max-w-xl h-full m-auto pt-4">
-    <span class="text-2xl font-extrabold leading-6"
+    <span class="text-xl font-extrabold leading-4"
       >Sign in with your credentials</span
     >
     <form class="rounded px-8 pt-6 pb-8 mb-4">
@@ -25,7 +25,6 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { roleConstants } from "@/constants/roleConstants";
 import { isAuthorized, login } from "@/services/authService";
 
 export default defineComponent({
@@ -35,6 +34,9 @@ export default defineComponent({
         name: "",
         pin: "",
       },
+      state: {
+        incorrectCredential: false,
+      },
     };
   },
   methods: {
@@ -42,13 +44,17 @@ export default defineComponent({
       try {
         await login(this.form.name, this.form.pin);
 
-        if (isAuthorized([roleConstants.User])) {
-          console.log("yeye");
+        if (isAuthorized()) {
+          this.state.incorrectCredential = false;
+
+          await this.$router.push({
+            path: this.$route.query.redirect?.toString() ?? "/",
+          });
         } else {
-          console.error("invalid credentials");
+          this.state.incorrectCredential = true;
         }
-      } catch (error) {
-        console.error(error);
+      } catch {
+        this.state.incorrectCredential = true;
       }
     },
   },

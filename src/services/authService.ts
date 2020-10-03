@@ -19,9 +19,11 @@ const isAuthorized = (roles: string[] = [], player: player | null = null) => {
     player = getPlayer();
   }
 
+  if (player === null) return false;
+
   roles = roles.map((r) => r.toLowerCase());
 
-  if (player === null) return false;
+  if (roles.length === 0) return isLogged(player);
 
   if (player.roles.includes(roleConstants.Admin)) return true;
 
@@ -30,6 +32,14 @@ const isAuthorized = (roles: string[] = [], player: player | null = null) => {
   }
 
   return false;
+};
+
+const isLogged = (player: player | null = null) => {
+  if (player === null) {
+    player = getPlayer();
+  }
+
+  return player !== null;
 };
 
 const setPlayer = (player: player | null) =>
