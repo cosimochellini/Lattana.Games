@@ -7,6 +7,7 @@ const loginQuery = `
     surname,
     nikname,
     email,
+    profileImage,
     'roles': roles[]->role->name
   }[0]`;
 

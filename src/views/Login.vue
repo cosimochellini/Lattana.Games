@@ -1,33 +1,47 @@
 <template>
-  <div class="w-full max-w-xl h-full m-auto pt-4">
-    <span class="text-xl font-extrabold leading-4"
-      >Sign in with your credentials</span
-    >
-    <form class="rounded px-8 pt-6 pb-8 mb-4">
-      <input
-        type="text"
-        v-model="form.name"
-        class="rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
-        placeholder="Name (nikname or email)"
-        autocomplete="email"
-      />
-      <input
-        type="tel"
-        placeholder="Pin (your personal pin)"
-        v-model="form.pin"
-        class="rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
-        autocomplete="current-password"
-      />
-      <button @click.prevent="login" class="loginButton w-full">Sign in</button>
-    </form>
+  <div class="grid place-items-center">
+    <div class="w-full md:w-1/2 lg:w-1/3 pt-4 block">
+      <span class="text-xl font-extrabold leading-4 m-auto pt-2 px-16">
+        Sign in with your credentials
+      </span>
+      <form class="px-8 pt-6 pb-8">
+        <input
+          type="text"
+          v-model="form.name"
+          class="rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
+          placeholder="Name (nikname or email)"
+          autocomplete="email"
+        />
+        <input
+          type="tel"
+          placeholder="Pin (your personal pin)"
+          v-model="form.pin"
+          class="rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
+          autocomplete="current-password"
+        />
+        <button @click.prevent="login" class="loginButton w-full">
+          Sign in
+        </button>
+        <alert v-show="state.incorrectCredential" class="mt-4 text-left">
+          <template #title> Wrong credentials</template>
+          <template #description>
+            Try again or contact an administrator</template
+          >
+        </alert>
+      </form>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import { isAuthorized, login } from "@/services/authService";
+import Alert from "@/components/base/Alert.vue";
 
 export default defineComponent({
+  components: {
+    Alert,
+  },
   data() {
     return {
       form: {

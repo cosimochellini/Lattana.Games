@@ -54,4 +54,4 @@ const getPlayer = () => {
   }
 };
 
-export { login, isAuthorized, getPlayer };
+export { login, isAuthorized, getPlayer, setPlayer };

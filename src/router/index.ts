@@ -19,6 +19,12 @@ const routes = [
     name: "Login",
     component: () => import("../views/Login.vue"),
   },
+  {
+    path: "/log-out",
+    name: "Logout",
+    component: () => import("../views/Logout.vue"),
+    meta: { requiresAuth: true },
+  },
 ];
 
 const router = createRouter({
