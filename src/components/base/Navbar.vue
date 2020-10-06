@@ -72,26 +72,14 @@
           </div>
           <div class="hidden sm:block sm:ml-6">
             <div class="flex">
-              <a
-                href="#"
-                class="px-3 py-2 rounded-md text-sm font-medium leading-5 text-white bg-gray-900 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out"
-                >Dashboard</a
+              <router-link
+                v-for="(route, index) in navbarRoutes"
+                :key="route.route"
+                :to="route.route"
+                :class="getDesktopMenuClass(route.route, index)"
               >
-              <a
-                href="#"
-                class="ml-4 px-3 py-2 rounded-md text-sm font-medium leading-5 text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out"
-                >Team</a
-              >
-              <a
-                href="#"
-                class="ml-4 px-3 py-2 rounded-md text-sm font-medium leading-5 text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out"
-                >Projects</a
-              >
-              <a
-                href="#"
-                class="ml-4 px-3 py-2 rounded-md text-sm font-medium leading-5 text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out"
-                >Calendar</a
-              >
+                {{ route.name }}
+              </router-link>
             </div>
           </div>
         </div>
@@ -138,24 +126,14 @@
                 aria-orientation="vertical"
                 aria-labelledby="user-menu"
               >
-                <a
-                  href="#"
-                  class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                  role="menuitem"
-                  >Your Profile</a
-                >
-                <a
-                  href="#"
-                  class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                  role="menuitem"
-                  >Settings</a
-                >
                 <router-link
-                  to="/log-out"
+                  v-for="route in profileRoutes"
+                  :key="route.route"
+                  :to="route.route"
                   class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                   role="menuitem"
                 >
-                  Sign out
+                  {{ route.name }}
                 </router-link>
               </div>
             </div>
@@ -203,13 +181,13 @@ export default defineComponent({
       },
       player: getPlayer(),
       navbarRoutes: [
-        { name: "Your Profile", route: "profile" },
-        { name: "Logout", route: "log-out" },
-        { name: "Calendar", route: "log-out" },
+        { name: "Your Profile", route: "/profile" },
+        { name: "Logout", route: "/log-out" },
+        { name: "Calendar", route: "/log-out" },
       ],
       profileRoutes: [
-        { name: "Your Profile", route: "profile" },
-        { name: "Logout", route: "log-out" },
+        { name: "Your Profile", route: "/profile" },
+        { name: "Logout", route: "/log-out" },
       ],
     };
   },
@@ -221,6 +199,22 @@ export default defineComponent({
     menuClick() {
       this.state.menuOpen = !this.state.menuOpen;
       setTimeout(() => (this.state.menuOpen = false), 2000);
+    },
+    getDesktopMenuClass(route: string, index: number): string {
+      let classes =
+        "px-3 py-2 rounded-md text-sm font-medium leading-5 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out";
+
+      if (this.$route.path === route) {
+        classes = `${classes} text-white bg-gray-900`;
+      } else {
+        classes = `${classes} text-gray-300 hover:text-white hover:bg-gray-700`;
+      }
+
+      if (index === 0) {
+        classes = `${classes} ml-4`;
+      }
+
+      return classes;
     },
   },
   computed: {

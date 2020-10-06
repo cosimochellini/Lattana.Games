@@ -1,5 +1,5 @@
 <template>
-  <div class="grid place-items-center">
+  <div class="grid place-items-center mt-16 pt-16">
     <div class="w-full md:w-1/2 lg:w-1/3 pt-4 block">
       <span class="text-xl font-extrabold leading-4 m-auto pt-2 px-16">
         Sign in with your credentials
@@ -61,9 +61,11 @@ export default defineComponent({
         if (isAuthorized()) {
           this.state.incorrectCredential = false;
 
-          await this.$router.push({
-            path: this.$route.query.redirect?.toString() ?? "/",
-          });
+          let redirect = this.$route.query.redirect?.toString() ?? "/";
+
+          if (redirect === "/log-out") redirect = "/";
+
+          await this.$router.push({ path: redirect });
         } else {
           this.state.incorrectCredential = true;
         }
