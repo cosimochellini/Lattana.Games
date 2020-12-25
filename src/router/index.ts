@@ -23,6 +23,11 @@ const routes = [
     path: "/log-out",
     name: "Logout",
     component: () => import("../views/Logout.vue"),
+  },
+  {
+    path: "/add-trump",
+    name: "AddTrump",
+    component: () => import("../views/AddTrumpMatch.vue"),
     meta: { requiresAuth: true },
   },
 ];
