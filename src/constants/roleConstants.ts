@@ -1,8 +1,8 @@
-const roleConstants = {
-  Admin: "admin",
-  Editor: "editor",
-  Contributor: "contributor",
-  User: "user",
-} as const;
+enum roleConstants {
+  Admin = "admin",
+  Editor = "editor",
+  Contributor = "contributor",
+  User = "user",
+}
 
 export { roleConstants };

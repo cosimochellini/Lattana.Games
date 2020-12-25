@@ -14,21 +14,18 @@ const login = async (name: string, pin: string) => {
   setPlayer(player);
 };
 
-const isAuthorized = (roles: string[] = [], player: player | null = null) => {
-  if (player === null) {
-    player = getPlayer();
-  }
-
+const isAuthorized = (
+  roles: roleConstants[] = [],
+  player: player | null = getPlayer()
+): boolean => {
   if (player === null) return false;
-
-  roles = roles.map((r) => r.toLowerCase());
 
   if (roles.length === 0) return isLogged(player);
 
   if (player.roles.includes(roleConstants.Admin)) return true;
 
   for (const role of player.roles) {
-    if (roles.includes(role.toLowerCase())) return true;
+    if (roles.includes(role)) return true;
   }
 
   return false;

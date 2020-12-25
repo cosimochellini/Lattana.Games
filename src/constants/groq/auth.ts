@@ -1,6 +1,6 @@
-/* groq */
-// groq
-const loginQuery = `
+import groq from "groq";
+
+export const loginQuery = groq`
   *[_type == "player" && (nikname == $name && pin == $pin) || (email == $name && pin == $pin)]{
     _id,
     name,
@@ -10,5 +10,3 @@ const loginQuery = `
     profileImage,
     'roles': roles[]->role->name
   }[0]`;
-
-export { loginQuery };

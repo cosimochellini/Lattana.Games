@@ -85,7 +85,7 @@ export default defineComponent({
 }
 
 .inputForm:focus {
-  @apply shadow-outline outline-none;
+  @apply outline-none;
 }
 
 .loginButton {
@@ -97,6 +97,6 @@ export default defineComponent({
 }
 
 .loginButton:focus {
-  @apply shadow-outline outline-none;
+  @apply outline-none;
 }
 </style>
