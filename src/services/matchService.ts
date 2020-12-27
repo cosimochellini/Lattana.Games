@@ -2,6 +2,7 @@ import { player } from "@/types/sanity";
 import { sanityClient } from "@/istances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
 import { nanoid } from "nanoid";
+import { reference, referenceWithKey } from "@/utils/sanityQueryBuilder";
 
 export const saveNewMatch = async (
   players: player[],
@@ -11,35 +12,36 @@ export const saveNewMatch = async (
   if (players.length !== 5) throw new Error("incorrect number of players");
 
   const match = {
+    _key: nanoid(),
     _type: sanityTypes.trumpMatch,
     matchDate: new Date(),
     startingScore,
     finalScore,
-    grants: [
-      {
-        path: "*",
-        permissions: ["read", "update", "create"],
-      },
-    ],
+    callingPlayer: reference(players[0]),
   };
 
   const result = await sanityClient.create(match);
 
-  console.log(result);
+  const playersPromises = players.map((p) =>
+    sanityClient.create({
+      _key: nanoid(),
+      _type: sanityTypes.trumpMatchPlayer,
+      win: true,
+      penaltyPoint: false,
+      player: reference(p),
+      trumpMatch: reference(result),
+    })
+  );
+
+  const savedPlayers = await Promise.all(playersPromises);
 
   const result2 = await sanityClient
     .patch(result._id)
     .setIfMissing({ players: [] })
-    .append(
-      "players",
-      players.map((p) => ({
-        _key: nanoid(),
-        win: true,
-        penaltyPoint: false,
-        player: { type: "references", _ref: p._id },
-      }))
-    )
+    .append("players", savedPlayers.map(referenceWithKey))
     .commit();
 
+  // eslint-disable-next-line no-debugger
+  debugger;
   console.log(result2);
 };

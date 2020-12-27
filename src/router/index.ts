@@ -30,6 +30,12 @@ const routes = [
     component: () => import("../views/AddTrumpMatch.vue"),
     meta: { requiresAuth: true },
   },
+  {
+    path: "/matches",
+    name: "Matches",
+    component: () => import("../views/TrumpMatches.vue"),
+    meta: { requiresAuth: true },
+  },
 ];
 
 const router = createRouter({

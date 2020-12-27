@@ -1,7 +1,7 @@
 <template>
   <div class="justify-items-center m-auto max-w-6xl p-4">
     <p>Inserisci nuova partita</p>
-    <form @submit.stop="saveMatch">
+    <form @submit.prevent="saveMatch" class="flex flex-col">
       <user-autocomplete
         @select="addPlayer"
         @remove="removePlayer"
@@ -38,7 +38,7 @@
         type="number"
         min="60"
         max="120"
-        class="block"
+        class="block pa-2 max-w-xs"
         v-model.number="startingScore"
       />
 
@@ -48,13 +48,13 @@
         type="number"
         min="60"
         max="120"
-        class="block"
+        class="block pa-2 max-w-xs"
         v-model.number="finalScore"
       />
 
       <button
-        class="bg-blue-500 px-2 text-pink-50 py-1 block p-1"
-        @click.stop="saveMatch"
+        class="bg-blue-500 px-2 text-pink-50 py-1 block p-1 mt-2 max-w-xs"
+        @click.prevent="saveMatch"
       >
         salva
       </button>
@@ -90,6 +90,8 @@ export default defineComponent({
         await saveNewMatch(this.players, this.startingScore, this.finalScore);
       } catch (error) {
         console.error(error);
+        // eslint-disable-next-line no-debugger
+        debugger;
       }
     },
   },
