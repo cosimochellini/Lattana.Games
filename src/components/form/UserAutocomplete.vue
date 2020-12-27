@@ -1,7 +1,8 @@
 <template>
-  <div>
+  <div class="m-1">
     <label v-show="label" :for="uniqueInputId"> {{ label }} </label>
     <input
+      class="block p-1"
       v-model="search"
       :id="uniqueInputId"
       :name="label"
