@@ -181,9 +181,9 @@ export default defineComponent({
       },
       player: getPlayer(),
       navbarRoutes: [
-        { name: "Your Profile", route: "/profile" },
+        { name: "Nuovo match", route: "/add-trump" },
+        { name: "Storico", route: "/matches" },
         { name: "Logout", route: "/log-out" },
-        { name: "Calendar", route: "/log-out" },
       ],
       profileRoutes: [
         { name: "Your Profile", route: "/profile" },

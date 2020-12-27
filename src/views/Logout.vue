@@ -13,7 +13,7 @@ export default defineComponent({
 
     onMounted(() => {
       setPlayer(null);
-      router.go(0);
+      router.push("/");
     });
   },
 });

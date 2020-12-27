@@ -1,11 +1,11 @@
 import groq from "groq";
 
 export const loginQuery = groq`
-  *[_type == "player" && (nikname == $name && pin == $pin) || (email == $name && pin == $pin)]{
+  *[_type == "player" && (nickname == $name && pin == $pin) || (email == $name && pin == $pin)]{
     _id,
     name,
     surname,
-    nikname,
+    nickname,
     email,
     profileImage,
     'roles': roles[]->role->name

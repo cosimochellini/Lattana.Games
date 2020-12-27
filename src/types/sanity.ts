@@ -5,7 +5,7 @@ export type player = {
   _id: string;
   name: string;
   surname: string;
-  nikname: string;
+  nickname: string;
   email: string;
   roles: roleConstants[];
   profileImage: SanityImageSource;
