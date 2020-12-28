@@ -1,24 +1,24 @@
-import { player } from "@/types/sanity";
+import { nanoid } from "nanoid";
 import { sanityClient } from "@/istances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
-import { nanoid } from "nanoid";
 import { reference, referenceWithKey } from "@/utils/sanityQueryBuilder";
+import { sanityDocument, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
 
 export const saveNewMatch = async (
-  players: player[],
+  players: trumpMatchPlayer[],
   startingScore: number,
   finalScore: number
 ) => {
   if (players.length !== 5) throw new Error("incorrect number of players");
 
   const match = {
-    _key: nanoid(),
+    _id: nanoid(),
     _type: sanityTypes.trumpMatch,
     matchDate: new Date(),
     startingScore,
     finalScore,
     callingPlayer: reference(players[0]),
-  };
+  } as sanityDocument<trumpMatch>;
 
   const result = await sanityClient.create(match);
 
@@ -26,9 +26,9 @@ export const saveNewMatch = async (
     sanityClient.create({
       _key: nanoid(),
       _type: sanityTypes.trumpMatchPlayer,
-      win: true,
-      penaltyPoint: false,
-      player: reference(p),
+      win: p.win,
+      penaltyPoint: p.penaltyPoint,
+      player: reference(p.player),
       trumpMatch: reference(result),
     })
   );
@@ -41,7 +41,5 @@ export const saveNewMatch = async (
     .append("players", savedPlayers.map(referenceWithKey))
     .commit();
 
-  // eslint-disable-next-line no-debugger
-  debugger;
   console.log(result2);
 };

@@ -1,11 +1,8 @@
 <template>
-  <div class="m-1">
-    <label v-show="label" :for="uniqueInputId"> {{ label }} </label>
+  <div>
     <input
-      class="block p-1"
+      class="p-1 w-80"
       v-model="search"
-      :id="uniqueInputId"
-      :name="label"
       :list="uniqueListId"
       type="text"
       @input="emitPlayer"
@@ -20,29 +17,29 @@
 </template>
 
 <script lang="ts">
+import { nanoid } from "nanoid";
 import { player } from "@/types/sanity";
 import { defineComponent, PropType } from "vue";
-import { sanityClient } from "@/istances/sanity";
-import { playersAutocomplete } from "@/constants/groq/players";
-import { contains, empty } from "@/utils/sanityQueryBuilder";
+import { sanityTypes } from "@/constants/roleConstants";
+
+import {
+  ConditionBuilder,
+  contains,
+  QueryBuilder,
+} from "@/utils/sanityQueryBuilder";
 
 export default defineComponent({
   name: "UserAutocomplete",
   props: {
-    label: {
-      type: String,
-      default: () => null,
-    },
     exclutedPlayers: {
       type: Array as PropType<player[]>,
       default: () => [] as player[],
     },
   },
-  emits: ["select"],
+  emits: ["input"],
   data() {
     return {
-      uniqueInputId: Math.random().toString(36).substring(7),
-      uniqueListId: Math.random().toString(36).substring(7),
+      uniqueListId: nanoid(),
       fetchedPlayers: [] as player[],
       search: "",
     };
@@ -52,19 +49,26 @@ export default defineComponent({
   },
   methods: {
     fetchPlayers() {
-      sanityClient
-        .fetch<player[]>(playersAutocomplete, {
-          search: contains(this.search),
-          excluded: empty(this.exclutedPlayers.map((x) => x._id)),
-        })
+      new QueryBuilder()
+        .type(sanityTypes.player)
+        .select("nickname, profileImage, name, surname, _id")
+        .where(
+          new ConditionBuilder("name match $search || surname match $search")
+            .params({ search: contains(this.search) })
+            .optional(),
+          new ConditionBuilder("_id in $excluded")
+            .params({ excluded: this.exclutedPlayers.map((x) => x._id) })
+            .optional()
+            .reverse()
+        )
+        .fetch<player[]>()
         .then((players) => (this.fetchedPlayers = players));
     },
     emitPlayer() {
       const selected = this.fetchedPlayers.find(
         (p) => `${p.name} ${p.surname}` === this.search
       );
-
-      this.$emit("select", selected);
+      this.$emit("input", selected);
     },
   },
   watch: {

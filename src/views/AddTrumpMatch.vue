@@ -1,59 +1,70 @@
 <template>
-  <div class="justify-items-center m-auto max-w-6xl p-4">
-    <p>Inserisci nuova partita</p>
-    <form @submit.prevent="saveMatch" class="flex flex-col">
-      <user-autocomplete
-        @select="addPlayer"
-        @remove="removePlayer"
+  <div class="containter m-auto p-4">
+    <p>Inserisci nuova partita di briscola in 5</p>
+    <form @submit.prevent="saveMatch" class="flex flex-col items-center">
+      <trump-match-player
+        class="md:w-1/4 w-full"
+        :exclutedPlayers="allPlayers"
         label="Giocatore 1"
-        :exclutedPlayers="players"
+        v-model="players.player1"
+        @input="(p) => (players.player1 = p)"
       />
-      <user-autocomplete
-        @select="addPlayer"
-        @remove="removePlayer"
+      <!-- TODO : rimuovere i @input, sono momentanei perchè il v-model non va -->
+      <trump-match-player
+        class="md:w-1/4 w-full"
+        :exclutedPlayers="allPlayers"
         label="Giocatore 2"
-        :exclutedPlayers="players"
+        v-model="players.player2"
+        @input="(p) => (players.player2 = p)"
       />
-      <user-autocomplete
-        @select="addPlayer"
-        @remove="removePlayer"
+      <trump-match-player
+        class="md:w-1/4 w-full"
+        :exclutedPlayers="allPlayers"
         label="Giocatore 3"
-        :exclutedPlayers="players"
+        v-model="players.player3"
+        @input="(p) => (players.player3 = p)"
       />
-      <user-autocomplete
-        @select="addPlayer"
-        @remove="removePlayer"
+      <trump-match-player
+        class="md:w-1/4 w-full"
+        :exclutedPlayers="allPlayers"
         label="Giocatore 4"
-        :exclutedPlayers="players"
+        v-model="players.player4"
+        @input="(p) => (players.player4 = p)"
       />
-      <user-autocomplete
-        @select="addPlayer"
-        @remove="removePlayer"
+      <trump-match-player
+        class="md:w-1/4 w-full"
+        :exclutedPlayers="allPlayers"
         label="Giocatore 5"
-        :exclutedPlayers="players"
+        v-model="players.player5"
+        @input="(p) => (players.player5 = p)"
       />
-      <label for="initial points"> punteggio chiamato</label>
-      <input
-        name="initial points"
-        type="number"
-        min="60"
-        max="120"
-        class="block pa-2 max-w-xs"
-        v-model.number="startingScore"
-      />
-
-      <label for="initial points"> punteggio finale</label>
-      <input
-        name="initial points"
-        type="number"
-        min="60"
-        max="120"
-        class="block pa-2 max-w-xs"
-        v-model.number="finalScore"
-      />
-
+      <div
+        class="border-4 border-blue-500 border-opacity-50 rounded-md m-2 flex flex-col items-stretch justify-between md:w-1/4 w-full"
+      >
+        <div class="m-2 flex justify-between">
+          <label for="initial points"> punteggio chiamato</label>
+          <input
+            name="initial points"
+            type="number"
+            min="60"
+            max="120"
+            class="pa-2"
+            v-model.number="startingScore"
+          />
+        </div>
+        <div class="m-2 flex justify-between">
+          <label for="initial points"> punteggio finale</label>
+          <input
+            name="initial points"
+            type="number"
+            min="60"
+            max="120"
+            v-model.number="finalScore"
+          />
+        </div>
+      </div>
       <button
-        class="bg-blue-500 px-2 text-pink-50 py-1 block p-1 mt-2 max-w-xs"
+        class="bg-blue-500 px-2 text-pink-50 py-1 block p-1 mt-2 md:w-1/4 w-full"
         @click.prevent="saveMatch"
       >
         salva
@@ -64,35 +75,45 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { player } from "@/types/sanity";
-import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
+import { trumpMatchPlayer } from "@/types/sanity";
 import { saveNewMatch } from "@/services/matchService";
+import TrumpMatchPlayer from "@/components/form/TrumpMatchPlayer.vue";
 
 export default defineComponent({
-  components: { UserAutocomplete },
+  components: { TrumpMatchPlayer },
   name: "AddTrumpMatch",
   data() {
     return {
-      players: [] as player[],
+      players: {
+        player1: {} as trumpMatchPlayer,
+        player2: {} as trumpMatchPlayer,
+        player3: {} as trumpMatchPlayer,
+        player4: {} as trumpMatchPlayer,
+        player5: {} as trumpMatchPlayer,
+      },
       startingScore: 0,
       finalScore: 0,
     };
   },
   methods: {
-    addPlayer(player: player) {
-      this.players = [...this.players, player];
-    },
-    removePlayer(player: player) {
-      this.players = this.players.filter((x) => x._id !== player._id);
-    },
     async saveMatch() {
       try {
-        await saveNewMatch(this.players, this.startingScore, this.finalScore);
+        await saveNewMatch(
+          this.allPlayers,
+          this.startingScore,
+          this.finalScore
+        );
       } catch (error) {
         console.error(error);
-        // eslint-disable-next-line no-debugger
-        debugger;
       }
+    },
+  },
+  computed: {
+    allPlayers(): trumpMatchPlayer[] {
+      const { player1, player2, player3, player4, player5 } = this.players;
+      // eslint-disable-next-line no-debugger
+      debugger
+      return [player1, player2, player3, player4, player5].filter((p) => p._id);
     },
   },
 });
