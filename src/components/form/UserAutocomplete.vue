@@ -1,18 +1,11 @@
 <template>
   <div>
-    <input
-      class="p-1 w-80"
-      v-model="search"
-      :list="uniqueListId"
-      type="text"
-      @input="emitPlayer"
-    />
-
-    <datalist :id="uniqueListId">
-      <option v-for="player in fetchedPlayers" :key="player.id">
+    <select v-model="selected" @change="emitChanges">
+      <option disabled :value="null">seleziona giocatore</option>
+      <option v-for="player in fetchedPlayers" :key="player.id" :value="player">
         {{ player.name }} {{ player.surname }}
       </option>
-    </datalist>
+    </select>
   </div>
 </template>
 
@@ -23,9 +16,9 @@ import { defineComponent, PropType } from "vue";
 import { sanityTypes } from "@/constants/roleConstants";
 
 import {
-  ConditionBuilder,
   contains,
   QueryBuilder,
+  ConditionBuilder,
 } from "@/utils/sanityQueryBuilder";
 
 export default defineComponent({
@@ -35,6 +28,10 @@ export default defineComponent({
       type: Array as PropType<player[]>,
       default: () => [] as player[],
     },
+    value: {
+      type: Object as PropType<player>,
+      default: () => {},
+    },
   },
   emits: ["input"],
   data() {
@@ -42,6 +39,7 @@ export default defineComponent({
       uniqueListId: nanoid(),
       fetchedPlayers: [] as player[],
       search: "",
+      selected: null as player | null,
     };
   },
   mounted() {
@@ -49,8 +47,7 @@ export default defineComponent({
   },
   methods: {
     fetchPlayers() {
-      new QueryBuilder()
-        .type(sanityTypes.player)
+      new QueryBuilder(sanityTypes.player)
         .select("nickname, profileImage, name, surname, _id")
         .where(
           new ConditionBuilder("name match $search || surname match $search")
@@ -64,11 +61,10 @@ export default defineComponent({
         .fetch<player[]>()
         .then((players) => (this.fetchedPlayers = players));
     },
-    emitPlayer() {
-      const selected = this.fetchedPlayers.find(
-        (p) => `${p.name} ${p.surname}` === this.search
-      );
-      this.$emit("input", selected);
+    emitChanges() {
+      console.log("input => UserAutocomplete", this.selected);
+
+      this.$emit("input", this.selected);
     },
   },
   watch: {
@@ -77,6 +73,9 @@ export default defineComponent({
     },
     exclutedPlayers() {
       this.fetchPlayers();
+    },
+    value() {
+      this.selected = { ...this.selected, ...this.value };
     },
   },
 });

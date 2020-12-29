@@ -75,7 +75,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { trumpMatchPlayer } from "@/types/sanity";
+import { player, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
 import { saveNewMatch } from "@/services/matchService";
 import TrumpMatchPlayer from "@/components/form/TrumpMatchPlayer.vue";
 
@@ -98,22 +98,26 @@ export default defineComponent({
   methods: {
     async saveMatch() {
       try {
-        await saveNewMatch(
-          this.allPlayers,
-          this.startingScore,
-          this.finalScore
-        );
+        await saveNewMatch({
+          matchDate: new Date(),
+          startingScore: this.startingScore,
+          finalScore: this.finalScore,
+          callingPlayer: this.allPlayers[0],
+          players: this.allMatchPlayers,
+        } as trumpMatch);
       } catch (error) {
         console.error(error);
       }
     },
   },
   computed: {
-    allPlayers(): trumpMatchPlayer[] {
+    allMatchPlayers(): trumpMatchPlayer[] {
       const { player1, player2, player3, player4, player5 } = this.players;
-      // eslint-disable-next-line no-debugger
-      debugger
-      return [player1, player2, player3, player4, player5].filter((p) => p._id);
+
+      return [player1, player2, player3, player4, player5];
+    },
+    allPlayers(): player[] {
+      return this.allMatchPlayers.map((x) => x.player).filter((p) => p?._id);
     },
   },
 });

@@ -5,8 +5,8 @@
     <label v-show="label" class="place-items-start"> {{ label }} </label>
     <user-autocomplete
       :exclutedPlayers="exclutedPlayers"
-      v-model="match.player"
-      @input="(player) => emitChanges(player)"
+      :value="match.player"
+      @input="(player) => (match.player = player)"
     />
     <div class="flex flex-row">
       <div class="m-2">
@@ -48,19 +48,11 @@ export default defineComponent({
       } as trumpMatchPlayer,
     };
   },
-  mounted() {
-    (window as any).pippo = this;
-  },
-  methods: {
-    emitChanges(match: trumpMatchPlayer) {
-      this.$emit("input", match);
-    },
-  },
   watch: {
     match: {
       handler() {
-        console.log("bruh");
-        this.emitChanges(this.match);
+        console.log(this.match);
+        this.$emit("input", this.match);
       },
       deep: true,
     },

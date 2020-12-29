@@ -1,7 +1,12 @@
 import { roleConstants, sanityTypes } from "@/constants/roleConstants";
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 
-export type QueryableParam = string | Date | number | Array<QueryableParam>;
+export type QueryableParam =
+  | string
+  | Date
+  | number
+  | boolean
+  | Array<QueryableParam>;
 
 export interface sanityEntity {
   _id: string;

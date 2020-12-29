@@ -29,6 +29,10 @@ export class QueryBuilder {
   private _params: Dictionary<QueryableParam> = {};
   private _select: string[] = [];
 
+  constructor(type: sanityTypes | null = null) {
+    if (type) this._type = type;
+  }
+
   type(type: sanityTypes): QueryBuilder {
     this._type = type;
     return this;
