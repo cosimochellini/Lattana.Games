@@ -26,8 +26,9 @@ import { defineComponent, PropType } from "vue";
 import UserAutocomplete from "./UserAutocomplete.vue";
 
 export default defineComponent({
+  name: "TrumpMatchPlayer",
   components: { UserAutocomplete },
-  emits: ["@update:modelValue"],
+  emits: ["update:modelValue"],
   props: {
     label: {
       type: String,
@@ -50,10 +51,11 @@ export default defineComponent({
   watch: {
     match: {
       handler() {
-        this.$emit("@update:modelValue", this.match);
+        this.$emit("update:modelValue", this.match);
       },
       deep: true,
     },
   },
+  methods: {},
 });
 </script>

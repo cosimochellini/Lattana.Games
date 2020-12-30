@@ -7,8 +7,7 @@ import { sanityDocument, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
 export const saveNewMatch = async (match: trumpMatch) => {
   if (match.players.length !== 5)
     throw new Error("incorrect number of players");
-  // eslint-disable-next-line no-debugger
-  debugger;
+
   const matchToCreate = {
     _id: nanoid(),
     _type: sanityTypes.trumpMatch,
@@ -19,8 +18,7 @@ export const saveNewMatch = async (match: trumpMatch) => {
   } as sanityDocument<trumpMatch>;
 
   let result = await sanityClient.create(matchToCreate);
-  // eslint-disable-next-line no-debugger
-  debugger;
+
   const playersPromises = match.players.map((p) =>
     sanityClient.create({
       _id: nanoid(),

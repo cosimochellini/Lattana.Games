@@ -35,6 +35,11 @@
       <div
         class="border-4 border-blue-500 border-opacity-50 rounded-md m-2 flex flex-col items-stretch justify-between md:w-1/4 w-full"
       >
+        <user-autocomplete class="m-3" :exactPlayers="allPlayers" v-model="callingPlayer" />
+      </div>
+      <div
+        class="border-4 border-blue-500 border-opacity-50 rounded-md m-2 flex flex-col items-stretch justify-between md:w-1/4 w-full"
+      >
         <div class="m-2 flex justify-between">
           <label for="initial points"> punteggio chiamato</label>
           <input
@@ -72,9 +77,10 @@ import { defineComponent } from "vue";
 import { player, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
 import { saveNewMatch } from "@/services/matchService";
 import TrumpMatchPlayer from "@/components/form/TrumpMatchPlayer.vue";
+import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 
 export default defineComponent({
-  components: { TrumpMatchPlayer },
+  components: { TrumpMatchPlayer, UserAutocomplete },
   name: "AddTrumpMatch",
   data() {
     return {
@@ -85,6 +91,7 @@ export default defineComponent({
         player4: {} as trumpMatchPlayer,
         player5: {} as trumpMatchPlayer,
       },
+      callingPlayer: {} as player,
       startingScore: 0,
       finalScore: 0,
     };
@@ -96,7 +103,7 @@ export default defineComponent({
           matchDate: new Date(),
           startingScore: this.startingScore,
           finalScore: this.finalScore,
-          callingPlayer: this.allPlayers[0],
+          callingPlayer: this.callingPlayer,
           players: this.allMatchPlayers,
         } as trumpMatch);
       } catch (error) {
