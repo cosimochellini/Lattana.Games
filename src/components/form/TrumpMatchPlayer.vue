@@ -5,8 +5,7 @@
     <label v-show="label" class="place-items-start"> {{ label }} </label>
     <user-autocomplete
       :exclutedPlayers="exclutedPlayers"
-      :value="match.player"
-      @input="(player) => (match.player = player)"
+      v-model="match.player"
     />
     <div class="flex flex-row">
       <div class="m-2">
@@ -28,7 +27,7 @@ import UserAutocomplete from "./UserAutocomplete.vue";
 
 export default defineComponent({
   components: { UserAutocomplete },
-  emits: ["input"],
+  emits: ["@update:modelValue"],
   props: {
     label: {
       type: String,
@@ -51,8 +50,7 @@ export default defineComponent({
   watch: {
     match: {
       handler() {
-        console.log(this.match);
-        this.$emit("input", this.match);
+        this.$emit("@update:modelValue", this.match);
       },
       deep: true,
     },

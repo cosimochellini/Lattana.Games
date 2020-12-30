@@ -7,36 +7,30 @@
         :exclutedPlayers="allPlayers"
         label="Giocatore 1"
         v-model="players.player1"
-        @input="(p) => (players.player1 = p)"
       />
-      <!-- TODO : rimuovere i @input, sono momentanei perchè il v-model non va -->
       <trump-match-player
         class="md:w-1/4 w-full"
         :exclutedPlayers="allPlayers"
         label="Giocatore 2"
         v-model="players.player2"
-        @input="(p) => (players.player2 = p)"
       />
       <trump-match-player
         class="md:w-1/4 w-full"
         :exclutedPlayers="allPlayers"
         label="Giocatore 3"
         v-model="players.player3"
-        @input="(p) => (players.player3 = p)"
       />
       <trump-match-player
         class="md:w-1/4 w-full"
         :exclutedPlayers="allPlayers"
         label="Giocatore 4"
         v-model="players.player4"
-        @input="(p) => (players.player4 = p)"
       />
       <trump-match-player
         class="md:w-1/4 w-full"
         :exclutedPlayers="allPlayers"
         label="Giocatore 5"
         v-model="players.player5"
-        @input="(p) => (players.player5 = p)"
       />
       <div
         class="border-4 border-blue-500 border-opacity-50 rounded-md m-2 flex flex-col items-stretch justify-between md:w-1/4 w-full"

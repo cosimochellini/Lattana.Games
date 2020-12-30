@@ -1,8 +1,15 @@
 <template>
   <div>
-    <select v-model="selected" @change="emitChanges">
-      <option disabled :value="null">seleziona giocatore</option>
-      <option v-for="player in fetchedPlayers" :key="player.id" :value="player">
+    <select
+      :value="modelValue"
+      @input="$emit('update:modelValue', $event.target.value)"
+    >
+      <option disabled :value="{}">seleziona giocatore</option>
+      <option
+        v-for="player in fetchedPlayers"
+        :key="player._id"
+        :value="player"
+      >
         {{ player.name }} {{ player.surname }}
       </option>
     </select>
@@ -28,18 +35,17 @@ export default defineComponent({
       type: Array as PropType<player[]>,
       default: () => [] as player[],
     },
-    value: {
+    modelValue: {
       type: Object as PropType<player>,
       default: () => {},
     },
   },
-  emits: ["input"],
+  emits: ["@update:modelValue"],
   data() {
     return {
       uniqueListId: nanoid(),
       fetchedPlayers: [] as player[],
       search: "",
-      selected: null as player | null,
     };
   },
   mounted() {
@@ -61,11 +67,6 @@ export default defineComponent({
         .fetch<player[]>()
         .then((players) => (this.fetchedPlayers = players));
     },
-    emitChanges() {
-      console.log("input => UserAutocomplete", this.selected);
-
-      this.$emit("input", this.selected);
-    },
   },
   watch: {
     search() {
@@ -73,9 +74,6 @@ export default defineComponent({
     },
     exclutedPlayers() {
       this.fetchPlayers();
-    },
-    value() {
-      this.selected = { ...this.selected, ...this.value };
     },
   },
 });
