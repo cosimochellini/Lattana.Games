@@ -3,12 +3,13 @@
     <div
       v-for="match in matches"
       :key="match._id"
-      class="bg-red-50 p-2 m-auto content-center items-center self-center max-w-6xl"
+      class="bg-gray-100 p-4 m-auto max-w-6xl border-4 border-blue-500 border-opacity-50 rounded-md"
     >
       <div>data : {{ formatDate(match.matchDate) }}</div>
       <div>punteggio iniziale : {{ match.startingScore }}</div>
       <div>punteggio finale : {{ match.finalScore }}</div>
-      <div class="flex flex-row">
+      <div class="flex flex-row items-center">
+        Giocatori:
         <span v-for="p in match.players" :key="p._id" class="ml-1">
           <img
             :src="image(p.player.profileImage)"
@@ -18,7 +19,23 @@
           />
         </span>
       </div>
-      <hr class="mt-2"/>
+      <hr />
+      <div class="flex flex-row items-center mt-2 ">
+        Giocatore chiamante :
+
+        <!-- <span>
+          {{ match.callingPlayer.name }} {{ match.callingPlayer.surname }}
+        </span> -->
+        <span class="ml-1">
+          <img
+            :src="image(match.callingPlayer.profileImage)"
+            loading="lazy"
+            class="rounded-full"
+            :title="`${match.callingPlayer.name} ${match.callingPlayer.surname}`"
+          />
+        </span>
+      </div>
+      <hr class="mt-2" />
     </div>
   </div>
 </template>
@@ -40,7 +57,7 @@ export default defineComponent({
         .catch(console.log);
     };
 
-    const formatDate = (date: string) => new Date(date).toLocaleString();
+    const formatDate = (date: string) => new Date(date).toLocaleString("it-IT");
 
     const image = (img: SanityImageSource) => urlFor(img).width(40);
 
