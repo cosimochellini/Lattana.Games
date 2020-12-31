@@ -4,7 +4,7 @@ import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 
 const sanityClient = sanityClientFactory({
   useCdn: false,
-  projectId: "tdm8v5j4",
+  projectId: process.env.VUE_APP_SANITY_PROJECT,
   dataset: "production",
   withCredentials: true,
   ignoreBrowserTokenWarning: true,
@@ -13,7 +13,7 @@ const sanityClient = sanityClientFactory({
 
 const readOnlySanityClient = sanityClientFactory({
   useCdn: true,
-  projectId: "tdm8v5j4",
+  projectId: process.env.VUE_APP_SANITY_PROJECT,
   dataset: "production",
   ignoreBrowserTokenWarning: true,
 }) as Readonly<SanityClient>;
