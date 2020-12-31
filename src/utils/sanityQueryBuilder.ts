@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 import { Dictionary } from "@/types/base";
-import { QueryableParam, sanityEntity } from "@/types/sanity";
-import { sanityClient } from "@/istances/sanity";
+import { QueryableParam, sanityEntity, sanityReference } from "@/types/sanity";
+import { readOnlySanityClient, sanityClient } from "@/istances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
 
 type QueryModifier<T> = (value: T) => T;
@@ -14,7 +14,9 @@ export const endWith: QueryModifier<string> = (param: string) => `${param}*`;
 
 export const modifiers = { contains, startWith, endWith };
 
-export const reference = <T extends sanityEntity>({ _id }: T) => ({
+export const reference = <T extends sanityEntity>({
+  _id,
+}: T): sanityReference<T> => ({
   _ref: _id,
 });
 
@@ -28,6 +30,7 @@ export class QueryBuilder {
   private _conditions: [string, boolean][] = [];
   private _params: Dictionary<QueryableParam> = {};
   private _select: string[] = [];
+  private _orderBy: [string, boolean][] = [];
 
   constructor(type: sanityTypes | null = null) {
     if (type) this._type = type;
@@ -55,11 +58,21 @@ export class QueryBuilder {
     return this;
   }
 
+  orderBy(...orders: OrderBuilder[]): QueryBuilder {
+    for (const order of orders) {
+      this._orderBy.push(...order.expose());
+    }
+
+    return this;
+  }
+
   expose(): { query: string; params: Dictionary<QueryableParam> } {
     return { query: "", params: this._params };
   }
-  fetch<T>() {
-    return sanityClient.fetch<T>(this.build(), this._params);
+  fetch<T>(useCdn: boolean = true) {
+    const client = useCdn ? readOnlySanityClient : sanityClient;
+
+    return client.fetch<T>(this.build(), this._params);
   }
 
   private build(): string {
@@ -73,7 +86,13 @@ export class QueryBuilder {
 
     const select = this._select.length ? this._select.join(" ,") : "...";
 
-    return `${where} {${select}}`;
+    const orderBy = this._orderBy.length
+      ? `| ${this._orderBy
+          .map(([prop, desc]) => `order(${prop} ${desc ? "desc" : "asc"})`)
+          .join(" | ")}`
+      : "";
+
+    return `${where} {${select}} ${orderBy}`.trim();
   }
 }
 
@@ -136,5 +155,23 @@ export class ConditionBuilder {
     }
 
     return false;
+  }
+}
+
+export class OrderBuilder {
+  private _ordes: [string, boolean][] = [];
+
+  constructor(prop: string, desc: boolean = false) {
+    this._ordes.push([prop, desc]);
+  }
+
+  then(condition: OrderBuilder): OrderBuilder {
+    this._ordes = [...this._ordes, ...condition.expose()];
+
+    return this;
+  }
+
+  expose(): [string, boolean][] {
+    return this._ordes;
   }
 }

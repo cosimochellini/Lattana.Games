@@ -3,16 +3,22 @@ import sanityClientFactory, { SanityClient } from "@sanity/client";
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 
 const sanityClient = sanityClientFactory({
+  useCdn: false,
   projectId: "tdm8v5j4",
   dataset: "production",
+  withCredentials: true,
+  ignoreBrowserTokenWarning: true,
   token: process.env.VUE_APP_SANITY_TOKEN,
-  useCdn: true,
 }) as Readonly<SanityClient>;
 
-console.log(process.env.VUE_APP_SANITY_TOKEN);
+const readOnlySanityClient = sanityClientFactory({
+  useCdn: true,
+  projectId: "tdm8v5j4",
+  dataset: "production",
+  ignoreBrowserTokenWarning: true,
+}) as Readonly<SanityClient>;
 
-const builder = imageUrlBuilder(sanityClient);
+const urlFor = (source: SanityImageSource) =>
+  imageUrlBuilder(readOnlySanityClient).image(source);
 
-const urlFor = (source: SanityImageSource) => builder.image(source);
-
-export { sanityClient, urlFor };
+export { sanityClient, readOnlySanityClient, urlFor };

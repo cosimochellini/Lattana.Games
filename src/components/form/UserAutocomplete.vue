@@ -13,7 +13,11 @@ import { player } from "@/types/sanity";
 import { defineComponent, PropType } from "vue";
 import { sanityTypes } from "@/constants/roleConstants";
 
-import { QueryBuilder, ConditionBuilder } from "@/utils/sanityQueryBuilder";
+import {
+  QueryBuilder,
+  ConditionBuilder,
+  OrderBuilder,
+} from "@/utils/sanityQueryBuilder";
 
 export default defineComponent({
   name: "UserAutocomplete",
@@ -47,6 +51,7 @@ export default defineComponent({
       if (this.exactPlayers?.map)
         return (this.fetchedPlayers = this.exactPlayers);
 
+      const player = this.selected;
       new QueryBuilder(sanityTypes.player)
         .select("nickname, profileImage, name, surname, _id")
         .where(
@@ -58,8 +63,9 @@ export default defineComponent({
             .optional()
             .reverse()
         )
+        .orderBy(new OrderBuilder("name"))
         .fetch<player[]>()
-        .then((players) => (this.fetchedPlayers = players));
+        .then((p) => (this.fetchedPlayers = player?._id ? [player, ...p] : p));
     },
     emitChanges() {
       this.$emit("update:modelValue", this.selected);
@@ -70,8 +76,7 @@ export default defineComponent({
       this.fetchPlayers();
     },
     exclutedPlayers() {
-      // nel caso il campo sia già calcolato
-      if (!this.selected?._id) this.fetchPlayers();
+      this.fetchPlayers();
     },
     exactPlayers() {
       this.fetchPlayers();

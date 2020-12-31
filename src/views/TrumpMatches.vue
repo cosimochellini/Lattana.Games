@@ -20,7 +20,7 @@
         </span>
       </div>
       <hr />
-      <div class="flex flex-row items-center mt-2 ">
+      <div class="flex flex-row items-center mt-2">
         Giocatore chiamante :
 
         <!-- <span>
@@ -41,18 +41,32 @@
 </template>
 
 <script lang="ts">
-import { sanityClient, urlFor } from "@/istances/sanity";
+import { urlFor } from "@/istances/sanity";
+import { trumpMatch } from "@/types/sanity";
 import { defineComponent, onMounted, ref } from "vue";
-import { trumpMatches } from "@/constants/groq/trumpMatch";
+import { sanityTypes } from "@/constants/roleConstants";
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
+import { OrderBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
+
+const matchesQuery = new QueryBuilder(sanityTypes.trumpMatch)
+  .select(
+    `
+  matchDate, 
+  startingScore, 
+  finalScore, 
+  callingPlayer -> {name, surname, profileImage}, 
+  players[] -> {player -> {name, surname, profileImage}, win}
+`
+  )
+  .orderBy(new OrderBuilder("matchDate"));
 
 export default defineComponent({
   setup() {
-    const matches = ref([]);
+    const matches = ref<trumpMatch[]>([]);
 
     const loadMatched = () => {
-      sanityClient
-        .fetch(trumpMatches)
+      matchesQuery
+        .fetch<trumpMatch[]>()
         .then((data) => (matches.value = data))
         .catch(console.log);
     };
@@ -61,7 +75,7 @@ export default defineComponent({
 
     const image = (img: SanityImageSource) => urlFor(img).width(40);
 
-    onMounted(() => loadMatched());
+    onMounted(loadMatched);
 
     return { matches, loadMatched, formatDate, image };
   },
