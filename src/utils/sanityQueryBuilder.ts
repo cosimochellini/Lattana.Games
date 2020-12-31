@@ -3,6 +3,7 @@ import { Dictionary } from "@/types/base";
 import { QueryableParam, sanityEntity, sanityReference } from "@/types/sanity";
 import { readOnlySanityClient, sanityClient } from "@/istances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
+import { toHandlers } from "vue";
 
 type QueryModifier<T> = (value: T) => T;
 
@@ -31,6 +32,7 @@ export class QueryBuilder {
   private _params: Dictionary<QueryableParam> = {};
   private _select: string[] = [];
   private _orderBy: [string, boolean][] = [];
+  private _pagination: { page: number; pageSize: number } | null = null;
 
   constructor(type: sanityTypes | null = null) {
     if (type) this._type = type;
@@ -66,13 +68,29 @@ export class QueryBuilder {
     return this;
   }
 
-  expose(): { query: string; params: Dictionary<QueryableParam> } {
-    return { query: "", params: this._params };
+  get(pagination: PaginationBuilder): QueryBuilder {
+    this._pagination = pagination.expose();
+
+    return this;
   }
+
+  expose(): { query: string; params: Dictionary<QueryableParam> } {
+    return { query: this.build(), params: this._params };
+  }
+
   fetch<T>(useCdn: boolean = true) {
     const client = useCdn ? readOnlySanityClient : sanityClient;
 
     return client.fetch<T>(this.build(), this._params);
+  }
+  private handlePagination(): string {
+    if (!this._pagination) return "";
+
+    const { page, pageSize } = this._pagination;
+
+    if (pageSize === 1) return `[${page-1}]`;
+
+    return `$[{(page - 1) * pageSize}...${page * pageSize}]`;
   }
 
   private build(): string {
@@ -92,7 +110,9 @@ export class QueryBuilder {
           .join(" | ")}`
       : "";
 
-    return `${where} {${select}} ${orderBy}`.trim();
+    const pagination = this.handlePagination();
+
+    return `${where} {${select}} ${orderBy}${pagination}`.trim();
   }
 }
 
@@ -173,5 +193,33 @@ export class OrderBuilder {
 
   expose(): [string, boolean][] {
     return this._ordes;
+  }
+}
+
+export class PaginationBuilder {
+  private _page: number;
+  private _pageSize: number;
+
+  constructor(page: number = 1, pageSize: number = 10) {
+    this._page = page;
+    this._pageSize = pageSize;
+  }
+
+  public first(): PaginationBuilder {
+    this._page = 1;
+    this._pageSize = 1;
+
+    return this;
+  }
+
+  public all(): PaginationBuilder {
+    this._page = 1;
+    this._pageSize = -1;
+
+    return this;
+  }
+
+  public expose() {
+    return { page: this._page, pageSize: this._pageSize };
   }
 }

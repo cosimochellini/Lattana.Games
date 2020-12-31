@@ -1,15 +1,26 @@
 import { player } from "@/types/sanity";
-import { sanityClient } from "@/istances/sanity";
-import { loginQuery } from "@/constants/groq/auth";
-import { roleConstants } from "@/constants/roleConstants";
+import { roleConstants, sanityTypes } from "@/constants/roleConstants";
+
+import {
+  QueryBuilder,
+  ConditionBuilder,
+  PaginationBuilder,
+} from "@/utils/sanityQueryBuilder";
 
 const LS_PLAYER_KEY = "LG_stored_user";
 
 const login = async (name: string, pin: string) => {
-  const player = await sanityClient.fetch<player | null>(loginQuery, {
-    name: name.toLowerCase(),
-    pin: Number.parseInt(pin),
-  });
+  const player = await new QueryBuilder(sanityTypes.player)
+    .select(
+      `_id, name, surname, nickname, email, profileImage, 'roles': roles[]->role->name`
+    )
+    .where(
+      new ConditionBuilder(
+        "(nickname == $name && pin == $pin) || (email == $name && pin == $pin)"
+      ).params({ name: name.toLowerCase(), pin: Number.parseInt(pin) })
+    )
+    .get(new PaginationBuilder().first())
+    .fetch<player | null>(false);
 
   setPlayer(player);
 };
