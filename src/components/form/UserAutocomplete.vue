@@ -19,6 +19,11 @@ import {
   OrderBuilder,
 } from "@/utils/sanityQueryBuilder";
 
+const playerQuery = new QueryBuilder(sanityTypes.player)
+  .select("nickname, profileImage, name, surname, _id")
+  .orderBy(new OrderBuilder("name"))
+  .freeze();
+
 export default defineComponent({
   name: "UserAutocomplete",
   props: {
@@ -52,18 +57,14 @@ export default defineComponent({
         return (this.fetchedPlayers = this.exactPlayers);
 
       const player = this.selected;
-      new QueryBuilder(sanityTypes.player)
-        .select("nickname, profileImage, name, surname, _id")
+
+      playerQuery
         .where(
-          //     new ConditionBuilder("name match $search || surname match $search")
-          //       .params({ search: contains(this.search) })
-          //       .optional(),
           new ConditionBuilder("_id in $excluded")
             .params({ excluded: this.exclutedPlayers.map((x) => x._id) })
             .optional()
             .reverse()
         )
-        .orderBy(new OrderBuilder("name"))
         .fetch<player[]>()
         .then((p) => (this.fetchedPlayers = player?._id ? [player, ...p] : p));
     },

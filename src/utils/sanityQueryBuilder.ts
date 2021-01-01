@@ -3,7 +3,6 @@ import { Dictionary } from "@/types/base";
 import { QueryableParam, sanityEntity, sanityReference } from "@/types/sanity";
 import { readOnlySanityClient, sanityClient } from "@/istances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
-import { toHandlers } from "vue";
 
 type QueryModifier<T> = (value: T) => T;
 
@@ -26,93 +25,152 @@ export const referenceWithKey = ({ _id }: { _id: string }) => ({
   _key: nanoid(),
 });
 
+type Freezable<T> = {
+  value: T;
+  freezed?: boolean;
+};
+
+type Condition = {
+  condition: string;
+  reverse: boolean;
+};
+
+type Order = {
+  prop: string;
+  desc: boolean;
+};
+
 export class QueryBuilder {
   private _type: string = "";
-  private _conditions: [string, boolean][] = [];
-  private _params: Dictionary<QueryableParam> = {};
-  private _select: string[] = [];
-  private _orderBy: [string, boolean][] = [];
+  private _conditions: Freezable<Condition>[] = [];
+  private _params: Freezable<Dictionary<QueryableParam>>[] = [];
+  private _select: Freezable<string>[] = [];
+  private _orderBy: Freezable<Order>[] = [];
   private _pagination: { page: number; pageSize: number } | null = null;
+  private _freezed: boolean = false;
 
   constructor(type: sanityTypes | null = null) {
     if (type) this._type = type;
   }
 
-  type(type: sanityTypes): QueryBuilder {
+  public type(type: sanityTypes): QueryBuilder {
     this._type = type;
     return this;
   }
 
-  where(...builders: ConditionBuilder[]): QueryBuilder {
+  public where(...builders: ConditionBuilder[]): QueryBuilder {
     for (const builder of builders) {
       if (!builder.isValid()) continue;
 
-      const { condition, params, options } = builder.expose();
+      const { condition, params, reverse } = builder.expose();
 
-      this._conditions.push([condition, options.reverse ?? false]);
-      this._params = { ...this._params, ...params };
+      this._conditions.push({ value: { condition, reverse } });
+
+      this._params.push({ value: params });
     }
     return this;
   }
 
-  select(select: string): QueryBuilder {
-    this._select.push(select);
-    return this;
-  }
-
-  orderBy(...orders: OrderBuilder[]): QueryBuilder {
-    for (const order of orders) {
-      this._orderBy.push(...order.expose());
-    }
+  public select(select: string): QueryBuilder {
+    this._select.push({ value: select });
 
     return this;
   }
 
-  get(pagination: PaginationBuilder): QueryBuilder {
+  public orderBy(...orders: OrderBuilder[]): QueryBuilder {
+    for (const order of orders)
+      for (const value of order.expose()) this._orderBy.push({ value });
+
+    return this;
+  }
+
+  public get(pagination: PaginationBuilder): QueryBuilder {
     this._pagination = pagination.expose();
 
     return this;
   }
 
-  expose(): { query: string; params: Dictionary<QueryableParam> } {
-    return { query: this.build(), params: this._params };
+  public expose(): { query: string; params: Dictionary<QueryableParam> } {
+    const params = this._params.reduce((x, y) => ({ ...x, ...y.value }), {});
+
+    return { query: this.build(), params };
   }
 
-  fetch<T>(useCdn: boolean = true) {
+  public freeze(): Readonly<QueryBuilder> {
+    this._freezed = true;
+    this.setFreezedProps();
+
+    return this;
+  }
+
+  public fetch<T>(useCdn: boolean = true) {
     const client = useCdn ? readOnlySanityClient : sanityClient;
 
-    return client.fetch<T>(this.build(), this._params);
+    const params = this._params.reduce((x, y) => ({ ...x, ...y.value }), {});
+
+    const query = this.build();
+
+    if (this._freezed) this.cleanUnfreezed();
+
+    return client.fetch<T>(query, params);
   }
+
   private handlePagination(): string {
     if (!this._pagination) return "";
 
     const { page, pageSize } = this._pagination;
 
-    if (pageSize === 1) return `[${page-1}]`;
+    if (pageSize === 1) return `[${page - 1}]`;
 
     return `$[{(page - 1) * pageSize}...${page * pageSize}]`;
   }
 
   private build(): string {
     const conditions = this._conditions
-      .map(([condition, not]) => `${not ? "!" : ""}(${condition})`)
+      .map((x) => x.value)
+      .map(({ condition, reverse }) => `${reverse ? "!" : ""}(${condition})`)
       .join(" && ");
 
     const where = `*[_type == '${this._type}' ${
       conditions ? ` && ${conditions}` : ""
     }]`;
 
-    const select = this._select.length ? this._select.join(" ,") : "...";
+    const select = this._select.length
+      ? this._select.map((s) => s.value).join(" ,")
+      : "...";
 
     const orderBy = this._orderBy.length
       ? `| ${this._orderBy
-          .map(([prop, desc]) => `order(${prop} ${desc ? "desc" : "asc"})`)
+          .map((x) => x.value)
+          .map(({ prop, desc }) => `order(${prop} ${desc ? "desc" : "asc"})`)
           .join(" | ")}`
       : "";
 
     const pagination = this.handlePagination();
 
-    return `${where} {${select}} ${orderBy}${pagination}`.trim();
+    return `${where} {${select}} ${orderBy} ${pagination}`.trim();
+  }
+
+  private cleanUnfreezed(): void {
+    QueryBuilder.filterFreezed(this._conditions);
+    QueryBuilder.filterFreezed(this._params);
+    QueryBuilder.filterFreezed(this._select);
+    QueryBuilder.filterFreezed(this._orderBy);
+  }
+
+  private setFreezedProps(): void {
+    QueryBuilder.setAsFreezed(this._conditions);
+    QueryBuilder.setAsFreezed(this._params);
+    QueryBuilder.setAsFreezed(this._select);
+    QueryBuilder.setAsFreezed(this._orderBy);
+  }
+
+  static filterFreezed(props: Freezable<any>[]) {
+    props = props.filter((p) => p.freezed);
+  }
+
+  static setAsFreezed(props: Freezable<any>[]) {
+    props.forEach((p) => (p.freezed = true));
   }
 }
 
@@ -151,12 +209,12 @@ export class ConditionBuilder {
   expose(): {
     condition: string;
     params: Dictionary<QueryableParam>;
-    options: Partial<{ optional: boolean; reverse: boolean }>;
+    reverse: boolean;
   } {
     return {
       condition: this._condition,
       params: this._params,
-      options: { optional: this._optional, reverse: this._reverse },
+      reverse: this._reverse,
     };
   }
 
@@ -179,10 +237,10 @@ export class ConditionBuilder {
 }
 
 export class OrderBuilder {
-  private _ordes: [string, boolean][] = [];
+  private _ordes: Order[] = [];
 
   constructor(prop: string, desc: boolean = false) {
-    this._ordes.push([prop, desc]);
+    this._ordes.push({ prop, desc });
   }
 
   then(condition: OrderBuilder): OrderBuilder {
@@ -191,7 +249,7 @@ export class OrderBuilder {
     return this;
   }
 
-  expose(): [string, boolean][] {
+  expose(): Order[] {
     return this._ordes;
   }
 }
