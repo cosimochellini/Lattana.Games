@@ -10,9 +10,7 @@ import {
 const LS_PLAYER_KEY = "LG_stored_user";
 
 const loginQuery = new QueryBuilder(sanityTypes.player)
-  .select(
-    `_id, name, surname, nickname, email, profileImage, 'roles': roles[]->role->name`
-  )
+  .select(`..., 'roles': roles[]->role->name`)
   .get(new PaginationBuilder().first())
   .freeze();
 
@@ -59,8 +57,7 @@ const getPlayer = () => {
   try {
     return JSON.parse(localStorage.getItem(LS_PLAYER_KEY) ?? "") as player;
   } catch (error) {
-    setPlayer(null);
-    return null;
+    return setPlayer(null);
   }
 };
 

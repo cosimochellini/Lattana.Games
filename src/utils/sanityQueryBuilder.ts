@@ -1,44 +1,29 @@
 import { nanoid } from "nanoid";
 import { Dictionary } from "@/types/base";
-import { QueryableParam, sanityEntity, sanityReference } from "@/types/sanity";
-import { readOnlySanityClient, sanityClient } from "@/istances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
+import { readOnlySanityClient, sanityClient } from "@/istances/sanity";
+import { QueryableParam, sanityEntity, sanityReference } from "@/types/base";
 
-type QueryModifier<T> = (value: T) => T;
+export const contains = (param: string) => `*${param}*`;
 
-export const contains: QueryModifier<string> = (param: string) => `*${param}*`;
+export const startWith = (param: string) => `*${param}`;
 
-export const startWith: QueryModifier<string> = (param: string) => `*${param}`;
-
-export const endWith: QueryModifier<string> = (param: string) => `${param}*`;
-
-export const modifiers = { contains, startWith, endWith };
+export const endWith = (param: string) => `${param}*`;
 
 export const reference = <T extends sanityEntity>({
   _id,
-}: T): sanityReference<T> => ({
-  _ref: _id,
-});
+}: T): sanityReference<T> => ({ _ref: _id });
 
 export const referenceWithKey = ({ _id }: { _id: string }) => ({
   _ref: _id,
   _key: nanoid(),
 });
 
-type Freezable<T> = {
-  value: T;
-  freezed?: boolean;
-};
+type Freezable<T> = { value: T; freezed?: boolean };
 
-type Condition = {
-  condition: string;
-  reverse: boolean;
-};
+type Condition = { condition: string; reverse: boolean };
 
-type Order = {
-  prop: string;
-  desc: boolean;
-};
+type Order = { prop: string; desc: boolean };
 
 export class QueryBuilder {
   private _type: string = "";

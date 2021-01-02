@@ -183,7 +183,6 @@ export default defineComponent({
       navbarRoutes: [
         { name: "Nuovo match", route: "/add-trump" },
         { name: "Storico", route: "/matches" },
-        { name: "Logout", route: "/log-out" },
       ],
       profileRoutes: [
         { name: "Your Profile", route: "/profile" },

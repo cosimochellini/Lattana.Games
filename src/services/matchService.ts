@@ -1,8 +1,9 @@
 import { nanoid } from "nanoid";
+import { sanityDocument } from "@/types/base";
 import { sanityClient } from "@/istances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
+import { trumpMatch, trumpMatchPlayer } from "@/types/sanity";
 import { reference, referenceWithKey } from "@/utils/sanityQueryBuilder";
-import { sanityDocument, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
 
 export const saveNewMatch = async (match: trumpMatch) => {
   if (match.players.length !== 5)
