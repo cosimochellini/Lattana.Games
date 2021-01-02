@@ -9,21 +9,22 @@ import {
 
 const LS_PLAYER_KEY = "LG_stored_user";
 
-const login = async (name: string, pin: string) => {
-  const player = await new QueryBuilder(sanityTypes.player)
-    .select(
-      `_id, name, surname, nickname, email, profileImage, 'roles': roles[]->role->name`
-    )
+const loginQuery = new QueryBuilder(sanityTypes.player)
+  .select(
+    `_id, name, surname, nickname, email, profileImage, 'roles': roles[]->role->name`
+  )
+  .get(new PaginationBuilder().first())
+  .freeze();
+
+const login = (name: string, pin: string) =>
+  loginQuery
     .where(
       new ConditionBuilder(
         "(nickname == $name && pin == $pin) || (email == $name && pin == $pin)"
       ).params({ name: name.toLowerCase(), pin: Number.parseInt(pin) })
     )
-    .get(new PaginationBuilder().first())
-    .fetch<player | null>(false);
-
-  setPlayer(player);
-};
+    .fetch<player | null>(false)
+    .then((p) => setPlayer(p));
 
 const isAuthorized = (
   roles: roleConstants[] = [],
@@ -31,13 +32,11 @@ const isAuthorized = (
 ): boolean => {
   if (player === null) return false;
 
-  if (roles.length === 0) return isLogged(player);
+  if (!roles.length) return isLogged(player);
 
   if (player.roles.includes(roleConstants.Admin)) return true;
 
-  for (const role of player.roles) {
-    if (roles.includes(role)) return true;
-  }
+  for (const role of player.roles) if (roles.includes(role)) return true;
 
   return false;
 };
@@ -50,8 +49,11 @@ const isLogged = (player: player | null = null) => {
   return player !== null;
 };
 
-const setPlayer = (player: player | null) =>
+const setPlayer = (player: player | null) => {
   localStorage.setItem(LS_PLAYER_KEY, JSON.stringify(player));
+
+  return player;
+};
 
 const getPlayer = () => {
   try {

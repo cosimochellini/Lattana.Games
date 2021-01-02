@@ -15,8 +15,8 @@ import { sanityTypes } from "@/constants/roleConstants";
 
 import {
   QueryBuilder,
-  ConditionBuilder,
   OrderBuilder,
+  ConditionBuilder,
 } from "@/utils/sanityQueryBuilder";
 
 const playerQuery = new QueryBuilder(sanityTypes.player)
@@ -53,8 +53,8 @@ export default defineComponent({
   },
   methods: {
     fetchPlayers() {
-      if (this.exactPlayers?.map)
-        return (this.fetchedPlayers = this.exactPlayers);
+      if (this.exactPlayers)
+        return (this.fetchedPlayers = this.exactPlayers ?? []);
 
       const player = this.selected;
 

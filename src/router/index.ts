@@ -1,17 +1,12 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import { isAuthorized } from "@/services/authService";
 
-const routes = [
+const routes: RouteRecordRaw[] = [
   {
     path: "/",
+    redirect: "/matches",
     name: "Home",
     component: () => import("../views/Home.vue"),
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/about",
-    name: "About",
-    component: () => import("../views/About.vue"),
     meta: { requiresAuth: true },
   },
   {
