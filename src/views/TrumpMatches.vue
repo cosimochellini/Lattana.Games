@@ -5,7 +5,7 @@
       :key="match._id"
       class="bg-gray-100 p-4 m-auto max-w-6xl border-4 border-blue-500 border-opacity-50 rounded-md"
     >
-      <div>data : {{ formatDate(match.matchDate) }}</div>
+      <div>data : {{ dayFormatter(match.matchDate) }}</div>
       <div>punteggio iniziale : {{ match.startingScore }}</div>
       <div>punteggio finale : {{ match.finalScore }}</div>
       <div class="flex flex-row items-center">
@@ -43,8 +43,10 @@
 <script lang="ts">
 import { urlFor } from "@/istances/sanity";
 import { trumpMatch } from "@/types/sanity";
+import { dayFormatter } from "@/utils/formatters";
 import { defineComponent, onMounted, ref } from "vue";
 import { sanityTypes } from "@/constants/roleConstants";
+import { notificationService } from "@/services/notificationService";
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { OrderBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
 
@@ -58,9 +60,10 @@ const matchesQuery = new QueryBuilder(sanityTypes.trumpMatch)
   players[] -> {player -> {name, surname, profileImage}, win}
 `
   )
-  .orderBy(new OrderBuilder("matchDate"));
+  .orderBy(new OrderBuilder("matchDate", true));
 
 export default defineComponent({
+  components: {},
   setup() {
     const matches = ref<trumpMatch[]>([]);
 
@@ -68,16 +71,14 @@ export default defineComponent({
       matchesQuery
         .fetch<trumpMatch[]>()
         .then((data) => (matches.value = data))
-        .catch(console.log);
+        .catch(notificationService.danger);
     };
-
-    const formatDate = (date: string) => new Date(date).toLocaleString("it-IT");
 
     const image = (img: SanityImageSource) => urlFor(img).width(40);
 
     onMounted(loadMatched);
 
-    return { matches, loadMatched, formatDate, image };
+    return { matches, loadMatched, image, dayFormatter };
   },
 });
 </script>

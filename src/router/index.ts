@@ -36,6 +36,20 @@ const routes: RouteRecordRaw[] = [
     component: () => import("../views/Profile.vue"),
     meta: { requiresAuth: true },
   },
+  {
+    path: "/trumpMatch",
+    redirect: "/trumpMatch/stats",
+    component: () => import("../views/TrumpMatch/Stats.vue"),
+
+    children: [
+      {
+        path: "stats",
+        name: "TrumpMatchesStats",
+        component: () => import("../views/TrumpMatch/Stats.vue"),
+      },
+    ],
+    meta: { requiresAuth: true },
+  },
 ];
 
 const router = createRouter({

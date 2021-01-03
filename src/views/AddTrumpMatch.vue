@@ -35,7 +35,11 @@
       <div
         class="border-4 border-blue-500 border-opacity-50 rounded-md m-2 flex flex-col items-stretch justify-between md:w-1/4 w-full"
       >
-        <user-autocomplete class="m-3" :exactPlayers="allPlayers" v-model="callingPlayer" />
+        <user-autocomplete
+          class="m-3"
+          :exactPlayers="allPlayers"
+          v-model="callingPlayer"
+        />
       </div>
       <div
         class="border-4 border-blue-500 border-opacity-50 rounded-md m-2 flex flex-col items-stretch justify-between md:w-1/4 w-full"
@@ -74,10 +78,11 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { player, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
 import { saveNewMatch } from "@/services/matchService";
+import { player, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
 import TrumpMatchPlayer from "@/components/form/TrumpMatchPlayer.vue";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
+import { notificationService } from "@/services/notificationService";
 
 export default defineComponent({
   components: { TrumpMatchPlayer, UserAutocomplete },
@@ -96,18 +101,24 @@ export default defineComponent({
       finalScore: 0,
     };
   },
+  mounted() {
+    (window as any).pippo = () =>
+      notificationService.success("salvataggio eseguito");
+  },
   methods: {
     async saveMatch() {
       try {
-        await saveNewMatch({
+        saveNewMatch({
           matchDate: new Date(),
           startingScore: this.startingScore,
           finalScore: this.finalScore,
           callingPlayer: this.callingPlayer,
           players: this.allMatchPlayers,
-        } as trumpMatch);
+        } as trumpMatch)
+          .then(() => notificationService.success("salvataggio eseguito"))
+          .catch(notificationService.danger);
       } catch (error) {
-        console.error(error);
+        notificationService.danger(error);
       }
     },
   },
