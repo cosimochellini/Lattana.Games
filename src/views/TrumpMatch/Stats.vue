@@ -35,7 +35,7 @@ import { ConditionBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
 const playerQuery = new QueryBuilder(sanityTypes.player);
 
 const matchesQuery = new QueryBuilder(sanityTypes.trumpMatchPlayer)
-  .select("..., player ->, trumpMatch -> {..., players[] -> { player -> } }")
+  .select("..., player ->, trumpMatch -> {..., players[] -> {...,player -> } }")
   .freeze();
 
 export default defineComponent({
@@ -69,15 +69,23 @@ export default defineComponent({
   },
   computed: {
     stats(): TrumpStats {
-      return new TrumpStats(this.matches);
+      return new TrumpStats(this.matches, this.currentPlayer);
     },
     statistics(): { message: string; value: string }[] {
       const { matches, wonMatches, lostMatches, ratio } = this.stats;
+      const { penaltyPoints, callingMatches } = this.stats;
+
+      console.log(this.stats.loadMates());
       return [
         { message: "totale partite", value: matches.length.toString() },
         { message: "vittorie", value: wonMatches.length.toString() },
         { message: "sconfitte", value: lostMatches.length.toString() },
         { message: "percentuale", value: `${(ratio * 100).toFixed(0)} %` },
+        { message: "penalità", value: penaltyPoints.length.toString() },
+        {
+          message: "partite chiamate",
+          value: callingMatches.length.toString(),
+        },
       ];
     },
   },
