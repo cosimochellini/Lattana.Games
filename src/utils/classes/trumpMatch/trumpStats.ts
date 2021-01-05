@@ -1,4 +1,4 @@
-import { Dictionary } from "@/types/base";
+import { Dictionary, sanityReference } from "@/types/base";
 import { byNumber, byValue } from "sort-es";
 import { player, trumpMatchPlayer } from "@/types/sanity";
 
@@ -17,6 +17,8 @@ export class TrumpStats {
   private _lostMatches: trumpMatchPlayer[] = [];
   private _penaltyPoints: trumpMatchPlayer[] = [];
   private _callingMatches: trumpMatchPlayer[] = [];
+  private _fullscoreMatches: trumpMatchPlayer[] = [];
+  private _callingStats: TrumpStats | null = null;
   private _mates: Mate[] = [];
 
   constructor(matches: trumpMatchPlayer[], player: player) {
@@ -80,13 +82,26 @@ export class TrumpStats {
 
     return this._penaltyPoints;
   }
-  public get callingMatches() {
-    if (!this._callingMatches.length)
-      for (const match of this.matches)
-        if (match.trumpMatch.callingPlayer._id === this._player._id)
-          this._callingMatches.push(match);
 
-    return this._callingMatches;
+  public get callingStats() {
+    if (!this._callingMatches.length)
+      for (const match of this.matches) {
+        const ref = (match.trumpMatch.callingPlayer as any)._ref;
+        if (ref === this._player._id) this._callingMatches.push(match);
+      }
+    if (this._callingStats === null)
+      this._callingStats = new TrumpStats(this._callingMatches, this._player);
+
+    return this._callingStats;
+  }
+
+  public get fullscoreMatches() {
+    if (!this._fullscoreMatches.length)
+      for (const match of this.matches)
+        if (match.trumpMatch.startingScore === 120)
+          this._fullscoreMatches.push(match);
+
+    return this._fullscoreMatches;
   }
 
   public get ratio() {
@@ -97,5 +112,14 @@ export class TrumpStats {
     if (!this._mates.length) this.loadMates();
 
     return this._mates;
+  }
+
+  public get mediaScore() {
+    return (
+      this._matches
+        .map((x) => x.trumpMatch.startingScore)
+        .filter((ss) => ss !== 120)
+        .reduce((t, c) => t + c, 0) / this._matches.length
+    );
   }
 }

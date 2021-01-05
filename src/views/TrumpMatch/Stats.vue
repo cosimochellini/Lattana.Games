@@ -1,9 +1,9 @@
 <template>
   <!-- This is an example component -->
-  <div class="max-w-xl md:max-w-3xl px-4 py-4 mx-auto">
+  <div class="max-w-xl md:max-w-4xl px-4 py-4 mx-auto">
     <h2 class="font-semibold">Statistiche 📊</h2>
     <div
-      class="sm:grid sm:grid-flow-row sm:gap-4 sm:grid-cols-3 md:grid-cols-5"
+      class="grid grid-flow-row gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-5"
     >
       <div
         class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded"
@@ -47,7 +47,7 @@
               class="ml-4 rounded-xl px-2 py-1 font-semibold"
               :class="mate.ratio > 0.5 ? 'bg-green-300' : 'bg-red-300'"
             >
-              {{ mate.ratio.toLocaleString() }}
+              {{ percentageFormatter(mate.ratio) }} %
             </span>
           </div>
         </div>
@@ -74,7 +74,7 @@
               class="ml-4 rounded-xl px-2 py-1 font-semibold"
               :class="mate.ratio > 0.5 ? 'bg-green-300' : 'bg-red-300'"
             >
-              {{ mate.ratio.toLocaleString() }}
+              {{ percentageFormatter(mate.ratio) }} %
             </span>
           </div>
         </div>
@@ -89,6 +89,7 @@ import { urlFor } from "@/istances/sanity";
 import { byNumber, byValue } from "sort-es";
 import { getPlayer } from "@/services/authService";
 import { sanityTypes } from "@/constants/roleConstants";
+import { percentageFormatter } from "@/utils/formatters";
 import { player, trumpMatchPlayer } from "@/types/sanity";
 import { notificationService } from "@/services/notificationService";
 import { Mate, TrumpStats } from "@/utils/classes/trumpMatch/trumpStats";
@@ -118,6 +119,7 @@ export default defineComponent({
   },
   methods: {
     urlFor,
+    percentageFormatter,
     loadMatches() {
       this.stats.wonMatches.length;
       matchesQuery
@@ -136,17 +138,35 @@ export default defineComponent({
     },
     statistics(): { message: string; value: string }[] {
       const { matches, wonMatches, lostMatches, ratio } = this.stats;
-      const { penaltyPoints, callingMatches } = this.stats;
+      const { penaltyPoints, callingStats, fullscoreMatches } = this.stats;
+      const { mediaScore } = callingStats;
 
       return [
         { message: "totale partite", value: matches.length.toString() },
         { message: "vittorie", value: wonMatches.length.toString() },
         { message: "sconfitte", value: lostMatches.length.toString() },
-        { message: "percentuale", value: `${(ratio * 100).toFixed(0)} %` },
+        { message: "vittorie", value: `${percentageFormatter(ratio)} %` },
         { message: "penalità", value: penaltyPoints.length.toString() },
+        { message: "partite 120", value: fullscoreMatches.length.toString() },
         {
           message: "partite chiamate",
-          value: callingMatches.length.toString(),
+          value: callingStats.matches.length.toString(),
+        },
+        {
+          message: "partite chiamate",
+          value: `${percentageFormatter(
+            callingStats.matches.length / matches.length
+          )} %`,
+        },
+        {
+          message: "chiamate vittoriose",
+          value: `${percentageFormatter(
+            callingStats.wonMatches.length / callingStats.matches.length
+          )} %`,
+        },
+        {
+          message: "media punteggio chiamato",
+          value: mediaScore.toFixed(0),
         },
       ];
     },

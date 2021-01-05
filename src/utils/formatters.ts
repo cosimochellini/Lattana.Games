@@ -1,4 +1,6 @@
-const dayFormat = new Intl.DateTimeFormat("it-IT", {
+const defaultLocale = "it-IT" as const;
+
+const dayFormat = new Intl.DateTimeFormat(defaultLocale, {
   hour12: false,
   year: "numeric",
   month: "2-digit",
@@ -7,7 +9,7 @@ const dayFormat = new Intl.DateTimeFormat("it-IT", {
   minute: "2-digit",
 });
 
-const dateFormat = new Intl.DateTimeFormat("it-IT", {
+const dateFormat = new Intl.DateTimeFormat(defaultLocale, {
   hour12: false,
   year: "numeric",
   month: "2-digit",
@@ -15,7 +17,12 @@ const dateFormat = new Intl.DateTimeFormat("it-IT", {
 });
 
 export const longNumberFormatter = (n: number) =>
-  n.toLocaleString("it-IT", { minimumIntegerDigits: 4, useGrouping: false });
+  n.toLocaleString(defaultLocale, {
+    minimumIntegerDigits: 4,
+    useGrouping: false,
+  });
+
+export const percentageFormatter = (n: number) => (n * 100).toFixed(0);
 
 export const dateFormatter = (date: string | Date | null) => {
   if (!date) return "";
