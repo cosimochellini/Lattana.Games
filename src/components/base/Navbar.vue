@@ -222,6 +222,7 @@ export default defineComponent({
       return (
         urlFor(this.player?.profileImage ?? "")
           .maxWidth(200)
+          .width(200) //todo ottimizzare l'immagine
           .url() ?? ""
       );
     },

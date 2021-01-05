@@ -2,6 +2,14 @@ import { Dictionary } from "@/types/base";
 import { byNumber, byValue } from "sort-es";
 import { player, trumpMatchPlayer } from "@/types/sanity";
 
+export type Mate = {
+  win: number;
+  lose: number;
+  ratio: number;
+  nickname: string;
+  player: player;
+};
+
 export class TrumpStats {
   private _player: player;
   private _matches: trumpMatchPlayer[] = [];
@@ -9,6 +17,7 @@ export class TrumpStats {
   private _lostMatches: trumpMatchPlayer[] = [];
   private _penaltyPoints: trumpMatchPlayer[] = [];
   private _callingMatches: trumpMatchPlayer[] = [];
+  private _mates: Mate[] = [];
 
   constructor(matches: trumpMatchPlayer[], player: player) {
     this._matches = matches;
@@ -21,8 +30,8 @@ export class TrumpStats {
       else this._lostMatches.push(match);
   }
 
-  loadMates() {
-    const mates: Dictionary<{ win: number; lose: number }> = {};
+  private loadMates() {
+    const mates: Dictionary<{ win: number; lose: number; player: player }> = {};
     const plays = this.matches.flatMap(
       (m) =>
         m.trumpMatch.players?.filter(
@@ -31,26 +40,21 @@ export class TrumpStats {
     );
 
     for (const player of plays) {
-      const stat = mates[player.player.nickname] ?? { win: 0, lose: 0 };
+      const stat = mates[player.player.nickname] ?? { win: 0, lose: 0, player };
       if (player.win) stat.win = stat.win + 1;
       else stat.lose = stat.lose + 1;
 
       mates[player.player.nickname] = stat;
     }
 
-    const results: {
-      win: number;
-      lose: number;
-      ratio: number;
-      nickname: string;
-    }[] = [];
-
     for (const nickname in mates) {
-      const { win, lose } = mates[nickname];
-      results.push({ win, lose, ratio: win / (win + lose), nickname });
+      const { win, lose, player } = mates[nickname];
+      const ratio = win / (win + lose);
+
+      this._mates.push({ win, ratio, lose, nickname, player });
     }
 
-    return results.sort(byValue("ratio", byNumber({ desc: true })));
+    return this._mates.sort(byValue("ratio", byNumber({ desc: true })));
   }
 
   public get matches() {
@@ -87,5 +91,11 @@ export class TrumpStats {
 
   public get ratio() {
     return this.wonMatches.length / this.matches.length;
+  }
+
+  public get mates() {
+    if (!this._mates.length) this.loadMates();
+
+    return this._mates;
   }
 }
