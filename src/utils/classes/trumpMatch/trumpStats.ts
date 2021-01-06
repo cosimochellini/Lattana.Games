@@ -1,4 +1,4 @@
-import { Dictionary, sanityReference } from "@/types/base";
+import { Dictionary } from "@/types/base";
 import { byNumber, byValue } from "sort-es";
 import { player, trumpMatchPlayer } from "@/types/sanity";
 
@@ -89,6 +89,7 @@ export class TrumpStats {
         const ref = (match.trumpMatch.callingPlayer as any)._ref;
         if (ref === this._player._id) this._callingMatches.push(match);
       }
+
     if (this._callingStats === null)
       this._callingStats = new TrumpStats(this._callingMatches, this._player);
 
@@ -105,7 +106,11 @@ export class TrumpStats {
   }
 
   public get ratio() {
-    return this.wonMatches.length / this.matches.length;
+    return TrumpStats.Ratio(this.wonMatches, this.matches);
+  }
+
+  public get callingMatchesRatio() {
+    return TrumpStats.Ratio(this.callingStats.matches ?? [], this.matches);
   }
 
   public get mates() {
@@ -119,7 +124,11 @@ export class TrumpStats {
       this._matches
         .map((x) => x.trumpMatch.startingScore)
         .filter((ss) => ss !== 120)
-        .reduce((t, c) => t + c, 0) / this._matches.length
+        .reduce((t, c) => t + c, 0) / this._matches.length || 0
     );
+  }
+
+  public static Ratio<T>(first: T[], second: T[]) {
+    return first.length / second.length || 0;
   }
 }

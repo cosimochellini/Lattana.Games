@@ -1,14 +1,17 @@
 <template>
   <select v-model="selected" @change="emitChanges">
     <option disabled :value="{}">seleziona giocatore</option>
-    <option v-for="player in fetchedPlayers" :key="player._id" :value="player">
+    <option
+      v-for="player in fetchedPlayers"
+      :key="player._id"
+      :value="player"
+    >
       {{ player.name }} {{ player.surname }}
     </option>
   </select>
 </template>
 
 <script lang="ts">
-import { nanoid } from "nanoid";
 import { player } from "@/types/sanity";
 import { defineComponent, PropType } from "vue";
 import { sanityTypes } from "@/constants/roleConstants";
@@ -43,7 +46,6 @@ export default defineComponent({
   emits: ["update:modelValue"],
   data() {
     return {
-      uniqueListId: nanoid(),
       fetchedPlayers: [] as player[],
       selected: {} as player,
     };
@@ -81,6 +83,10 @@ export default defineComponent({
     },
     exactPlayers() {
       this.fetchPlayers();
+    },
+    modelValue(player: player) {
+      this.selected =
+        this.fetchedPlayers.find((p) => p._id === player._id) ?? ({} as player);
     },
   },
 });

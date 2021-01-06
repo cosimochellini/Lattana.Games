@@ -1,6 +1,9 @@
 <template>
-  <!-- This is an example component -->
   <div class="max-w-xl md:max-w-4xl px-4 py-4 mx-auto">
+    <div class="font-semibold my-4">
+      <label>Giocatore corrente</label>
+      <user-autocomplete v-model="currentPlayer" class="block px-2 py-1" />
+    </div>
     <h2 class="font-semibold">Statistiche 📊</h2>
     <div
       class="grid grid-flow-row gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-5"
@@ -91,29 +94,24 @@ import { getPlayer } from "@/services/authService";
 import { sanityTypes } from "@/constants/roleConstants";
 import { percentageFormatter } from "@/utils/formatters";
 import { player, trumpMatchPlayer } from "@/types/sanity";
-import { notificationService } from "@/services/notificationService";
+import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { Mate, TrumpStats } from "@/utils/classes/trumpMatch/trumpStats";
 import { ConditionBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
-
-const playerQuery = new QueryBuilder(sanityTypes.player);
 
 const matchesQuery = new QueryBuilder(sanityTypes.trumpMatchPlayer)
   .select("..., player ->, trumpMatch -> {..., players[] -> {...,player -> } }")
   .freeze();
 
 export default defineComponent({
+  components: { UserAutocomplete },
   data() {
     return {
-      players: [] as player[],
       matches: [] as trumpMatchPlayer[],
-      currentPlayer: getPlayer() as player,
+      currentPlayer: {} as player,
     };
   },
   mounted() {
-    playerQuery
-      .fetch<player[]>()
-      .then((players) => (this.players = players))
-      .catch(notificationService.danger);
+    this.currentPlayer = getPlayer() as player;
 
     this.loadMatches();
   },
@@ -121,7 +119,6 @@ export default defineComponent({
     urlFor,
     percentageFormatter,
     loadMatches() {
-      this.stats.wonMatches.length;
       matchesQuery
         .where(
           new ConditionBuilder("player._ref == $playerId").params({
@@ -132,12 +129,21 @@ export default defineComponent({
         .then((matches) => (this.matches = matches));
     },
   },
+  watch: {
+    currentPlayer: {
+      handler() {
+        this.loadMatches();
+      },
+      deep: true,
+    },
+  },
   computed: {
     stats(): TrumpStats {
       return new TrumpStats(this.matches, this.currentPlayer);
     },
     statistics(): { message: string; value: string }[] {
       const { matches, wonMatches, lostMatches, ratio } = this.stats;
+      const { callingMatchesRatio } = this.stats;
       const { penaltyPoints, callingStats, fullscoreMatches } = this.stats;
       const { mediaScore } = callingStats;
 
@@ -154,15 +160,11 @@ export default defineComponent({
         },
         {
           message: "partite chiamate",
-          value: `${percentageFormatter(
-            callingStats.matches.length / matches.length
-          )} %`,
+          value: `${percentageFormatter(callingMatchesRatio)} %`,
         },
         {
           message: "chiamate vittoriose",
-          value: `${percentageFormatter(
-            callingStats.wonMatches.length / callingStats.matches.length
-          )} %`,
+          value: `${percentageFormatter(callingStats.ratio)} %`,
         },
         {
           message: "media punteggio chiamato",
