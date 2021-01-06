@@ -42,3 +42,19 @@ export const saveNewMatch = async (match: trumpMatch) => {
 
   return result;
 };
+
+export const deleteExistingMatch = async (match: trumpMatch) => {
+  await sanityClient
+    .patch(match._id)
+    .set({ players: [] })
+    .commit();
+
+  const playersPromises =
+    match.players?.map((p) => sanityClient.delete(p._id)) ?? [];
+
+  await Promise.all(playersPromises);
+
+  await sanityClient.delete(match._id);
+
+  return true;
+};
