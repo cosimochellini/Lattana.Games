@@ -58,10 +58,10 @@ import { trumpMatch } from "@/types/sanity";
 import { dayFormatter } from "@/utils/formatters";
 import { defineComponent, onMounted, ref } from "vue";
 import { sanityTypes } from "@/constants/roleConstants";
+import { deleteExistingMatch } from "@/services/matchService";
 import { notificationService } from "@/services/notificationService";
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { OrderBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
-import { deleteExistingMatch } from "@/services/matchService";
 
 const matchesQuery = new QueryBuilder(sanityTypes.trumpMatch)
   .select(

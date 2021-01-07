@@ -1,8 +1,8 @@
-import { nanoid } from "nanoid";
 import { Dictionary } from "@/types/base";
 import { sanityTypes } from "@/constants/roleConstants";
 import { readOnlySanityClient, sanityClient } from "@/istances/sanity";
 import { QueryableParam, sanityEntity, sanityReference } from "@/types/base";
+import { uuid } from "./uuid";
 
 export const contains = (param: string) => `*${param}*`;
 
@@ -16,7 +16,7 @@ export const reference = <T extends sanityEntity>({
 
 export const referenceWithKey = ({ _id }: { _id: string }) => ({
   _ref: _id,
-  _key: nanoid(),
+  _key: uuid(),
 });
 
 type Freezable<T> = { value: T; freezed?: boolean };

@@ -1,4 +1,4 @@
-import { nanoid } from "nanoid";
+import { uuid } from "@/utils/uuid";
 import { sanityDocument } from "@/types/base";
 import { sanityClient } from "@/istances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
@@ -10,7 +10,7 @@ export const saveNewMatch = async (match: trumpMatch) => {
     throw new Error("incorrect number of players");
 
   const matchToCreate = {
-    _id: nanoid(),
+    _id: uuid(),
     _type: sanityTypes.trumpMatch,
     matchDate: match.matchDate,
     startingScore: match.startingScore,
@@ -22,8 +22,8 @@ export const saveNewMatch = async (match: trumpMatch) => {
 
   const playersPromises = match.players.map((p) =>
     sanityClient.create({
-      _id: nanoid(),
-      _key: nanoid(),
+      _id: uuid(),
+      _key: uuid(),
       _type: sanityTypes.trumpMatchPlayer,
       win: p.win,
       penaltyPoint: p.penaltyPoint,
