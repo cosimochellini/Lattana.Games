@@ -3,46 +3,43 @@
     <p>Inserisci nuova partita di briscola in 5</p>
     <form @submit.prevent="saveMatch" class="flex flex-col items-center">
       <trump-match-player
-        class="md:w-1/4 w-full"
+        class="sm:w-4/5 md:w-1/2 w-full"
         :exclutedPlayers="allPlayers"
         label="Giocatore 1"
         v-model="players.player1"
       />
       <trump-match-player
-        class="md:w-1/4 w-full"
+        class="sm:w-4/5 md:w-1/2 w-full"
         :exclutedPlayers="allPlayers"
         label="Giocatore 2"
         v-model="players.player2"
       />
       <trump-match-player
-        class="md:w-1/4 w-full"
+        class="sm:w-4/5 md:w-1/2 w-full"
         :exclutedPlayers="allPlayers"
         label="Giocatore 3"
         v-model="players.player3"
       />
       <trump-match-player
-        class="md:w-1/4 w-full"
+        class="sm:w-4/5 md:w-1/2 w-full"
         :exclutedPlayers="allPlayers"
         label="Giocatore 4"
         v-model="players.player4"
       />
       <trump-match-player
-        class="md:w-1/4 w-full"
+        class="sm:w-4/5 md:w-1/2 w-full"
         :exclutedPlayers="allPlayers"
         label="Giocatore 5"
         v-model="players.player5"
       />
       <div
-        class="border-4 border-blue-500 border-opacity-50 rounded-md m-2 flex flex-col items-stretch justify-between md:w-1/4 w-full"
+        class="border-4 border-blue-500 border-opacity-50 rounded-md m-2 p-4 flex flex-col items-stretch justify-between sm:w-4/5 md:w-1/2 w-full"
       >
-        <user-autocomplete
-          class="m-3"
-          :exactPlayers="allPlayers"
-          v-model="callingPlayer"
-        />
+        <label> Giocatore chiamate</label>
+        <user-autocomplete :exactPlayers="allPlayers" v-model="callingPlayer" />
       </div>
       <div
-        class="border-4 border-blue-500 border-opacity-50 rounded-md m-2 flex flex-col items-stretch justify-between md:w-1/4 w-full"
+        class="border-4 border-blue-500 border-opacity-50 rounded-md m-2 flex flex-col items-stretch justify-between sm:w-4/5 md:w-1/2 w-full"
       >
         <div class="m-2 flex justify-between">
           <label for="initial points"> punteggio chiamato</label>
@@ -101,10 +98,7 @@ export default defineComponent({
       finalScore: 0,
     };
   },
-  mounted() {
-    (window as any).pippo = () =>
-      notificationService.success("salvataggio eseguito");
-  },
+  mounted() {},
   methods: {
     async saveMatch() {
       try {
