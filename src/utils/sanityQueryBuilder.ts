@@ -1,6 +1,6 @@
 import { Dictionary } from "@/types/base";
+import { sanityClient } from "@/istances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
-import { readOnlySanityClient, sanityClient } from "@/istances/sanity";
 import { QueryableParam, sanityEntity, sanityReference } from "@/types/base";
 import { uuid } from "./uuid";
 
@@ -89,7 +89,7 @@ export class QueryBuilder {
   }
 
   public fetch<T>(useCdn: boolean = true) {
-    const client = useCdn ? readOnlySanityClient : sanityClient;
+    const client = useCdn ? sanityClient : sanityClient;
 
     const params = this._params.reduce((x, y) => ({ ...x, ...y.value }), {});
 
