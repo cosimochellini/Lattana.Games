@@ -1,6 +1,6 @@
 import { uuid } from "@/utils/uuid";
 import { sanityDocument } from "@/types/base";
-import { sanityClient } from "@/istances/sanity";
+import { sanityClient } from "@/instances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
 import { trumpMatch, trumpMatchPlayer } from "@/types/sanity";
 import { reference, referenceWithKey } from "@/utils/sanityQueryBuilder";

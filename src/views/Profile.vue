@@ -113,7 +113,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { player } from "@/types/sanity";
-import { urlFor } from "@/istances/sanity";
+import { urlFor } from "@/instances/sanity";
 import { getPlayer } from "@/services/authService";
 import { PhotoTaker } from "@/services/photoTakerService";
 

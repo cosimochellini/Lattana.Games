@@ -88,7 +88,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { urlFor } from "@/istances/sanity";
+import { urlFor } from "@/instances/sanity";
 import { byNumber, byValue } from "sort-es";
 import { getPlayer } from "@/services/authService";
 import { sanityTypes } from "@/constants/roleConstants";
@@ -144,7 +144,7 @@ export default defineComponent({
     statistics(): { message: string; value: string }[] {
       const { matches, wonMatches, lostMatches, ratio } = this.stats;
       const { callingMatchesRatio } = this.stats;
-      const { penaltyPoints, callingStats, fullscoreMatches } = this.stats;
+      const { penaltyPoints, callingStats, fullScoreMatches } = this.stats;
       const { mediaScore } = callingStats;
 
       return [
@@ -153,7 +153,7 @@ export default defineComponent({
         { message: "sconfitte", value: lostMatches.length.toString() },
         { message: "vittorie", value: `${percentageFormatter(ratio)} %` },
         { message: "penalità", value: penaltyPoints.length.toString() },
-        { message: "partite 120", value: fullscoreMatches.length.toString() },
+        { message: "partite 120", value: fullScoreMatches.length.toString() },
         {
           message: "partite chiamate",
           value: callingStats.matches.length.toString(),

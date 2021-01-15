@@ -39,13 +39,7 @@ const isAuthorized = (
   return false;
 };
 
-const isLogged = (player: player | null = null) => {
-  if (player === null) {
-    player = getPlayer();
-  }
-
-  return player !== null;
-};
+const isLogged = (player: player | null = getPlayer()) => player !== null;
 
 const setPlayer = (player: player | null) => {
   localStorage.setItem(LS_PLAYER_KEY, JSON.stringify(player));

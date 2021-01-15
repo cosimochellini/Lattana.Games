@@ -3,7 +3,7 @@
     <label v-show="label" class="mb-4"> {{ label }} </label>
     <user-autocomplete
       class="w-full"
-      :exclutedPlayers="exclutedPlayers"
+      :excludedPlayers="excludedPlayers"
       v-model="match.player"
     />
     <div class="flex flex-row">
@@ -33,7 +33,7 @@ export default defineComponent({
       type: String,
       default: () => null,
     },
-    exclutedPlayers: {
+    excludedPlayers: {
       type: Array as PropType<player[]>,
       default: () => [] as player[],
     },

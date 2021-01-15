@@ -17,7 +17,7 @@ export class TrumpStats {
   private _lostMatches: trumpMatchPlayer[] = [];
   private _penaltyPoints: trumpMatchPlayer[] = [];
   private _callingMatches: trumpMatchPlayer[] = [];
-  private _fullscoreMatches: trumpMatchPlayer[] = [];
+  private _fullScoreMatches: trumpMatchPlayer[] = [];
   private _callingStats: TrumpStats | null = null;
   private _mates: Mate[] = [];
 
@@ -96,13 +96,13 @@ export class TrumpStats {
     return this._callingStats;
   }
 
-  public get fullscoreMatches() {
-    if (!this._fullscoreMatches.length)
+  public get fullScoreMatches() {
+    if (!this._fullScoreMatches.length)
       for (const match of this.matches)
         if (match.trumpMatch.startingScore === 120)
-          this._fullscoreMatches.push(match);
+          this._fullScoreMatches.push(match);
 
-    return this._fullscoreMatches;
+    return this._fullScoreMatches;
   }
 
   public get ratio() {

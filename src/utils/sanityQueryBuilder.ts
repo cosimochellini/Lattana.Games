@@ -1,5 +1,5 @@
 import { Dictionary } from "@/types/base";
-import { sanityClient } from "@/istances/sanity";
+import { sanityClient } from "@/instances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
 import { QueryableParam, sanityEntity, sanityReference } from "@/types/base";
 import { uuid } from "./uuid";
@@ -95,7 +95,7 @@ export class QueryBuilder {
 
     const query = this.build();
 
-    if (this._freezed) this.cleanUnfreezed();
+    if (this._freezed) this.cleanUnFreezed();
 
     return client.fetch<T>(query, params);
   }
@@ -136,7 +136,7 @@ export class QueryBuilder {
     return `${where} {${select}} ${orderBy} ${pagination}`.trim();
   }
 
-  private cleanUnfreezed(): void {
+  private cleanUnFreezed(): void {
     QueryBuilder.filterFreezed(this._conditions);
     QueryBuilder.filterFreezed(this._params);
     QueryBuilder.filterFreezed(this._select);
@@ -222,20 +222,20 @@ export class ConditionBuilder {
 }
 
 export class OrderBuilder {
-  private _ordes: Order[] = [];
+  private _orders: Order[] = [];
 
   constructor(prop: string, desc: boolean = false) {
-    this._ordes.push({ prop, desc });
+    this._orders.push({ prop, desc });
   }
 
   then(condition: OrderBuilder): OrderBuilder {
-    this._ordes = [...this._ordes, ...condition.expose()];
+    this._orders = [...this._orders, ...condition.expose()];
 
     return this;
   }
 
   expose(): Order[] {
-    return this._ordes;
+    return this._orders;
   }
 }
 

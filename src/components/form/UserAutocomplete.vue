@@ -1,11 +1,7 @@
 <template>
   <select v-model="selected" @change="emitChanges">
     <option disabled :value="{}">seleziona giocatore</option>
-    <option
-      v-for="player in fetchedPlayers"
-      :key="player._id"
-      :value="player"
-    >
+    <option v-for="player in fetchedPlayers" :key="player._id" :value="player">
       {{ player.name }} {{ player.surname }}
     </option>
   </select>
@@ -30,7 +26,7 @@ const playerQuery = new QueryBuilder(sanityTypes.player)
 export default defineComponent({
   name: "UserAutocomplete",
   props: {
-    exclutedPlayers: {
+    excludedPlayers: {
       type: Array as PropType<player[]>,
       default: () => [] as player[],
     },
@@ -40,7 +36,7 @@ export default defineComponent({
     },
     exactPlayers: {
       type: Array as PropType<player[]>,
-      defalut: () => null,
+      default: () => null,
     },
   },
   emits: ["update:modelValue"],
@@ -63,7 +59,7 @@ export default defineComponent({
       playerQuery
         .where(
           new ConditionBuilder("_id in $excluded")
-            .params({ excluded: this.exclutedPlayers.map((x) => x._id) })
+            .params({ excluded: this.excludedPlayers.map((x) => x._id) })
             .optional()
             .reverse()
         )
@@ -78,7 +74,7 @@ export default defineComponent({
     search() {
       this.fetchPlayers();
     },
-    exclutedPlayers() {
+    excludedPlayers() {
       this.fetchPlayers();
     },
     exactPlayers() {
@@ -91,6 +87,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style>
-</style>

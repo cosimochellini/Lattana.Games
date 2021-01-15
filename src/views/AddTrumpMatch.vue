@@ -1,34 +1,34 @@
 <template>
-  <div class="containter m-auto p-4">
+  <div class="container m-auto p-4">
     <p>Inserisci nuova partita di briscola in 5</p>
     <form @submit.prevent="saveMatch" class="flex flex-col items-center">
       <trump-match-player
         class="sm:w-4/5 md:w-1/2 w-full"
-        :exclutedPlayers="allPlayers"
+        :excludedPlayers="allPlayers"
         label="Giocatore 1"
         v-model="players.player1"
       />
       <trump-match-player
         class="sm:w-4/5 md:w-1/2 w-full"
-        :exclutedPlayers="allPlayers"
+        :excludedPlayers="allPlayers"
         label="Giocatore 2"
         v-model="players.player2"
       />
       <trump-match-player
         class="sm:w-4/5 md:w-1/2 w-full"
-        :exclutedPlayers="allPlayers"
+        :excludedPlayers="allPlayers"
         label="Giocatore 3"
         v-model="players.player3"
       />
       <trump-match-player
         class="sm:w-4/5 md:w-1/2 w-full"
-        :exclutedPlayers="allPlayers"
+        :excludedPlayers="allPlayers"
         label="Giocatore 4"
         v-model="players.player4"
       />
       <trump-match-player
         class="sm:w-4/5 md:w-1/2 w-full"
-        :exclutedPlayers="allPlayers"
+        :excludedPlayers="allPlayers"
         label="Giocatore 5"
         v-model="players.player5"
       />

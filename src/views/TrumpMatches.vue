@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import { urlFor } from "@/istances/sanity";
+import { urlFor } from "@/instances/sanity";
 import { trumpMatch } from "@/types/sanity";
 import { dayFormatter } from "@/utils/formatters";
 import { defineComponent, onMounted, ref } from "vue";
