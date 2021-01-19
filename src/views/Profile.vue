@@ -1,7 +1,6 @@
 <template>
   <div>
     <div v-show="false">
-      Profile
       <input type="file" ref="input" @change="load" />
       <img ref="image" />
     </div>
@@ -22,6 +21,7 @@
 
           <h1 class="text-3xl font-bold pt-8 lg:pt-0">
             {{ currentPlayer.name }} {{ currentPlayer.surname }}
+            {{ $t("message") }}
           </h1>
           <div
             class="mx-auto lg:mx-0 w-4/5 pt-3 border-b-2 border-green-500 opacity-25"
@@ -133,7 +133,7 @@ export default defineComponent({
   },
   mounted() {
     const { input, image } = this.$refs;
-    console.log({ ...this.currentPlayer });
+
     this.imageService = new PhotoTaker(
       input as HTMLInputElement,
       image as HTMLImageElement

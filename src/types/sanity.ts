@@ -1,6 +1,24 @@
 import { sanityEntity } from "./base";
-import { roleConstants } from "@/constants/roleConstants";
+import { roleConstants, secretHitlerRole } from "@/constants/roleConstants";
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
+
+export interface IMatch<
+  TMatch extends IMatch<TMatch, TPlayer>,
+  TPlayer extends IMatchPlayer<TMatch, TPlayer>
+> extends sanityEntity {
+  matchDate: Date;
+  players: TPlayer[];
+}
+
+export interface IMatchPlayer<
+  TMatch extends IMatch<TMatch, TMatchPlayer>,
+  TMatchPlayer extends IMatchPlayer<TMatch, TMatchPlayer>
+> extends sanityEntity {
+  player: player;
+  win: boolean;
+  penaltyPoint: boolean;
+  match: TMatch;
+}
 
 export interface player extends sanityEntity {
   name: string;
@@ -13,17 +31,21 @@ export interface player extends sanityEntity {
   profileImage: SanityImageSource;
 }
 
-export interface trumpMatchPlayer extends sanityEntity {
-  player: player;
-  trumpMatch: trumpMatch;
-  win: boolean;
-  penaltyPoint: boolean;
-}
+export interface trumpMatchPlayer
+  extends IMatchPlayer<trumpMatch, trumpMatchPlayer> {}
 
-export interface trumpMatch extends sanityEntity {
-  matchDate: Date;
+export interface trumpMatch extends IMatch<trumpMatch, trumpMatchPlayer> {
   startingScore: number;
   finalScore: number;
   callingPlayer: player;
-  players: trumpMatchPlayer[];
+}
+
+export interface secretHitlerMatchPlayer
+  extends IMatchPlayer<secretHitlerMatch, secretHitlerMatchPlayer> {
+  role: secretHitlerRole;
+}
+
+export interface secretHitlerMatch
+  extends IMatch<secretHitlerMatch, secretHitlerMatchPlayer> {
+  winningRole: secretHitlerRole;
 }

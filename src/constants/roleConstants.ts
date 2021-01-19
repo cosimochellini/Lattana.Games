@@ -12,3 +12,9 @@ export enum sanityTypes {
   trumpMatch = "trumpMatch",
   trumpMatchPlayer = "trumpMatchPlayer",
 }
+
+export enum secretHitlerRole {
+  fascist = "fascist",
+  hitler = "hitler",
+  liberal = "liberal",
+}

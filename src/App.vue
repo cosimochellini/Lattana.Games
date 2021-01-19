@@ -4,7 +4,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { useI18n } from "vue-i18n";
+import { useRouter } from "vue-router";
+import { defineComponent, ref, watch } from "vue";
 import Navbar from "@/components/base/Navbar.vue";
 import { isAuthorized } from "./services/authService";
 
@@ -16,6 +18,34 @@ export default defineComponent({
     return {
       isAuthorized: isAuthorized(),
     };
+  },
+  setup() {
+    const router = useRouter();
+    const { locale } = useI18n({ useScope: "global" });
+    /**
+     * select locale value for language select form
+     *
+     * If you use the vue-i18n composer `locale` property directly, it will be re-rendering component when this property is changed,
+     * before dynamic import was used to asynchronously load and apply locale messages
+     * To avoid this, use the anoter locale reactive value.
+     */
+    const currentLocale = ref(locale.value);
+    // sync to switch locale from router locale path
+    watch(router.currentRoute, (route) => {
+      currentLocale.value = route.params.locale as string;
+    });
+    /**
+     * when change the locale, go to locale route
+     *
+     * when the changes are detected, load the locale message and set the language via vue-router navigation guard.
+     * change the vue-i18n locale too.
+     */
+    watch(currentLocale, (locale) => {
+      router.push({
+        name: router.currentRoute.value.name as string,
+        params: { locale },
+      });
+    });
   },
   mounted() {},
   watch: {

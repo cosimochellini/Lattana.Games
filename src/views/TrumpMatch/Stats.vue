@@ -91,11 +91,12 @@ import { defineComponent } from "vue";
 import { urlFor } from "@/instances/sanity";
 import { byNumber, byValue } from "sort-es";
 import { getPlayer } from "@/services/authService";
+import { Mate } from "@/utils/classes/stats/baseStats";
 import { sanityTypes } from "@/constants/roleConstants";
 import { percentageFormatter } from "@/utils/formatters";
 import { player, trumpMatchPlayer } from "@/types/sanity";
+import { TrumpStats } from "@/utils/classes/stats/trumpMatchStats";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
-import { Mate, TrumpStats } from "@/utils/classes/trumpMatch/trumpStats";
 import { ConditionBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
 
 const matchesQuery = new QueryBuilder(sanityTypes.trumpMatchPlayer)

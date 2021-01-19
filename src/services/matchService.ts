@@ -28,7 +28,7 @@ export const saveNewMatch = async (match: trumpMatch) => {
       win: p.win,
       penaltyPoint: p.penaltyPoint,
       player: reference(p.player),
-      trumpMatch: reference(result),
+      match: reference(result),
     } as sanityDocument<trumpMatchPlayer>)
   );
 

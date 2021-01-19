@@ -75,7 +75,7 @@
               <router-link
                 v-for="(route, index) in navbarRoutes"
                 :key="route.route"
-                :to="route.route"
+                :to="{ name: route.route, params: { locale } }"
                 :class="getDesktopMenuClass(route.route, index)"
               >
                 {{ route.name }}
@@ -129,7 +129,7 @@
                 <router-link
                   v-for="route in profileRoutes"
                   :key="route.route"
-                  :to="route.route"
+                  :to="{ name: route.route, params: { locale } }"
                   class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                   role="menuitem"
                 >
@@ -156,7 +156,7 @@
         <router-link
           v-for="route in navbarRoutes"
           :key="route.route"
-          :to="route.route"
+          :to="{ name: route.route, params: { locale } }"
           class="block px-3 py-2 rounded-md text-base font-medium focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out text-gray-300 hover:text-white hover:bg-gray-700"
         >
           {{ route.name }}
@@ -181,13 +181,13 @@ export default defineComponent({
       },
       player: getPlayer(),
       navbarRoutes: [
-        { name: "Nuovo match", route: "/add-trump" },
-        { name: "Storico", route: "/matches" },
-        { name: "Statistiche", route: "/trumpMatch/stats" },
+        { name: "Nuovo match", route: "addTrump" },
+        { name: "Storico", route: "matches" },
+        { name: "Statistiche", route: "TrumpMatchesStats" },
       ],
       profileRoutes: [
-        { name: "Your Profile", route: "/profile" },
-        { name: "Logout", route: "/log-out" },
+        { name: "Your Profile", route: "profile" },
+        { name: "Logout", route: "logout" },
       ],
     };
   },
@@ -201,20 +201,16 @@ export default defineComponent({
       setTimeout(() => (this.state.menuOpen = false), 2000);
     },
     getDesktopMenuClass(route: string, index: number): string {
-      let classes =
-        "px-3 py-2 rounded-md text-sm font-medium leading-5 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out";
+      const classes = [
+        "px-3 py-2 rounded-md text-sm font-medium leading-5 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out",
+      ];
 
-      if (this.$route.path === route) {
-        classes = `${classes} text-white bg-gray-900`;
-      } else {
-        classes = `${classes} text-gray-300 hover:text-white hover:bg-gray-700`;
-      }
+      if (this.$route.path === route) classes.push(`text-white bg-gray-900`);
+      else classes.push(`text-gray-300 hover:text-white hover:bg-gray-700`);
 
-      if (index === 0) {
-        classes = `${classes} ml-4`;
-      }
+      if (index === 0) classes.push(`ml-4`);
 
-      return classes;
+      return classes.join(" ");
     },
   },
   computed: {
@@ -225,6 +221,9 @@ export default defineComponent({
           .width(200) //todo ottimizzare l'immagine
           .url() ?? ""
       );
+    },
+    locale(): string {
+      return this.$i18n.locale;
     },
   },
 });
