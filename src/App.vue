@@ -1,5 +1,4 @@
 <template>
-  <navbar v-if="isAuthorized" />
   <router-view />
 </template>
 
@@ -7,18 +6,8 @@
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { defineComponent, ref, watch } from "vue";
-import Navbar from "@/components/base/Navbar.vue";
-import { isAuthorized } from "./services/authService";
 
 export default defineComponent({
-  components: {
-    Navbar,
-  },
-  data() {
-    return {
-      isAuthorized: isAuthorized(),
-    };
-  },
   setup() {
     const router = useRouter();
     const { locale } = useI18n({ useScope: "global" });
@@ -48,14 +37,6 @@ export default defineComponent({
     });
   },
   mounted() {},
-  watch: {
-    $route: {
-      handler() {
-        this.isAuthorized = isAuthorized();
-      },
-      deep: true,
-    },
-  },
 });
 </script>
 

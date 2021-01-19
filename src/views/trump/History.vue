@@ -11,7 +11,6 @@
       <div>punteggio iniziale : {{ match.startingScore }}</div>
       <div>punteggio finale : {{ match.finalScore }}</div>
       <hr class="my-2" />
-      {{ $t("message") }}
       <div class="flex flex-row items-center justify-around">
         Giocatori:
         <span v-for="p in match.players" :key="p._id" class="ml-1">

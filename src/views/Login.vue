@@ -74,6 +74,7 @@ export default defineComponent({
       }
     },
   },
+  mounted() {},
 });
 </script>
 

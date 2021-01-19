@@ -1,69 +1,71 @@
 import { isAuthorized } from "@/services/authService";
+import { h } from "vue";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import {
   DEFAULT_LOCALE,
-  setI18nLanguage,
   SUPPORT_LOCALES,
+  setI18nLanguage,
   loadLocaleMessages,
 } from "./i18n";
 
 const routes: RouteRecordRaw[] = [
   {
-    path: "/",
-    redirect: { path: "/it/matches" },
+    path: "",
+    redirect: { name: "trumpNew", params: { locale: DEFAULT_LOCALE } },
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "NotFound",
+    redirect: { name: "trumpNew", params: { locale: DEFAULT_LOCALE } },
   },
   {
     path: "/:locale",
     name: "root",
-    redirect: { path: "/it/matches" },
-  },
-  {
-    path: "/:locale/login",
-    name: "login",
-    component: () => import("../views/Login.vue"),
-  },
-  {
-    path: "/:locale/log-out",
-    name: "logout",
-    component: () => import("../views/Logout.vue"),
-  },
-  {
-    path: "/:locale/add-trump",
-    name: "addTrump",
-    component: () => import("../views/AddTrumpMatch.vue"),
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/:locale/matches",
-    name: "matches",
-    component: () => import("../views/TrumpMatches.vue"),
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/:locale/profile",
-    name: "profile",
-    component: () => import("../views/Profile.vue"),
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/:locale/trumpMatch",
-    name: "trumpMatch",
-    component: () => import("../views/TrumpMatch/Stats.vue"),
-
+    component: () => import("../views/layouts/DefaultLayout.vue"),
     children: [
       {
-        path: "stats",
-        name: "TrumpMatchesStats",
-        component: () => import("../views/TrumpMatch/Stats.vue"),
+        path: "trump",
+        name: "trump",
+        component: () => import("../views/trump/Index.vue"),
+        children: [
+          {
+            path: "new",
+            name: "trumpNew",
+            component: () => import("../views/trump/New.vue"),
+            meta: { requiresAuth: true },
+          },
+          {
+            path: "history",
+            name: "trumpHistory",
+            component: () => import("../views/trump/History.vue"),
+            meta: { requiresAuth: true },
+          },
+          {
+            path: "stats",
+            name: "trumpStats",
+            component: () => import("../views/trump/Stats.vue"),
+
+            meta: { requiresAuth: true },
+          },
+        ],
+      },
+      {
+        path: "login",
+        name: "login",
+        component: () => import("../views/Login.vue"),
+      },
+      {
+        path: "logout",
+        name: "logout",
+        component: () => import("../views/Logout.vue"),
+      },
+      {
+        path: "profile",
+        name: "profile",
+        component: () => import("../views/Profile.vue"),
+        meta: { requiresAuth: true },
       },
     ],
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/:catchAll(.*)",
-    redirect() {
-      return "/it/";
-    },
   },
 ];
 
@@ -80,7 +82,7 @@ export function setupRouter(i18n: any) {
   router.beforeEach(async (to, from, next) => {
     const paramsLocale = to.params.locale as string;
 
-    if (to.meta.requiresAuth && !isAuthorized()) return { path: "/login" };
+    if (to.meta.requiresAuth && !isAuthorized()) next({ path: "/it/login" });
 
     // use locale if paramsLocale is not in SUPPORT_LOCALES
     if (!SUPPORT_LOCALES.includes(paramsLocale)) {
@@ -91,7 +93,6 @@ export function setupRouter(i18n: any) {
     if (!i18n.global.availableLocales.includes(paramsLocale)) {
       await loadLocaleMessages(i18n, paramsLocale);
     }
-
     // set i18n language
     setI18nLanguage(i18n, paramsLocale);
 

@@ -181,9 +181,9 @@ export default defineComponent({
       },
       player: getPlayer(),
       navbarRoutes: [
-        { name: "Nuovo match", route: "addTrump" },
-        { name: "Storico", route: "matches" },
-        { name: "Statistiche", route: "TrumpMatchesStats" },
+        { name: "Nuovo match", route: "trumpNew" },
+        { name: "Storico", route: "trumpHistory" },
+        { name: "Statistiche", route: "trumpStats" },
       ],
       profileRoutes: [
         { name: "Your Profile", route: "profile" },

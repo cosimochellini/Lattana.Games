@@ -83,7 +83,7 @@ import { notificationService } from "@/services/notificationService";
 
 export default defineComponent({
   components: { TrumpMatchPlayer, UserAutocomplete },
-  name: "AddTrumpMatch",
+  name: "trumpNew",
   data() {
     return {
       players: {

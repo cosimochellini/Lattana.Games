@@ -28,13 +28,17 @@ const isAuthorized = (
   roles: roleConstants[] = [],
   player: player | null = getPlayer()
 ): boolean => {
-  if (player === null) return false;
+  try {
+    if (player === null) return false;
 
-  if (!roles.length) return isLogged(player);
+    if (!roles.length) return isLogged(player);
 
-  if (player.roles.includes(roleConstants.Admin)) return true;
+    if (player.roles.includes(roleConstants.Admin)) return true;
 
-  for (const role of player.roles) if (roles.includes(role)) return true;
+    for (const role of player.roles) if (roles.includes(role)) return true;
+  } catch (error) {
+    return false;
+  }
 
   return false;
 };
