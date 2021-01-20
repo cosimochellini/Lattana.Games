@@ -1,7 +1,7 @@
 <template>
   <div class="w-full">
-    <!-- <section id="bottom-navigation" class="md:hidden block fixed inset-x-0 bottom-0 z-10 bg-white shadow"> // if shown only tablet/mobile-->
-    <section class="block fixed inset-x-0 bottom-0 z-10 bg-white shadow">
+    <div class="mt-14"></div>
+    <section class="fixed inset-x-0 bottom-0 z-10 bg-white shadow">
       <div class="flex justify-between">
         <router-link
           class="w-full focus:text-teal-500 hover:text-teal-500 justify-center inline-block text-center pt-2 pb-1"
@@ -39,11 +39,11 @@ const routes: { game: string; elements: BottonElement[] }[] = [
     elements: [
       {
         name: "cronologia partite",
-        icon: "fas fa-history",
-        route: "history",
+        icon: "history",
+        route: "secretHitlerHistory",
       },
-      { name: "nuova partita", icon: "fas fa-new", route: "history" },
-      { name: "statistiche", icon: "fas fa-stats", route: "history" },
+      { name: "nuova partita", icon: "plus-circle", route: "secretHitlerNew" },
+      { name: "statistiche", icon: "chart-bar", route: "secretHitlerStats" },
     ],
   },
 ];

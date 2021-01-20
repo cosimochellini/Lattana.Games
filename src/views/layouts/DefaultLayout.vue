@@ -9,12 +9,10 @@ import { isAuthorized } from "@/services/authService";
 
 export default {
   components: { Navbar },
-  data() {
-    return { isAuthorized: isAuthorized() };
+  setup() {
+    return {
+      isAuthorized: isAuthorized(),
+    };
   },
-  watch: {},
 };
 </script>
-
-<style>
-</style>

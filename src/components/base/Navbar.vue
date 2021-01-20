@@ -103,16 +103,6 @@
                 />
               </button>
             </div>
-            <!--
-            Profile dropdown panel, show/hide based on dropdown state.
-
-            Entering: "transition ease-out duration-100"
-              From: "transform opacity-0 scale-95"
-              To: "transform opacity-100 scale-100"
-            Leaving: "transition ease-in duration-75"
-              From: "transform opacity-100 scale-100"
-              To: "transform opacity-0 scale-95"
-          -->
             <div
               class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg z-50"
               :class="{
@@ -141,12 +131,6 @@
         </div>
       </div>
     </div>
-
-    <!--
-    Mobile menu, toggle classes based on menu state.
-
-    Menu open: "block", Menu closed: "hidden"
-  -->
     <div
       :class="{
         'hidden sm:hidden': !state.menuOpen,
@@ -181,9 +165,8 @@ export default defineComponent({
       },
       player: getPlayer(),
       navbarRoutes: [
-        { name: "Nuovo match", route: "trumpNew" },
-        { name: "Storico", route: "trumpHistory" },
-        { name: "Statistiche", route: "trumpStats" },
+        { name: "Briscola", route: "trumpNew" },
+        { name: "SecretHitler", route: "secretHitlerNew" },
       ],
       profileRoutes: [
         { name: "Your Profile", route: "profile" },

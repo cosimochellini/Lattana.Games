@@ -11,6 +11,8 @@ export enum sanityTypes {
   playerRole = "playerRole",
   trumpMatch = "trumpMatch",
   trumpMatchPlayer = "trumpMatchPlayer",
+  secretHitlerMatch = "secretHitlerMatch",
+  secretHitlerMatchPlayer = "secretHitlerMatchPlayer",
 }
 
 export enum secretHitlerRole {

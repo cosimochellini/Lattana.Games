@@ -49,6 +49,31 @@ const routes: RouteRecordRaw[] = [
         ],
       },
       {
+        path: "secretHitler",
+        name: "secretHitler",
+        component: () => import("../views/secretHitler/Index.vue"),
+        children: [
+          {
+            path: "new",
+            name: "secretHitlerNew",
+            component: () => import("../views/secretHitler/New.vue"),
+            meta: { requiresAuth: true },
+          },
+          {
+            path: "history",
+            name: "secretHitlerHistory",
+            component: () => import("../views/secretHitler/History.vue"),
+            meta: { requiresAuth: true },
+          },
+          {
+            path: "stats",
+            name: "secretHitlerStats",
+            component: () => import("../views/secretHitler/Stats.vue"),
+            meta: { requiresAuth: true },
+          },
+        ],
+      },
+      {
         path: "login",
         name: "login",
         component: () => import("../views/Login.vue"),

@@ -7,7 +7,8 @@ import {
   PaginationBuilder,
 } from "@/utils/sanityQueryBuilder";
 
-const LS_PLAYER_KEY = "LG_stored_user";
+const LS_PLAYER_KEY = "LG_STORED_USER";
+let cachedPlayer: player | null = null;
 
 const loginQuery = new QueryBuilder(sanityTypes.player)
   .select(`..., 'roles': roles[]->role->name`)
@@ -46,6 +47,7 @@ const isAuthorized = (
 const isLogged = (player: player | null = getPlayer()) => player !== null;
 
 const setPlayer = (player: player | null) => {
+  cachedPlayer = player;
   localStorage.setItem(LS_PLAYER_KEY, JSON.stringify(player));
 
   return player;
@@ -53,7 +55,11 @@ const setPlayer = (player: player | null) => {
 
 const getPlayer = () => {
   try {
-    return JSON.parse(localStorage.getItem(LS_PLAYER_KEY) ?? "") as player;
+    if (cachedPlayer !== null) return cachedPlayer;
+
+    return setPlayer(
+      JSON.parse(localStorage.getItem(LS_PLAYER_KEY) ?? "") as player
+    );
   } catch (error) {
     return setPlayer(null);
   }
