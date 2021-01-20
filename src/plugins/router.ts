@@ -1,5 +1,4 @@
 import { isAuthorized } from "@/services/authService";
-import { h } from "vue";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import {
   DEFAULT_LOCALE,

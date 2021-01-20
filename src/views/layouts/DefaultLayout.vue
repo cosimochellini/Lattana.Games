@@ -12,14 +12,7 @@ export default {
   data() {
     return { isAuthorized: isAuthorized() };
   },
-  watch: {
-    $route: {
-      handler() {
-        this.isAuthorized = isAuthorized();
-      },
-      deep: true,
-    },
-  },
+  watch: {},
 };
 </script>
 

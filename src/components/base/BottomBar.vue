@@ -18,31 +18,35 @@
 </template>
 
 <script lang="ts">
-import { Dictionary } from "@/types/base";
 import { defineComponent } from "vue";
 type BottonElement = { name: string; icon: string; route: string };
 
-const routes: Dictionary<Dictionary<BottonElement>> = {
-  trump: {
-    history: {
-      name: "cronologia partite",
-      icon: "history",
-      route: "trumpHistory",
-    },
-    new: { name: "nuova partita", icon: "plus-circle", route: "trumpNew" },
-    stats: { name: "statistiche", icon: "chart-bar", route: "trumpStats" },
+const routes: { game: string; elements: BottonElement[] }[] = [
+  {
+    game: "trump",
+    elements: [
+      {
+        name: "cronologia partite",
+        icon: "history",
+        route: "trumpHistory",
+      },
+      { name: "nuova partita", icon: "plus-circle", route: "trumpNew" },
+      { name: "statistiche", icon: "chart-bar", route: "trumpStats" },
+    ],
   },
-  secretHitler: {
-    history: {
-      name: "cronologia partite",
-      icon: "fas fa-history",
-      route: "history",
-    },
-    new: { name: "nuova partita", icon: "fas fa-new", route: "history" },
-    stats: { name: "statistiche", icon: "fas fa-stats", route: "history" },
+  {
+    game: "secretHitler",
+    elements: [
+      {
+        name: "cronologia partite",
+        icon: "fas fa-history",
+        route: "history",
+      },
+      { name: "nuova partita", icon: "fas fa-new", route: "history" },
+      { name: "statistiche", icon: "fas fa-stats", route: "history" },
+    ],
   },
-};
-
+];
 export default defineComponent({
   data() {
     return { routes };
@@ -54,8 +58,8 @@ export default defineComponent({
     },
   },
   computed: {
-    currentButtonBar(): Dictionary<BottonElement> {
-      return this.routes[this.game];
+    currentButtonBar(): BottonElement[] {
+      return this.routes.find((r) => r.game == this.game)?.elements ?? [];
     },
   },
 });

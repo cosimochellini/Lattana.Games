@@ -29,10 +29,10 @@ export default defineComponent({
      * when the changes are detected, load the locale message and set the language via vue-router navigation guard.
      * change the vue-i18n locale too.
      */
-    watch(currentLocale, (locale) => {
+    watch(currentLocale, (val) => {
       router.push({
         name: router.currentRoute.value.name as string,
-        params: { locale },
+        params: { locale: val },
       });
     });
   },
