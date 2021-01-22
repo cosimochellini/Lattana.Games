@@ -81,8 +81,7 @@ export default defineComponent({
       this.fetchPlayers();
     },
     modelValue(player: player) {
-      this.selected =
-        this.fetchedPlayers.find((p) => p._id === player._id) ?? ({} as player);
+      this.selected = player;
     },
   },
 });

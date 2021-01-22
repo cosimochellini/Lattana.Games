@@ -8,8 +8,7 @@
       class="bg-gray-100 p-4 max-w-6xl border-4 border-blue-500 border-opacity-50 rounded-md"
     >
       <div>data : {{ dayFormatter(match.matchDate) }}</div>
-      <div>punteggio iniziale : {{ match.startingScore }}</div>
-      <div>punteggio finale : {{ match.finalScore }}</div>
+      <div>partito vittorioso : {{ match.winningRole }}</div>
       <hr class="my-2" />
       <div class="flex flex-row items-center justify-around">
         Giocatori:
@@ -17,23 +16,13 @@
           <img
             :src="image(p.player.profileImage)"
             loading="lazy"
-            class="rounded-full"
+            class="rounded-full border-2"
+            :class="borderColor(p.role)"
             :title="`${p.player.name} ${p.player.surname}`"
           />
         </span>
       </div>
-      <hr class="my-2" />
-      <div class="flex flex-row items-center justify-self-auto">
-        Giocatore chiamante :
-        <span class="ml-1">
-          <img
-            :src="image(match.callingPlayer.profileImage)"
-            loading="lazy"
-            class="rounded-full"
-            :title="`${match.callingPlayer.name} ${match.callingPlayer.surname}`"
-          />
-        </span>
-      </div>
+
       <hr class="my-2" />
       <div class="flex justify-items-center justify-around">
         <button
@@ -56,21 +45,15 @@ import { urlFor } from "@/instances/sanity";
 import { dayFormatter } from "@/utils/formatters";
 import { secretHitlerMatch } from "@/types/sanity";
 import { defineComponent, onMounted, ref } from "vue";
-import { sanityTypes } from "@/constants/roleConstants";
+import { byRole } from "@/utils/sortables/secratHitlerSortables";
 import { notificationService } from "@/services/notificationService";
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { OrderBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
+import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
 import { secretHitlerService } from "@/services/games/secretHitlerService";
 
-const matchesQuery = new QueryBuilder(sanityTypes.secretHitlerMatchPlayer)
-  .select(
-    `
-   _id, 
-  matchDate, 
-  callingPlayer -> {name, surname, profileImage}, 
-  players[] -> {player -> {name, surname, profileImage}, win, _id}
-  `
-  )
+const matchesQuery = new QueryBuilder(sanityTypes.secretHitlerMatch)
+  .select(`...,  players[] -> {..., player -> {name, surname, profileImage}}`)
   .orderBy(new OrderBuilder("matchDate", true));
 
 export default defineComponent({
@@ -80,11 +63,15 @@ export default defineComponent({
     const loadMatched = () => {
       matchesQuery
         .fetch<secretHitlerMatch[]>()
-        .then((data) => (matches.value = data))
+        .then((responseMatches) => {
+          responseMatches.forEach((m) => m.players.sort(byRole));
+          matches.value = responseMatches;
+        })
         .catch(notificationService.danger);
     };
 
-    const image = (img: SanityImageSource) => urlFor(img).width(40);
+    const image = (img: SanityImageSource) => urlFor(img).width(80);
+
     const deleteMatch = (match: secretHitlerMatch) =>
       secretHitlerService
         .deleteExistingMatch(match)
@@ -94,7 +81,24 @@ export default defineComponent({
 
     onMounted(loadMatched);
 
-    return { matches, loadMatched, image, dayFormatter, deleteMatch };
+    const borderColor = (role: secretHitlerRole) => {
+      switch (role) {
+        case secretHitlerRole.fascist:
+          return "border-red-500";
+        case secretHitlerRole.liberal:
+          return "border-blue-500";
+        case secretHitlerRole.hitler:
+          return "border-black";
+      }
+    };
+    return {
+      matches,
+      loadMatched,
+      image,
+      dayFormatter,
+      deleteMatch,
+      borderColor,
+    };
   },
 });
 </script>

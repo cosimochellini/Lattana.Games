@@ -1,6 +1,6 @@
 <template>
   <div class="container m-auto p-4">
-    <p>Inserisci nuova partita di briscola in 5</p>
+    <p>Inserisci nuova partita di briscola in 5 🃏🃏</p>
     <form @submit.prevent="saveMatch" class="flex flex-col items-center">
       <trump-match-player
         class="sm:w-4/5 md:w-1/2 w-full"
@@ -113,7 +113,9 @@ export default defineComponent({
         trumpService
           .saveNewMatch(match)
           .then(() => notificationService.success("salvataggio eseguito"))
-          .catch(notificationService.danger);
+          .catch(notificationService.danger)
+          .finally(() => this.$router.push({ name: "trumpHistory" }));
+
       } catch (error) {
         notificationService.danger(error);
       }

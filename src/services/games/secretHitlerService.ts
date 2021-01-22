@@ -2,8 +2,8 @@ import { uuid } from "@/utils/uuid";
 import { sanityDocument } from "@/types/base";
 import { sanityClient } from "@/instances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
-import { secretHitlerMatch, secretHitlerMatchPlayer } from "@/types/sanity";
 import { reference, referenceWithKey } from "@/utils/sanityQueryBuilder";
+import { secretHitlerMatch, secretHitlerMatchPlayer } from "@/types/sanity";
 
 export const secretHitlerService = {
   async saveNewMatch(match: secretHitlerMatch) {
@@ -21,7 +21,7 @@ export const secretHitlerService = {
       sanityClient.create({
         _id: uuid(),
         _key: uuid(),
-        _type: sanityTypes.trumpMatchPlayer,
+        _type: sanityTypes.secretHitlerMatchPlayer,
         win: p.win,
         penaltyPoint: p.penaltyPoint,
         player: reference(p.player),
