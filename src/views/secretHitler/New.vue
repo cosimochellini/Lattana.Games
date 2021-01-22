@@ -75,55 +75,39 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { saveNewMatch } from "@/services/matchService";
-import { player, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
+import { secretHitlerRole } from "@/constants/roleConstants";
+import { notificationService } from "@/services/notificationService";
 import TrumpMatchPlayer from "@/components/form/TrumpMatchPlayer.vue";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
-import { notificationService } from "@/services/notificationService";
+import { secretHitlerService } from "@/services/games/secretHitlerService";
+import { secretHitlerMatch, secretHitlerMatchPlayer } from "@/types/sanity";
 
 export default defineComponent({
   components: { TrumpMatchPlayer, UserAutocomplete },
   name: "trumpNew",
   data() {
     return {
-      players: {
-        player1: {} as trumpMatchPlayer,
-        player2: {} as trumpMatchPlayer,
-        player3: {} as trumpMatchPlayer,
-        player4: {} as trumpMatchPlayer,
-        player5: {} as trumpMatchPlayer,
-      },
-      callingPlayer: {} as player,
-      startingScore: 0,
-      finalScore: 0,
+      players: [] as secretHitlerMatchPlayer[],
+      winningRole: secretHitlerRole.liberal,
     };
   },
   mounted() {},
   methods: {
     async saveMatch() {
       try {
-        saveNewMatch({
+        const matchToSave = {
           matchDate: new Date(),
-          startingScore: this.startingScore,
-          finalScore: this.finalScore,
-          callingPlayer: this.callingPlayer,
-          players: this.allMatchPlayers,
-        } as trumpMatch)
+          winningRole: this.winningRole,
+          players: this.players,
+        } as secretHitlerMatch;
+
+        secretHitlerService
+          .saveNewMatch(matchToSave)
           .then(() => notificationService.success("salvataggio eseguito"))
           .catch(notificationService.danger);
       } catch (error) {
         notificationService.danger(error);
       }
-    },
-  },
-  computed: {
-    allMatchPlayers(): trumpMatchPlayer[] {
-      const { player1, player2, player3, player4, player5 } = this.players;
-
-      return [player1, player2, player3, player4, player5];
-    },
-    allPlayers(): player[] {
-      return this.allMatchPlayers.map((x) => x.player).filter((p) => p?._id);
     },
   },
 });

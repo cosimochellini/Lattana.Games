@@ -75,11 +75,11 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { saveNewMatch } from "@/services/matchService";
+import { trumpService } from "@/services/games/trumpService";
+import { notificationService } from "@/services/notificationService";
 import { player, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
 import TrumpMatchPlayer from "@/components/form/TrumpMatchPlayer.vue";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
-import { notificationService } from "@/services/notificationService";
 
 export default defineComponent({
   components: { TrumpMatchPlayer, UserAutocomplete },
@@ -100,15 +100,18 @@ export default defineComponent({
   },
   mounted() {},
   methods: {
-    async saveMatch() {
+    saveMatch() {
       try {
-        saveNewMatch({
+        const match = {
           matchDate: new Date(),
           startingScore: this.startingScore,
           finalScore: this.finalScore,
           callingPlayer: this.callingPlayer,
           players: this.allMatchPlayers,
-        } as trumpMatch)
+        } as trumpMatch;
+
+        trumpService
+          .saveNewMatch(match)
           .then(() => notificationService.success("salvataggio eseguito"))
           .catch(notificationService.danger);
       } catch (error) {

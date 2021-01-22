@@ -53,14 +53,14 @@
 
 <script lang="ts">
 import { urlFor } from "@/instances/sanity";
-import { secretHitlerMatch, trumpMatch } from "@/types/sanity";
 import { dayFormatter } from "@/utils/formatters";
+import { secretHitlerMatch } from "@/types/sanity";
 import { defineComponent, onMounted, ref } from "vue";
 import { sanityTypes } from "@/constants/roleConstants";
-import { deleteExistingMatch } from "@/services/matchService";
 import { notificationService } from "@/services/notificationService";
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { OrderBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
+import { secretHitlerService } from "@/services/games/secretHitlerService";
 
 const matchesQuery = new QueryBuilder(sanityTypes.secretHitlerMatchPlayer)
   .select(
@@ -85,8 +85,9 @@ export default defineComponent({
     };
 
     const image = (img: SanityImageSource) => urlFor(img).width(40);
-    const deleteMatch = (match: trumpMatch) =>
-      deleteExistingMatch(match)
+    const deleteMatch = (match: secretHitlerMatch) =>
+      secretHitlerService
+        .deleteExistingMatch(match)
         .then(() => notificationService.success("eliminazione eseguita"))
         .catch(notificationService.danger)
         .finally(loadMatched);

@@ -57,7 +57,7 @@ import { trumpMatch } from "@/types/sanity";
 import { dayFormatter } from "@/utils/formatters";
 import { defineComponent, onMounted, ref } from "vue";
 import { sanityTypes } from "@/constants/roleConstants";
-import { deleteExistingMatch } from "@/services/matchService";
+import { trumpService } from "@/services/games/trumpService";
 import { notificationService } from "@/services/notificationService";
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { OrderBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
@@ -89,7 +89,8 @@ export default defineComponent({
 
     const image = (img: SanityImageSource) => urlFor(img).width(40);
     const deleteMatch = (match: trumpMatch) =>
-      deleteExistingMatch(match)
+      trumpService
+        .deleteExistingMatch(match)
         .then(() => notificationService.success("eliminazione eseguita"))
         .catch(notificationService.danger)
         .finally(loadMatched);
