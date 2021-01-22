@@ -94,12 +94,12 @@ import { getPlayer } from "@/services/authService";
 import { Mate } from "@/utils/classes/stats/baseStats";
 import { sanityTypes } from "@/constants/roleConstants";
 import { percentageFormatter } from "@/utils/formatters";
-import { player, trumpMatchPlayer } from "@/types/sanity";
-import { TrumpStats } from "@/utils/classes/stats/trumpMatchStats";
+import { player, secretHitlerMatchPlayer } from "@/types/sanity";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { ConditionBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
+import { SecretHitlerStats } from "@/utils/classes/stats/secretHitlerMatchStats";
 
-const matchesQuery = new QueryBuilder(sanityTypes.trumpMatchPlayer)
+const matchesQuery = new QueryBuilder(sanityTypes.secretHitlerMatchPlayer)
   .select("..., player ->, match -> {..., players[] -> {...,player -> } }")
   .freeze();
 
@@ -107,7 +107,7 @@ export default defineComponent({
   components: { UserAutocomplete },
   data() {
     return {
-      matches: [] as trumpMatchPlayer[],
+      matches: [] as secretHitlerMatchPlayer[],
       currentPlayer: {} as player,
     };
   },
@@ -126,7 +126,7 @@ export default defineComponent({
             playerId: this.currentPlayer._id,
           })
         )
-        .fetch<trumpMatchPlayer[]>()
+        .fetch<secretHitlerMatchPlayer[]>()
         .then((matches) => (this.matches = matches));
     },
   },
@@ -139,14 +139,13 @@ export default defineComponent({
     },
   },
   computed: {
-    stats(): TrumpStats {
-      return new TrumpStats(this.matches, this.currentPlayer);
+    stats(): SecretHitlerStats {
+      return new SecretHitlerStats(this.matches, this.currentPlayer);
     },
     statistics(): { message: string; value: string }[] {
       const { matches, wonMatches, lostMatches, ratio } = this.stats;
-      const { callingMatchesRatio } = this.stats;
-      const { penaltyPoints, callingStats, fullScoreMatches } = this.stats;
-      const { mediaScore } = callingStats;
+      const { penaltyPoints, liberalMatches, hitlerMatches } = this.stats;
+      const { fascistMatches } = this.stats;
 
       return [
         { message: "totale partite", value: matches.length.toString() },
@@ -154,22 +153,17 @@ export default defineComponent({
         { message: "sconfitte", value: lostMatches.length.toString() },
         { message: "vittorie", value: `${percentageFormatter(ratio)} %` },
         { message: "penalità", value: penaltyPoints.length.toString() },
-        { message: "partite 120", value: fullScoreMatches.length.toString() },
         {
-          message: "partite chiamate",
-          value: callingStats.matches.length.toString(),
+          message: "partite liberali",
+          value: liberalMatches.length.toString(),
         },
         {
-          message: "partite chiamate",
-          value: `${percentageFormatter(callingMatchesRatio)} %`,
+          message: "partite fasciste",
+          value: fascistMatches.length.toString(),
         },
         {
-          message: "chiamate vittoriose",
-          value: `${percentageFormatter(callingStats.ratio)} %`,
-        },
-        {
-          message: "media punteggio chiamato",
-          value: mediaScore.toFixed(0),
+          message: "partite hitler",
+          value: hitlerMatches.length.toString(),
         },
       ];
     },

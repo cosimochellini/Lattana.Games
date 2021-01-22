@@ -47,8 +47,8 @@ export abstract class BaseStats<
 
     for (const player of plays) {
       const stat = mates[player.player.nickname] ?? { win: 0, lose: 0, player };
-      if (player.win) stat.win = stat.win + 1;
-      else stat.lose = stat.lose + 1;
+      if (player.win) stat.win++;
+      else stat.lose++;
 
       mates[player.player.nickname] = stat;
     }
@@ -68,15 +68,20 @@ export abstract class BaseStats<
   }
 
   public get wonMatches() {
-    if (!this._wonMatches.length) this.loadBaseStats();
+    if (!this._lostMatches.length && !this._wonMatches.length)
+      this.loadBaseStats();
 
     return this._wonMatches;
   }
 
   public get lostMatches() {
-    if (!this._lostMatches.length) this.loadBaseStats();
+    if (!this._lostMatches.length && !this._wonMatches.length)
+      this.loadBaseStats();
 
     return this._lostMatches;
+  }
+  public get ratio() {
+    return BaseStats.Ratio(this.wonMatches, this.matches);
   }
 
   public get penaltyPoints() {
