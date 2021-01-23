@@ -1,11 +1,11 @@
 <template>
   <div
-    class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 lg:max-w-screen-2xl m-auto"
+    class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 lg:max-w-screen-2xl m-auto p-4"
   >
-    <div
+    <article
       v-for="match in matches"
       :key="match._id"
-      class="bg-gray-100 p-4 max-w-6xl border-4 border-blue-500 border-opacity-50 rounded-md"
+      class="base-card"
     >
       <div>data : {{ dayFormatter(match.matchDate) }}</div>
       <div>punteggio iniziale : {{ match.startingScore }}</div>
@@ -37,17 +37,16 @@
       <hr class="my-2" />
       <div class="flex justify-items-center justify-around">
         <button
-          class="px-2 py-1 border-2 bg-red-200 rounded-md w-20"
+          class="px-2 py-1 shadow-sm bg-red-200 rounded-md w-20"
           @click="deleteMatch(match)"
         >
           Delete
         </button>
-        <button class="px-2 py-1 border-2 bg-blue-200 rounded-md w-20">
+        <button class="px-2 py-1 shadow-sm bg-blue-200 rounded-md w-20">
           Edit
         </button>
       </div>
-      <hr class="my-2" />
-    </div>
+    </article>
   </div>
 </template>
 
@@ -63,16 +62,7 @@ import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { OrderBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
 
 const matchesQuery = new QueryBuilder(sanityTypes.trumpMatch)
-  .select(
-    `
-   _id, 
-  matchDate, 
-  startingScore, 
-  finalScore, 
-  callingPlayer -> {name, surname, profileImage}, 
-  players[] -> {player -> {name, surname, profileImage}, win, _id}
-  `
-  )
+  .select(`...,  callingPlayer ->, players[] -> {player ->,...}`)
   .orderBy(new OrderBuilder("matchDate", true));
 
 export default defineComponent({

@@ -2,9 +2,9 @@
   <div class="container m-auto p-4">
     <p>Inserisci nuova partita di secret hitler ☠☠</p>
     <form @submit.prevent="saveMatch" class="flex flex-col items-center">
-      <div class="border-4 border-blue-500 border-opacity-50 rounded-md m-2 p-4 w-full">
+      <div class="base-card w-full mx-2 py-4">
         <label> Ruolo vincitore </label>
-        <select v-model="winningRole" class="w-full">
+        <select v-model="winningRole" class="w-full shadow-md rounded-sm bg-gray-200 p-2">
           <option v-for="role in allRoles" :key="role" :value="role">
             {{ role }}
           </option>
@@ -16,6 +16,7 @@
         :key="player._id"
       >
         <secret-hitler-player
+          class="mx-2 mt-2 bg-gray-400"
           :excludedPlayers="players"
           :label="`Giocatore ${i + 1}`"
           :model-value="player"

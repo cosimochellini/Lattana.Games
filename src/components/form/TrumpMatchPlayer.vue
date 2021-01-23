@@ -1,5 +1,5 @@
 <template>
-  <div class="border-4 border-blue-500 border-opacity-50 rounded-md m-2 p-4">
+  <div class="base-card">
     <label v-show="label" class="mb-4"> {{ label }} </label>
     <user-autocomplete
       class="w-full"

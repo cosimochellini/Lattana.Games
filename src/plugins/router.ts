@@ -10,12 +10,12 @@ import {
 const routes: RouteRecordRaw[] = [
   {
     path: "",
-    redirect: { name: "trumpNew", params: { locale: DEFAULT_LOCALE } },
+    redirect: { name: "trumpHistory", params: { locale: DEFAULT_LOCALE } },
   },
   {
     path: "/:pathMatch(.*)*",
     name: "NotFound",
-    redirect: { name: "trumpNew", params: { locale: DEFAULT_LOCALE } },
+    redirect: { name: "trumpHistory", params: { locale: DEFAULT_LOCALE } },
   },
   {
     path: "/:locale",
@@ -26,25 +26,22 @@ const routes: RouteRecordRaw[] = [
         path: "trump",
         name: "trump",
         component: () => import("../views/trump/Index.vue"),
+        meta: { requiresAuth: true },
         children: [
           {
             path: "new",
             name: "trumpNew",
             component: () => import("../views/trump/New.vue"),
-            meta: { requiresAuth: true },
           },
           {
             path: "history",
             name: "trumpHistory",
             component: () => import("../views/trump/History.vue"),
-            meta: { requiresAuth: true },
           },
           {
             path: "stats",
             name: "trumpStats",
             component: () => import("../views/trump/Stats.vue"),
-
-            meta: { requiresAuth: true },
           },
         ],
       },
@@ -52,24 +49,22 @@ const routes: RouteRecordRaw[] = [
         path: "secretHitler",
         name: "secretHitler",
         component: () => import("../views/secretHitler/Index.vue"),
+        meta: { requiresAuth: true },
         children: [
-          {
-            path: "new",
-            name: "secretHitlerNew",
-            component: () => import("../views/secretHitler/New.vue"),
-            meta: { requiresAuth: true },
-          },
           {
             path: "history",
             name: "secretHitlerHistory",
             component: () => import("../views/secretHitler/History.vue"),
-            meta: { requiresAuth: true },
+          },
+          {
+            path: "new",
+            name: "secretHitlerNew",
+            component: () => import("../views/secretHitler/New.vue"),
           },
           {
             path: "stats",
             name: "secretHitlerStats",
             component: () => import("../views/secretHitler/Stats.vue"),
-            meta: { requiresAuth: true },
           },
         ],
       },

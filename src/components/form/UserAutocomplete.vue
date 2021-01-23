@@ -1,5 +1,5 @@
 <template>
-  <select v-model="selected" @change="emitChanges">
+  <select v-model="selected" @change="emitChanges" class="base-select">
     <option disabled :value="{}">seleziona giocatore</option>
     <option v-for="player in fetchedPlayers" :key="player._id" :value="player">
       {{ player.name }} {{ player.surname }}
@@ -19,7 +19,6 @@ import {
 } from "@/utils/sanityQueryBuilder";
 
 const playerQuery = new QueryBuilder(sanityTypes.player)
-  .select("nickname, profileImage, name, surname, _id")
   .orderBy(new OrderBuilder("name"))
   .freeze();
 

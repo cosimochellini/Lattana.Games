@@ -1,5 +1,5 @@
 <template>
-  <nav class="bg-gray-800">
+  <nav class="bg-gray-800 rounded-b-sm">
     <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
       <div class="relative flex items-center justify-between h-16">
         <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -165,8 +165,8 @@ export default defineComponent({
       },
       player: getPlayer(),
       navbarRoutes: [
-        { name: "Briscola", route: "trumpNew" },
-        { name: "SecretHitler", route: "secretHitlerNew" },
+        { name: "Briscola", route: "trumpHistory" },
+        { name: "SecretHitler", route: "secretHitlerHistory" },
       ],
       profileRoutes: [
         { name: "Your Profile", route: "profile" },

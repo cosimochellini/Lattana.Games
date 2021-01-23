@@ -1,12 +1,8 @@
 <template>
   <div
-    class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 lg:max-w-screen-2xl m-auto"
+    class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 lg:max-w-screen-2xl m-auto p-4"
   >
-    <div
-      v-for="match in matches"
-      :key="match._id"
-      class="bg-gray-100 p-4 max-w-6xl border-4 border-blue-500 border-opacity-50 rounded-md"
-    >
+    <article v-for="match in matches" :key="match._id" class="base-card">
       <div>data : {{ dayFormatter(match.matchDate) }}</div>
       <div>partito vittorioso : {{ match.winningRole }}</div>
       <hr class="my-2" />
@@ -26,17 +22,16 @@
       <hr class="my-2" />
       <div class="flex justify-items-center justify-around">
         <button
-          class="px-2 py-1 border-2 bg-red-200 rounded-md w-20"
+          class="px-2 py-1 shadow-md bg-red-200 rounded-md w-20"
           @click="deleteMatch(match)"
         >
           Delete
         </button>
-        <button class="px-2 py-1 border-2 bg-blue-200 rounded-md w-20">
+        <button class="px-2 py-1 shadow-md bg-blue-200 rounded-md w-20">
           Edit
         </button>
       </div>
-      <hr class="my-2" />
-    </div>
+    </article>
   </div>
 </template>
 
@@ -70,7 +65,7 @@ export default defineComponent({
         .catch(notificationService.danger);
     };
 
-    const image = (img: SanityImageSource) => urlFor(img).width(80);
+    const image = (img: SanityImageSource) => urlFor(img).width(60);
 
     const deleteMatch = (match: secretHitlerMatch) =>
       secretHitlerService
