@@ -1,7 +1,9 @@
 <template>
   <div class="w-full">
     <div class="mt-14"></div>
-    <section class="fixed inset-x-0 bottom-0 z-10 bg-white shadow-md rounded-t-md">
+    <section
+      class="fixed inset-x-0 bottom-0 z-10 bg-white shadow-md rounded-t-md"
+    >
       <div class="flex justify-between">
         <router-link
           class="w-full focus:text-teal-500 hover:text-teal-500 justify-center inline-block text-center pt-2 pb-1"
@@ -26,11 +28,11 @@ const routes: { game: string; elements: BottonElement[] }[] = [
     game: "trump",
     elements: [
       {
-        name: "cronologia partite",
+        name: "cronologia",
         icon: "history",
         route: "trumpHistory",
       },
-      { name: "nuova partita", icon: "plus-circle", route: "trumpNew" },
+      { name: "aggiungi", icon: "plus-circle", route: "trumpNew" },
       { name: "statistiche", icon: "chart-bar", route: "trumpStats" },
     ],
   },
@@ -38,11 +40,11 @@ const routes: { game: string; elements: BottonElement[] }[] = [
     game: "secretHitler",
     elements: [
       {
-        name: "cronologia partite",
+        name: "cronologia",
         icon: "history",
         route: "secretHitlerHistory",
       },
-      { name: "nuova partita", icon: "plus-circle", route: "secretHitlerNew" },
+      { name: "aggiungi", icon: "plus-circle", route: "secretHitlerNew" },
       { name: "statistiche", icon: "chart-bar", route: "secretHitlerStats" },
     ],
   },
