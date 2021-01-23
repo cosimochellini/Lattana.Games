@@ -42,7 +42,7 @@ export default defineComponent({
   data() {
     return {
       fetchedPlayers: [] as player[],
-      selected: {} as player,
+      selected: {} as player | undefined,
     };
   },
   mounted() {
@@ -63,7 +63,15 @@ export default defineComponent({
             .reverse()
         )
         .fetch<player[]>()
-        .then((p) => (this.fetchedPlayers = player?._id ? [player, ...p] : p));
+        .then((p) => {
+          this.fetchedPlayers = player?._id ? [player, ...p] : p;
+
+          if (this.selected?._id) {
+            this.selected = this.fetchedPlayers.find(
+              (p) => p._id === this.selected?._id
+            );
+          }
+        });
     },
     emitChanges() {
       this.$emit("update:modelValue", this.selected);

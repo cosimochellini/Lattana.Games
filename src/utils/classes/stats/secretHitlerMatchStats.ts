@@ -14,19 +14,19 @@ export class SecretHitlerStats extends BaseStats<
   private _hitlerMatches: secretHitlerMatchPlayer[] = [];
 
   public get liberalMatches() {
-    if (this.areRolesMatchesLoaded) this.loadRolesMatches();
+    if (!this.areRolesMatchesLoaded) this.loadRolesMatches();
 
     return this._liberalMatches;
   }
 
   public get fascistMatches() {
-    if (this.areRolesMatchesLoaded) this.loadRolesMatches();
+    if (!this.areRolesMatchesLoaded) this.loadRolesMatches();
 
     return this._fascistMatches;
   }
 
   public get hitlerMatches() {
-    if (this.areRolesMatchesLoaded) this.loadRolesMatches();
+    if (!this.areRolesMatchesLoaded) this.loadRolesMatches();
 
     return this._hitlerMatches;
   }
