@@ -6,13 +6,13 @@
       :excludedPlayers="excludedPlayers"
       v-model="match.player"
     />
-    <label> Ruolo </label>
+    <!-- <label> Ruolo </label>
     <select v-model="match.role" class="w-full base-select">
       <option v-for="role in allRoles" :key="role" :value="role">
         {{ role }}
       </option>
-    </select>
-    <div class="flex flex-row place-content-around">
+    </select> -->
+    <!-- <div class="flex flex-row place-content-around">
       <div class="m-2">
         <label> Vittoria</label>
         <input class="ml-2" type="checkbox" v-model="match.win" />
@@ -21,7 +21,7 @@
         <label> Penalità </label>
         <input class="ml-2" type="checkbox" v-model="match.penaltyPoint" />
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 

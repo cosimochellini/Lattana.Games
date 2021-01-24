@@ -59,7 +59,7 @@ const routes: RouteRecordRaw[] = [
           {
             path: "new",
             name: "secretHitlerNew",
-            component: () => import("../views/secretHitler/New.vue"),
+            component: () => import("../views/secretHitler/NewDue.vue"),
           },
           {
             path: "stats",

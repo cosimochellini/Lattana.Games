@@ -4,7 +4,10 @@
     <form @submit.prevent="saveMatch" class="flex flex-col items-center">
       <div class="base-card w-full mx-2 py-4">
         <label> Ruolo vincitore </label>
-        <select v-model="winningRole" class="w-full shadow-md rounded-sm bg-gray-200 p-2">
+        <select
+          v-model="winningRole"
+          class="w-full shadow-md rounded-sm bg-gray-200 p-2"
+        >
           <option v-for="role in allRoles" :key="role" :value="role">
             {{ role }}
           </option>
@@ -49,8 +52,7 @@ import SecretHitlerPlayer from "@/components/form/SecretHitlerPlayer.vue";
 import { secretHitlerService } from "@/services/games/secretHitlerService";
 import { secretHitlerMatch, secretHitlerMatchPlayer } from "@/types/sanity";
 
-const newPlayer = () =>
-  ({ _id: uuid(), role: secretHitlerRole.liberal } as secretHitlerMatchPlayer);
+const newPlayer = () => ({ _id: uuid() } as secretHitlerMatchPlayer);
 
 export default defineComponent({
   components: { SecretHitlerPlayer },

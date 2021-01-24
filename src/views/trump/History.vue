@@ -2,25 +2,24 @@
   <div
     class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 lg:max-w-screen-2xl m-auto p-4"
   >
-    <article
-      v-for="match in matches"
-      :key="match._id"
-      class="base-card"
-    >
+    <article v-for="match in matches" :key="match._id" class="base-card">
       <div>data : {{ dayFormatter(match.matchDate) }}</div>
       <div>punteggio iniziale : {{ match.startingScore }}</div>
       <div>punteggio finale : {{ match.finalScore }}</div>
       <hr class="my-2" />
-      <div class="flex flex-row items-center justify-around">
+      <div class="flex flex-row items-center justify-evenly">
         Giocatori:
-        <span v-for="p in match.players" :key="p._id" class="ml-1">
+        <div class="flex -space-x-1 overflow-hidden px-1">
           <img
+            v-for="p in match.players"
+            :key="p._id"
             :src="image(p.player.profileImage)"
-            loading="lazy"
-            class="rounded-full"
             :title="`${p.player.name} ${p.player.surname}`"
+            class="inline-block h-10 w-10 rounded-full ring-2 my-2"
+            :class="borderColor(p.win)"
+            loading="lazy"
           />
-        </span>
+        </div>
       </div>
       <hr class="my-2" />
       <div class="flex flex-row items-center justify-self-auto">
@@ -73,7 +72,12 @@ export default defineComponent({
     const loadMatched = () => {
       matchesQuery
         .fetch<trumpMatch[]>()
-        .then((data) => (matches.value = data))
+        .then((responseMatches) => {
+          responseMatches.forEach((m) =>
+            m.players.sort((m1, m2) => Number(m1.win) - Number(m2.win))
+          );
+          matches.value = responseMatches;
+        })
         .catch(notificationService.danger);
     };
 
@@ -87,7 +91,16 @@ export default defineComponent({
 
     onMounted(loadMatched);
 
-    return { matches, loadMatched, image, dayFormatter, deleteMatch };
+    const borderColor = (win: boolean) => (win ? "ring-blue-500" : "ring-red-500");
+
+    return {
+      matches,
+      loadMatched,
+      image,
+      dayFormatter,
+      deleteMatch,
+      borderColor,
+    };
   },
 });
 </script>

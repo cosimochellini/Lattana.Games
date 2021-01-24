@@ -8,15 +8,17 @@
       <hr class="my-2" />
       <div class="flex flex-row items-center justify-around">
         Giocatori:
-        <span v-for="p in match.players" :key="p._id" class="ml-1">
+        <div class="flex -space-x-1 overflow-hidden px-1">
           <img
+            v-for="p in match.players"
+            :key="p._id"
             :src="image(p.player.profileImage)"
-            loading="lazy"
-            class="rounded-full border-2"
-            :class="borderColor(p.role)"
             :title="`${p.player.name} ${p.player.surname}`"
+            :class="borderColor(p.role)"
+            class="inline-block h-8 w-8 rounded-full ring-2 my-2"
+            loading="lazy"
           />
-        </span>
+        </div>
       </div>
 
       <hr class="my-2" />
@@ -65,7 +67,7 @@ export default defineComponent({
         .catch(notificationService.danger);
     };
 
-    const image = (img: SanityImageSource) => urlFor(img).width(60);
+    const image = (img: SanityImageSource) => urlFor(img).width(100);
 
     const deleteMatch = (match: secretHitlerMatch) =>
       secretHitlerService
@@ -79,11 +81,11 @@ export default defineComponent({
     const borderColor = (role: secretHitlerRole) => {
       switch (role) {
         case secretHitlerRole.fascist:
-          return "border-red-500";
+          return "ring-red-500";
         case secretHitlerRole.liberal:
-          return "border-blue-500";
+          return "ring-blue-500";
         case secretHitlerRole.hitler:
-          return "border-black";
+          return "ring-black";
       }
     };
     return {
