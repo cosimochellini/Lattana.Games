@@ -55,6 +55,7 @@ import { trumpMatch } from "@/types/sanity";
 import { dayFormatter } from "@/utils/formatters";
 import { defineComponent, onMounted, ref } from "vue";
 import { sanityTypes } from "@/constants/roleConstants";
+import { overlayService } from "@/services/overlayService";
 import { trumpService } from "@/services/games/trumpService";
 import { notificationService } from "@/services/notificationService";
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
@@ -83,15 +84,17 @@ export default defineComponent({
 
     const image = (img: SanityImageSource) => urlFor(img).width(40);
     const deleteMatch = (match: trumpMatch) =>
+      overlayService.showOverlay() &&
       trumpService
         .deleteExistingMatch(match)
         .then(() => notificationService.success("eliminazione eseguita"))
         .catch(notificationService.danger)
-        .finally(loadMatched);
+        .finally(() => overlayService.hideOverlay() && loadMatched());
 
     onMounted(loadMatched);
 
-    const borderColor = (win: boolean) => (win ? "ring-blue-500" : "ring-red-500");
+    const borderColor = (win: boolean) =>
+      win ? "ring-blue-500" : "ring-red-500";
 
     return {
       matches,

@@ -1,4 +1,5 @@
 import { isAuthorized } from "@/services/authService";
+import { overlayService } from "@/services/overlayService";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import {
   DEFAULT_LOCALE,
@@ -59,7 +60,7 @@ const routes: RouteRecordRaw[] = [
           {
             path: "new",
             name: "secretHitlerNew",
-            component: () => import("../views/secretHitler/NewDue.vue"),
+            component: () => import("../views/secretHitler/New.vue"),
           },
           {
             path: "stats",
@@ -115,6 +116,8 @@ export function setupRouter(i18n: any) {
     // set i18n language
     setI18nLanguage(i18n, paramsLocale);
 
+    overlayService.hideOverlay();
+    
     return next();
   });
 

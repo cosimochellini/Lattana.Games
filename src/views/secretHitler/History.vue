@@ -48,6 +48,7 @@ import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { OrderBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
 import { secretHitlerService } from "@/services/games/secretHitlerService";
+import { overlayService } from "@/services/overlayService";
 
 const matchesQuery = new QueryBuilder(sanityTypes.secretHitlerMatch)
   .select(`...,  players[] -> {..., player -> {name, surname, profileImage}}`)
@@ -70,11 +71,12 @@ export default defineComponent({
     const image = (img: SanityImageSource) => urlFor(img).width(100);
 
     const deleteMatch = (match: secretHitlerMatch) =>
+      overlayService.showOverlay() &&
       secretHitlerService
         .deleteExistingMatch(match)
         .then(() => notificationService.success("eliminazione eseguita"))
         .catch(notificationService.danger)
-        .finally(loadMatched);
+        .finally(() => overlayService.hideOverlay() && loadMatched);
 
     onMounted(loadMatched);
 

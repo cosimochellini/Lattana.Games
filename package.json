@@ -12,6 +12,7 @@
     "@sanity/image-url": "^0.140.19",
     "@tailwindcss/postcss7-compat": "npm:@tailwindcss/postcss7-compat@^2.0.2",
     "autoprefixer": "^9",
+    "mitt": "^2.1.0",
     "postcss": "^7",
     "sort-es": "^1.1.9",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="border list-none rounded-md px-3 py-3 my-1 flex justify-evenly items-center"
+    class="border list-none rounded-md px-3 py-3 my-1 flex justify-around items-center"
     :class="color"
   >
     <span
@@ -12,6 +12,13 @@
       class="w-10 h-10 rounded-full text-right"
       :src="image(user.profileImage).width(100)"
     />
+    <button
+      class="bg-transparent border border-red-800 rounded-md p-1 px-2"
+      v-show="showDelete"
+      @click.prevent="emitDelete"
+    >
+      <i class="fas fa-trash-alt"></i>
+    </button>
   </div>
 </template>
 
@@ -25,6 +32,7 @@ const image = (img: SanityImageSource) => urlFor(img).width(100);
 
 export default defineComponent({
   name: "draggable-user",
+  emits: ["delete"],
   props: {
     user: {
       type: Object as PropType<player>,
@@ -34,9 +42,16 @@ export default defineComponent({
       type: String,
       default: () => "bg-gray-50",
     },
+    showDelete: {
+      type: Boolean,
+      default: () => false,
+    },
   },
   methods: {
     image,
+    emitDelete() {
+      this.$emit("delete", this.user);
+    },
   },
 });
 </script>

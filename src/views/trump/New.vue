@@ -75,6 +75,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { overlayService } from "@/services/overlayService";
 import { trumpService } from "@/services/games/trumpService";
 import { notificationService } from "@/services/notificationService";
 import { player, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
@@ -109,6 +110,8 @@ export default defineComponent({
           callingPlayer: this.callingPlayer,
           players: this.allMatchPlayers,
         } as trumpMatch;
+
+        overlayService.showOverlay();
 
         trumpService
           .saveNewMatch(match)
