@@ -1,88 +1,57 @@
 <template>
   <div class="container m-auto p-4">
-    <p>Inserisci nuova partita di secret hitler ☠☠</p>
-    <div>
-      <user-autocomplete
-        class="w-full"
-        v-model="playerToAdd"
-        :excludedPlayers="excludedPlayers"
-      />
-      <button
-        class="bg-blue-500 px-2 text-pink-50 py-1 block p-1 mt-2 md:w-1/4 w-full"
-        @click.prevent="addPlayer"
-        v-show="playerToAdd?.nickname"
-      >
-        aggiungi giocatore
-      </button>
-    </div>
-    <h3>Giocatori da smistare</h3>
-    <draggable :list="remainingPlayers" group="people" itemKey="_id">
-      <template #header> </template>
+    <p class="leading-relaxed">Inserisci nuova partita di secret hitler ☠☠</p>
+
+    <draggable
+      :list="remainingPlayers"
+      group="people"
+      itemKey="_id"
+      class="base-card"
+    >
+      <template #header>
+        <h3>Giocatori da smistare</h3>
+
+        <user-autocomplete
+          class="w-full"
+          :modelValue="{}"
+          @update:modelValue="addPlayer"
+          :excludedPlayers="excludedPlayers"
+        />
+      </template>
       <template #item="{ element }">
-        <div
-          class="border list-none rounded-md px-3 py-3 bg-gray-50 my-1 flex justify-evenly items-center"
-        >
-          <span
-            class="ml-2 text-gray-700 font-semibold font-sans tracking-wide text-left"
-          >
-            {{ element.name }} {{ element.surname }}
-          </span>
-          <img
-            class="w-10 h-10 rounded-full text-right"
-            :src="image(element.profileImage).width(100)"
-          />
-        </div>
+        <draggable-user :user="element" />
       </template>
     </draggable>
 
-    <h3>Giocatori liberali</h3>
     <draggable
       :list="liberalPlayers"
       group="people"
       itemKey="_id"
-      class="p-4 border border-red-500"
+      class="base-card mt-2"
     >
+      <template #header>
+        <h3>Giocatori liberali</h3>
+      </template>
       <template #item="{ element }">
-        <div
-          class="border list-none rounded-md px-3 py-3 bg-blue-50 my-1 flex justify-evenly items-center"
-        >
-          <span
-            class="ml-2 text-gray-700 font-semibold font-sans tracking-wide text-left"
-          >
-            {{ element.name }} {{ element.surname }}
-          </span>
-          <img
-            class="w-10 h-10 rounded-full text-right"
-            :src="image(element.profileImage).width(100)"
-          />
-        </div>
+        <draggable-user :user="element" color="bg-blue-100" />
       </template>
     </draggable>
-    <h3>Giocatori fascisti</h3>
+
     <draggable
       :list="fascistPlayers"
       group="people"
       itemKey="_id"
-      class="p-4 border border-red-500 block"
+      class="base-card mt-2"
     >
+      <template #header>
+        <h3>Giocatori fascisti</h3>
+      </template>
       <template #item="{ element }">
-        <div
-          class="border list-none rounded-md px-3 py-3 bg-red-50 my-1 flex justify-evenly items-center"
-        >
-          <span
-            class="ml-2 text-gray-700 font-semibold font-sans tracking-wide text-left"
-          >
-            {{ element.name }} {{ element.surname }}
-          </span>
-          <img
-            class="w-10 h-10 rounded-full text-right"
-            :src="image(element.profileImage).width(100)"
-          />
-        </div>
+        <draggable-user :user="element" color="bg-red-100" />
       </template>
     </draggable>
 
-    <form @submit.prevent="saveMatch" class="flex flex-col items-center">
+    <form @submit.prevent="saveMatch" class="flex flex-col items-center mt-2">
       <div class="base-card w-full mx-2 py-4">
         <label> Ruolo vincitore </label>
         <select
@@ -93,21 +62,14 @@
             {{ role }}
           </option>
         </select>
-      </div>
-      <!-- <div
-        class="sm:w-4/5 md:w-1/2 w-full"
-        v-for="(player, i) in players"
-        :key="player._id"
-      >
-        <secret-hitler-player
-          class="mx-2 mt-2 bg-gray-400"
-          :excludedPlayers="players"
-          :label="`Giocatore ${i + 1}`"
-          :model-value="player"
-          :key="i"
-          @update:modelValue="updatePlayer(i, $event)"
+
+        <label> Hitler</label>
+        <user-autocomplete
+          :exactPlayers="fascistPlayers"
+          class="w-full"
+          v-model="hitlerPlayer"
         />
-      </div> -->
+      </div>
 
       <button
         class="bg-blue-500 px-2 text-pink-50 py-1 block p-1 mt-2 md:w-1/4 w-full"
@@ -123,12 +85,13 @@
 // import { uuid } from "@/utils/uuid";
 import { defineComponent } from "vue";
 import draggable from "vuedraggable";
+import { urlFor } from "@/instances/sanity";
 import { secretHitlerRole } from "@/constants/roleConstants";
 import { notificationService } from "@/services/notificationService";
 import { secretHitlerService } from "@/services/games/secretHitlerService";
 
+import DraggableUser from "@/components/base/DraggableUser.vue";
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
-import { urlFor } from "@/instances/sanity";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 
 import {
@@ -140,12 +103,12 @@ import {
 const image = (img: SanityImageSource) => urlFor(img).width(100);
 
 export default defineComponent({
-  components: { UserAutocomplete, draggable },
+  components: { UserAutocomplete, draggable, DraggableUser },
   name: "secretHitlerNew",
 
   data() {
     return {
-      playerToAdd: {} as player,
+      hitlerPlayer: {} as player,
       allRoles: secretHitlerRole,
       winningRole: secretHitlerRole.liberal,
       remainingPlayers: [] as player[],
@@ -173,14 +136,20 @@ export default defineComponent({
         notificationService.danger(error);
       }
     },
-    addPlayer() {
-      this.remainingPlayers.push(this.playerToAdd);
-      this.playerToAdd = {} as player;
+    addPlayer(player: player) {
+      this.remainingPlayers.push(player);
     },
     updateElement(index: number, p: player) {
       this.remainingPlayers[index] = { ...this.remainingPlayers[index], ...p };
     },
-    bindPlayer(player: player, role: secretHitlerRole) {
+    bindPlayer(
+      player: player,
+      role: secretHitlerRole,
+      hitler: player | null = null
+    ) {
+      if (role === secretHitlerRole.fascist && player._id === hitler?._id) {
+        role = secretHitlerRole.hitler;
+      }
       return {
         role,
         player,
@@ -195,7 +164,7 @@ export default defineComponent({
           this.bindPlayer(p, secretHitlerRole.liberal)
         ),
         ...this.fascistPlayers.map((p) =>
-          this.bindPlayer(p, secretHitlerRole.fascist)
+          this.bindPlayer(p, secretHitlerRole.fascist, this.hitlerPlayer)
         ),
       ];
     },
