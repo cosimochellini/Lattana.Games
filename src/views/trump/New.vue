@@ -1,66 +1,97 @@
 <template>
   <div class="container m-auto p-4">
     <p>Inserisci nuova partita di briscola in 5 🃏🃏</p>
+    <draggable
+      :list="remainingPlayers"
+      group="people"
+      itemKey="_id"
+      class="base-card"
+    >
+      <template #header>
+        <h3>Giocatori da smistare</h3>
+
+        <user-autocomplete
+          class="w-full"
+          v-show="allPlayers.length < 5"
+          :modelValue="{}"
+          :excludedPlayers="allPlayers"
+          @update:modelValue="addPlayer"
+        />
+      </template>
+      <template #item="{ element }">
+        <draggable-user :user="element" showDelete @delete="deletePlayer" />
+      </template>
+    </draggable>
+
+    <draggable
+      :list="callingPlayers"
+      group="people"
+      itemKey="_id"
+      class="base-card mt-2 hover:border-2 hover:border-blue-400"
+    >
+      <template #header>
+        <h3>Squadra 1</h3>
+      </template>
+      <template #item="{ element }">
+        <draggable-user :user="element" color="bg-blue-100" />
+      </template>
+    </draggable>
+
+    <draggable
+      :list="opposingPlayers"
+      group="people"
+      itemKey="_id"
+      class="base-card mt-2"
+    >
+      <template #header>
+        <h3>Squadra 2</h3>
+      </template>
+      <template #item="{ element }">
+        <draggable-user :user="element" color="bg-red-100" />
+      </template>
+    </draggable>
+
     <form @submit.prevent="saveMatch" class="flex flex-col items-center">
-      <trump-match-player
-        class="sm:w-4/5 md:w-1/2 w-full m-2"
-        :excludedPlayers="allPlayers"
-        label="Giocatore 1"
-        v-model="players.player1"
-      />
-      <trump-match-player
-        class="sm:w-4/5 md:w-1/2 w-full m-2"
-        :excludedPlayers="allPlayers"
-        label="Giocatore 2"
-        v-model="players.player2"
-      />
-      <trump-match-player
-        class="sm:w-4/5 md:w-1/2 w-full m-2"
-        :excludedPlayers="allPlayers"
-        label="Giocatore 3"
-        v-model="players.player3"
-      />
-      <trump-match-player
-        class="sm:w-4/5 md:w-1/2 w-full m-2"
-        :excludedPlayers="allPlayers"
-        label="Giocatore 4"
-        v-model="players.player4"
-      />
-      <trump-match-player
-        class="sm:w-4/5 md:w-1/2 w-full m-2"
-        :excludedPlayers="allPlayers"
-        label="Giocatore 5"
-        v-model="players.player5"
-      />
       <article
         class="base-card flex flex-col items-stretch m-2 justify-between sm:w-4/5 md:w-1/2 w-full"
       >
-        <label> Giocatore chiamante</label>
+        <label class="font-semibold"> Giocatore chiamante</label>
         <user-autocomplete :exactPlayers="allPlayers" v-model="callingPlayer" />
-      </article>
-      <article
-        class="base-card flex flex-col items-stretch m-2 justify-between sm:w-4/5 md:w-1/2 w-full"
-      >
+
         <div class="m-2 flex justify-between">
-          <label for="initial points"> punteggio chiamato</label>
+          <label class="font-semibold" for="initial points">
+            Punteggio chiamato
+          </label>
           <input
             name="initial points"
             type="number"
             min="60"
             max="120"
-            class="pa-2"
+            class="pa-2 border rounded-md text-center"
             v-model.number="startingScore"
           />
         </div>
         <div class="m-2 flex justify-between">
-          <label for="initial points"> punteggio finale</label>
+          <label class="font-semibold" for="initial points">
+            Punteggio finale
+          </label>
           <input
             name="initial points"
             type="number"
             min="60"
             max="120"
+            class="pa-2 border rounded-md text-center"
             v-model.number="finalScore"
           />
+        </div>
+        <div class="m-2 flex justify-between">
+          <label class="font-semibold" for="initial points">
+            Squadra vincente
+          </label>
+          <select class="base-select" v-model="firstTeamWin">
+            <option :value="true">Squadra 1</option>
+            <option :value="false">Squadra 2</option>
+          </select>
         </div>
       </article>
       <button
@@ -79,28 +110,34 @@ import { overlayService } from "@/services/overlayService";
 import { trumpService } from "@/services/games/trumpService";
 import { notificationService } from "@/services/notificationService";
 import { player, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
-import TrumpMatchPlayer from "@/components/form/TrumpMatchPlayer.vue";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
+import DraggableUser from "@/components/base/DraggableUser.vue";
+import draggable from "vuedraggable";
 
 export default defineComponent({
-  components: { TrumpMatchPlayer, UserAutocomplete },
+  components: { UserAutocomplete, DraggableUser, draggable },
   name: "trumpNew",
   data() {
     return {
-      players: {
-        player1: {} as trumpMatchPlayer,
-        player2: {} as trumpMatchPlayer,
-        player3: {} as trumpMatchPlayer,
-        player4: {} as trumpMatchPlayer,
-        player5: {} as trumpMatchPlayer,
-      },
+      remainingPlayers: [] as player[],
+      callingPlayers: [] as player[],
+      opposingPlayers: [] as player[],
       callingPlayer: {} as player,
       startingScore: 0,
       finalScore: 0,
+      firstTeamWin: true,
     };
   },
   mounted() {},
   methods: {
+    addPlayer(p: player) {
+      this.remainingPlayers.push(p);
+    },
+    deletePlayer(player: player) {
+      this.remainingPlayers = this.remainingPlayers.filter(
+        (p) => p._id !== player._id
+      );
+    },
     saveMatch() {
       try {
         const match = {
@@ -125,12 +162,18 @@ export default defineComponent({
   },
   computed: {
     allMatchPlayers(): trumpMatchPlayer[] {
-      const { player1, player2, player3, player4, player5 } = this.players;
-
-      return [player1, player2, player3, player4, player5];
+      const win = this.firstTeamWin;
+      return [
+        ...this.callingPlayers.map((p) => ({ player: p, win })),
+        ...this.opposingPlayers.map((p) => ({ player: p, win: !win })),
+      ] as trumpMatchPlayer[];
     },
     allPlayers(): player[] {
-      return this.allMatchPlayers.map((x) => x.player).filter((p) => p?._id);
+      return [
+        ...this.remainingPlayers,
+        ...this.callingPlayers,
+        ...this.opposingPlayers,
+      ].filter((p) => p?._id);
     },
   },
 });

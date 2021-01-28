@@ -1,18 +1,18 @@
 <template>
   <div class="container m-auto p-4">
-    <p class="leading-relaxed">Inserisci nuova partita di secret hitler ☠☠</p>
+    <label class="font-semibold">
+      Inserisci nuova partita di secret hitler ☠☠
+    </label>
 
     <draggable
       :list="remainingPlayers"
       group="people"
       itemKey="_id"
       class="base-card"
-      ghost-class="border-2"
-      drag-class="border-2"
       @move="log"
     >
       <template #header>
-        <h3>Giocatori da smistare</h3>
+        <label class="font-semibold"> Giocatori da smistare </label>
 
         <user-autocomplete
           class="w-full"
@@ -33,7 +33,7 @@
       class="base-card mt-2 hover:border-2 hover:border-blue-400"
     >
       <template #header>
-        <h3>Giocatori liberali</h3>
+        <label class="font-semibold"> Giocatori liberali </label>
       </template>
       <template #item="{ element }">
         <draggable-user :user="element" color="bg-blue-100" />
@@ -47,7 +47,7 @@
       class="base-card mt-2"
     >
       <template #header>
-        <h3>Giocatori fascisti</h3>
+        <label class="font-semibold"> Giocatori fascisti </label>
       </template>
       <template #item="{ element }">
         <draggable-user :user="element" color="bg-red-100" />
@@ -56,7 +56,7 @@
 
     <form @submit.prevent="saveMatch" class="flex flex-col items-center mt-2">
       <div class="base-card w-full mx-2 py-4">
-        <label> Ruolo vincitore </label>
+        <label class="font-semibold"> Ruolo vincitore </label>
         <select
           v-model="winningRole"
           class="w-full shadow-md rounded-sm bg-gray-200 p-2"
@@ -66,7 +66,8 @@
           </option>
         </select>
 
-        <label> Hitler</label>
+        <label class="font-semibold pt-1"> Hitler</label>
+
         <user-autocomplete
           :exactPlayers="fascistPlayers"
           class="w-full"
