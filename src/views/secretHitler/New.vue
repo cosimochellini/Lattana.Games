@@ -9,7 +9,6 @@
       group="people"
       itemKey="_id"
       class="base-card"
-      @move="log"
     >
       <template #header>
         <label class="font-semibold"> Giocatori da smistare </label>
@@ -86,17 +85,17 @@
 </template>
 
 <script lang="ts">
-// import { uuid } from "@/utils/uuid";
-import { defineComponent } from "vue";
 import draggable from "vuedraggable";
+import { defineComponent } from "vue";
 import { urlFor } from "@/instances/sanity";
-import { secretHitlerRole } from "@/constants/roleConstants";
-import { notificationService } from "@/services/notificationService";
-import { secretHitlerService } from "@/services/games/secretHitlerService";
-
+import { overlayService } from "@/services/overlayService";
 import DraggableUser from "@/components/base/DraggableUser.vue";
+import { notificationService } from "@/services/notificationService";
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
+import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
+import { secretHitlerService } from "@/services/games/secretHitlerService";
+import { ConditionBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
 
 import {
   player,
@@ -105,6 +104,10 @@ import {
 } from "@/types/sanity";
 
 const image = (img: SanityImageSource) => urlFor(img).width(100);
+
+const playersQuery = new QueryBuilder(
+  sanityTypes.secretHitlerMatchPlayer
+).select("player ->");
 
 export default defineComponent({
   components: { UserAutocomplete, draggable, DraggableUser },
@@ -123,12 +126,22 @@ export default defineComponent({
       },
     };
   },
-  mounted() {},
+  mounted() {
+    if (this.$route.query.ref) {
+      playersQuery
+        .where(
+          new ConditionBuilder("match._ref== $match").params({
+            match: this.$route.query.ref as string,
+          })
+        )
+        .fetch<secretHitlerMatchPlayer[]>()
+        .then(
+          (players) => (this.remainingPlayers = players.map((x) => x.player))
+        );
+    }
+  },
   methods: {
     image,
-    log() {
-      console.log(...arguments);
-    },
     saveMatch() {
       try {
         const matchToSave = {
@@ -136,6 +149,8 @@ export default defineComponent({
           winningRole: this.winningRole,
           players: this.totalPlayers,
         } as secretHitlerMatch;
+
+        overlayService.showOverlay();
 
         secretHitlerService
           .saveNewMatch(matchToSave)

@@ -105,14 +105,20 @@
 </template>
 
 <script lang="ts">
+import draggable from "vuedraggable";
 import { defineComponent } from "vue";
+import { sanityTypes } from "@/constants/roleConstants";
 import { overlayService } from "@/services/overlayService";
 import { trumpService } from "@/services/games/trumpService";
+import DraggableUser from "@/components/base/DraggableUser.vue";
 import { notificationService } from "@/services/notificationService";
 import { player, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
-import DraggableUser from "@/components/base/DraggableUser.vue";
-import draggable from "vuedraggable";
+import { ConditionBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
+
+const playersQuery = new QueryBuilder(sanityTypes.trumpMatchPlayer).select(
+  "player ->"
+);
 
 export default defineComponent({
   components: { UserAutocomplete, DraggableUser, draggable },
@@ -128,7 +134,20 @@ export default defineComponent({
       firstTeamWin: true,
     };
   },
-  mounted() {},
+  mounted() {
+    if (this.$route.query.ref) {
+      playersQuery
+        .where(
+          new ConditionBuilder("match._ref== $match").params({
+            match: this.$route.query.ref as string,
+          })
+        )
+        .fetch<trumpMatchPlayer[]>()
+        .then(
+          (players) => (this.remainingPlayers = players.map((x) => x.player))
+        );
+    }
+  },
   methods: {
     addPlayer(p: player) {
       this.remainingPlayers.push(p);

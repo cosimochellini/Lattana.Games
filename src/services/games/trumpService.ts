@@ -20,7 +20,7 @@ export const trumpService = {
       players: [],
     } as sanityDocument<trumpMatch>;
 
-    let result = await sanityClient.create(matchToCreate);
+    const matchPromise = sanityClient.create(matchToCreate);
 
     const playersPromises = match.players.map((p) =>
       sanityClient.create({
@@ -30,11 +30,13 @@ export const trumpService = {
         win: p.win,
         penaltyPoint: p.penaltyPoint,
         player: reference(p.player),
-        match: reference(result),
+        match: reference(matchToCreate),
       } as sanityDocument<trumpMatchPlayer>)
     );
 
     const savedPlayers = await Promise.all(playersPromises);
+
+    let result = await matchPromise;
 
     result = await sanityClient
       .patch(result._id)

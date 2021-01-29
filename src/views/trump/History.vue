@@ -41,8 +41,14 @@
         >
           Delete
         </button>
-        <button class="px-2 py-1 shadow-sm bg-blue-200 rounded-md w-20">
+        <button class="px-2 py-1 shadow-sm bg-gray-200 rounded-md w-20">
           Edit
+        </button>
+        <button
+          class="px-2 py-1 shadow-sm bg-blue-200 rounded-md w-20"
+          @click="copyMatch(match)"
+        >
+          Copy
         </button>
       </div>
     </article>
@@ -50,6 +56,7 @@
 </template>
 
 <script lang="ts">
+import { useRouter } from "vue-router";
 import { urlFor } from "@/instances/sanity";
 import { trumpMatch } from "@/types/sanity";
 import { dayFormatter } from "@/utils/formatters";
@@ -69,6 +76,7 @@ export default defineComponent({
   components: {},
   setup() {
     const matches = ref<trumpMatch[]>([]);
+    const router = useRouter();
 
     const loadMatched = () => {
       matchesQuery
@@ -83,6 +91,7 @@ export default defineComponent({
     };
 
     const image = (img: SanityImageSource) => urlFor(img).width(40);
+
     const deleteMatch = (match: trumpMatch) =>
       overlayService.showOverlay() &&
       trumpService
@@ -96,13 +105,17 @@ export default defineComponent({
     const borderColor = (win: boolean) =>
       win ? "ring-blue-500" : "ring-red-500";
 
+    const copyMatch = (match: trumpMatch) =>
+      router.push({ name: "trumpNew", query: { ref: match._id } });
+
     return {
-      matches,
-      loadMatched,
       image,
-      dayFormatter,
+      matches,
+      copyMatch,
+      loadMatched,
       deleteMatch,
       borderColor,
+      dayFormatter,
     };
   },
 });

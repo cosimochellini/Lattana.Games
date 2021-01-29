@@ -29,8 +29,14 @@
         >
           Delete
         </button>
-        <button class="px-2 py-1 shadow-md bg-blue-200 rounded-md w-20">
+        <button class="px-2 py-1 shadow-md bg-gray-200 rounded-md w-20">
           Edit
+        </button>
+        <button
+          class="px-2 py-1 shadow-sm bg-blue-200 rounded-md w-20"
+          @click="copyMatch(match)"
+        >
+          Copy
         </button>
       </div>
     </article>
@@ -49,6 +55,7 @@ import { OrderBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
 import { secretHitlerService } from "@/services/games/secretHitlerService";
 import { overlayService } from "@/services/overlayService";
+import { useRouter } from "vue-router";
 
 const matchesQuery = new QueryBuilder(sanityTypes.secretHitlerMatch)
   .select(`...,  players[] -> {..., player -> {name, surname, profileImage}}`)
@@ -57,6 +64,7 @@ const matchesQuery = new QueryBuilder(sanityTypes.secretHitlerMatch)
 export default defineComponent({
   setup() {
     const matches = ref<secretHitlerMatch[]>([]);
+    const router = useRouter();
 
     const loadMatched = () => {
       matchesQuery
@@ -90,13 +98,18 @@ export default defineComponent({
           return "ring-black";
       }
     };
+
+    const copyMatch = (match: secretHitlerMatch) =>
+      router.push({ name: "secretHitlerNew", query: { ref: match._id } });
+
     return {
-      matches,
-      loadMatched,
       image,
-      dayFormatter,
+      matches,
+      copyMatch,
       deleteMatch,
+      loadMatched,
       borderColor,
+      dayFormatter,
     };
   },
 });
