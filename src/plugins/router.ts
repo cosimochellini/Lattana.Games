@@ -35,6 +35,11 @@ const routes: RouteRecordRaw[] = [
             component: () => import("../views/trump/New.vue"),
           },
           {
+            path: "edit/:id",
+            name: "trumpEdit",
+            component: () => import("../views/trump/Edit.vue"),
+          },
+          {
             path: "history",
             name: "trumpHistory",
             component: () => import("../views/trump/History.vue"),
@@ -117,7 +122,7 @@ export function setupRouter(i18n: any) {
     setI18nLanguage(i18n, paramsLocale);
 
     overlayService.hideOverlay();
-    
+
     return next();
   });
 

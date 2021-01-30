@@ -12,9 +12,6 @@ export type QueryableParam =
 
 export interface sanityEntity {
   _id: string;
-}
-
-export interface sanityType {
   _type: sanityTypes;
 }
 
@@ -22,13 +19,14 @@ export interface sanityReference<T> {
   _ref: string;
 }
 
-export type sanityPostProp<T> = T extends QueryableParam
+export type sanityPostProp<T> = T extends null
+  ? any
+  : T extends QueryableParam
   ? T
   : T extends Array<any>
-  ? (sanityReference<T> & sanityType)[]
+  ? sanityReference<T>[]
   : sanityReference<T>;
 
 export type sanityDocument<T> = {
   [key in keyof T]: sanityPostProp<T[key]>;
-} &
-  sanityType;
+};

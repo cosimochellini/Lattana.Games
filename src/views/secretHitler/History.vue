@@ -44,18 +44,18 @@
 </template>
 
 <script lang="ts">
+import { useRouter } from "vue-router";
 import { urlFor } from "@/instances/sanity";
 import { dayFormatter } from "@/utils/formatters";
 import { secretHitlerMatch } from "@/types/sanity";
 import { defineComponent, onMounted, ref } from "vue";
+import { overlayService } from "@/services/overlayService";
 import { byRole } from "@/utils/sortables/secratHitlerSortables";
 import { notificationService } from "@/services/notificationService";
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { OrderBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
 import { secretHitlerService } from "@/services/games/secretHitlerService";
-import { overlayService } from "@/services/overlayService";
-import { useRouter } from "vue-router";
 
 const matchesQuery = new QueryBuilder(sanityTypes.secretHitlerMatch)
   .select(`...,  players[] -> {..., player -> {name, surname, profileImage}}`)
@@ -84,7 +84,7 @@ export default defineComponent({
         .deleteExistingMatch(match)
         .then(() => notificationService.success("eliminazione eseguita"))
         .catch(notificationService.danger)
-        .finally(() => overlayService.hideOverlay() && loadMatched);
+        .finally(() => overlayService.hideOverlay() && loadMatched());
 
     onMounted(loadMatched);
 

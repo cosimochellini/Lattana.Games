@@ -8,6 +8,8 @@ export interface IMatch<
 > extends sanityEntity {
   matchDate: Date;
   players: TPlayer[];
+  createdBy: player;
+  updatedBy: player | null;
 }
 
 export interface IMatchPlayer<

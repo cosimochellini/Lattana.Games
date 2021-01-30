@@ -41,7 +41,10 @@
         >
           Delete
         </button>
-        <button class="px-2 py-1 shadow-sm bg-gray-200 rounded-md w-20">
+        <button
+          class="px-2 py-1 shadow-sm bg-gray-200 rounded-md w-20"
+          @click="editMatch(match)"
+        >
           Edit
         </button>
         <button
@@ -108,10 +111,14 @@ export default defineComponent({
     const copyMatch = (match: trumpMatch) =>
       router.push({ name: "trumpNew", query: { ref: match._id } });
 
+    const editMatch = (match: trumpMatch) =>
+      router.push({ name: "trumpEdit", params: { id: match._id } });
+
     return {
       image,
       matches,
       copyMatch,
+      editMatch,
       loadMatched,
       deleteMatch,
       borderColor,

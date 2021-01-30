@@ -46,7 +46,11 @@ export abstract class BaseStats<
     );
 
     for (const player of plays) {
-      const stat = mates[player.player.nickname] ?? { win: 0, lose: 0, player };
+      const stat = mates[player.player.nickname] ?? {
+        win: 0,
+        lose: 0,
+        player: player.player,
+      };
       if (player.win) stat.win++;
       else stat.lose++;
 

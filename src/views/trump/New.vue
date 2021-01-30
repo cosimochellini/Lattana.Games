@@ -13,13 +13,16 @@
         <user-autocomplete
           class="w-full"
           v-show="allPlayers.length < 5"
-          :modelValue="{}"
           :excludedPlayers="allPlayers"
           @update:modelValue="addPlayer"
         />
       </template>
       <template #item="{ element }">
-        <draggable-user :user="element" showDelete @delete="deletePlayer" />
+        <draggable-user
+          :user="element"
+          showDelete
+          @deletePlayer="deletePlayer"
+        />
       </template>
     </draggable>
 

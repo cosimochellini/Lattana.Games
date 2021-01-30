@@ -4,6 +4,13 @@ import { ToastOptions } from "vue-toastification/dist/types/types";
 declare type notifyOptions = ToastOptions & {
   type?: TYPE.INFO | undefined;
 };
+const getErrorMessage = (error: any) => {
+  if (!error) return "";
+
+  if (typeof error === "string") return error;
+
+  if (typeof error.message === "string") return error.message;
+};
 
 export const notificationService = {
   notify(notification: string, option: notifyOptions | undefined = undefined) {
@@ -15,7 +22,7 @@ export const notificationService = {
   warning(notification: string) {
     return useToast().warning(notification);
   },
-  danger(notification: string) {
-    return useToast().error(notification);
+  danger(error: any) {
+    return useToast().error(getErrorMessage(error));
   },
 };

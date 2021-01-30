@@ -10,7 +10,7 @@
     </span>
     <img
       class="w-10 h-10 rounded-full text-right"
-      :src="image(user.profileImage).width(100)"
+      :src="image(user.profileImage).width(100).toString() ?? ''"
     />
     <button
       class="bg-transparent border border-red-800 rounded-md p-1 px-2"
@@ -32,7 +32,7 @@ const image = (img: SanityImageSource) => urlFor(img).width(100);
 
 export default defineComponent({
   name: "draggable-user",
-  emits: ["delete"],
+  emits: ["deletePlayer"],
   props: {
     user: {
       type: Object as PropType<player>,
@@ -50,7 +50,7 @@ export default defineComponent({
   methods: {
     image,
     emitDelete() {
-      this.$emit("delete", this.user);
+      this.$emit("deletePlayer", this.user);
     },
   },
 });

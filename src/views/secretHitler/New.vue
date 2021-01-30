@@ -15,7 +15,6 @@
 
         <user-autocomplete
           class="w-full"
-          :modelValue="{}"
           :excludedPlayers="excludedPlayers"
           @update:modelValue="addPlayer"
         />

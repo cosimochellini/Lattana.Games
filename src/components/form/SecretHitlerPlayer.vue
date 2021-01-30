@@ -69,9 +69,6 @@ export default defineComponent({
       },
       deep: true,
     },
-    excludedPlayers() {
-      console.log(this.excludedPlayers);
-    },
   },
   methods: {},
 });

@@ -39,7 +39,9 @@
           <div class="flex justify-evenly items-center">
             <img
               class="w-10 h-10 rounded-full"
-              :src="urlFor(mate.player.player.profileImage).width(100)"
+              :src="
+                urlFor(mate.player.profileImage).width(100).toString() ?? ''
+              "
             />
             <span
               class="ml-2 text-gray-700 font-semibold font-sans tracking-wide"
@@ -66,7 +68,9 @@
           <div class="flex justify-around items-center">
             <img
               class="w-10 h-10 rounded-full"
-              :src="urlFor(mate.player.player.profileImage).width(100)"
+              :src="
+                urlFor(mate.player.profileImage).width(100).toString() ?? ''
+              "
             />
             <span
               class="ml-2 text-gray-700 font-semibold font-sans tracking-wide"
@@ -108,12 +112,10 @@ export default defineComponent({
   data() {
     return {
       matches: [] as trumpMatchPlayer[],
-      currentPlayer: {} as player,
+      currentPlayer: getPlayer() as player,
     };
   },
   mounted() {
-    this.currentPlayer = getPlayer() as player;
-
     this.loadMatches();
   },
   methods: {
@@ -178,6 +180,7 @@ export default defineComponent({
     },
     worstMates(): Mate[] {
       const { mates } = this.stats;
+
       return mates
         .slice(mates.length - 3, mates.length)
         .sort(byValue("ratio", byNumber()));

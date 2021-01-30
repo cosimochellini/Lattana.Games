@@ -1,7 +1,11 @@
 <template>
-  <select v-model="selected" @change="emitChanges" class="base-select">
-    <option disabled :value="{}">seleziona giocatore</option>
-    <option v-for="player in fetchedPlayers" :key="player._id" :value="player">
+  <select v-model="selectedId" class="base-select">
+    <option disabled :value="''">seleziona giocatore</option>
+    <option
+      v-for="player in fetchedPlayers"
+      :key="player._id"
+      :value="player._id"
+    >
       {{ player.name }} {{ player.surname }}
     </option>
   </select>
@@ -18,9 +22,7 @@ import {
   ConditionBuilder,
 } from "@/utils/sanityQueryBuilder";
 
-const playerQuery = new QueryBuilder(sanityTypes.player)
-  .orderBy(new OrderBuilder("name"))
-  .freeze();
+// const playerQuery =
 
 export default defineComponent({
   name: "UserAutocomplete",
@@ -42,7 +44,10 @@ export default defineComponent({
   data() {
     return {
       fetchedPlayers: [] as player[],
-      selected: {} as player | undefined,
+      selectedId: this.modelValue._id ?? "",
+      playerQuery: new QueryBuilder(sanityTypes.player).orderBy(
+        new OrderBuilder("name")
+      ),
     };
   },
   mounted() {
@@ -53,28 +58,25 @@ export default defineComponent({
       if (this.exactPlayers)
         return (this.fetchedPlayers = this.exactPlayers ?? []);
 
-      const player = this.selected;
+      const excluded = this.excludedPlayers
+        .filter(({ _id }) => _id !== this.selectedId)
+        .map(({ _id }) => _id);
 
-      playerQuery
+      this.playerQuery
         .where(
           new ConditionBuilder("_id in $excluded")
-            .params({ excluded: this.excludedPlayers.map((x) => x._id) })
+            .params({ excluded })
             .optional()
             .reverse()
         )
         .fetch<player[]>()
-        .then((p) => {
-          this.fetchedPlayers = player?._id ? [player, ...p] : p;
-
-          if (this.selected?._id) {
-            this.selected = this.fetchedPlayers.find(
-              (p) => p._id === this.selected?._id
-            );
-          }
-        });
+        .then((p) => (this.fetchedPlayers = p));
     },
     emitChanges() {
-      this.$emit("update:modelValue", this.selected);
+      this.$emit(
+        "update:modelValue",
+        this.fetchedPlayers.find((p) => p._id === this.selectedId) ?? {}
+      );
     },
   },
   watch: {
@@ -88,7 +90,10 @@ export default defineComponent({
       this.fetchPlayers();
     },
     modelValue(player: player) {
-      this.selected = player;
+      this.selectedId = player?._id;
+    },
+    selectedId() {
+      this.emitChanges();
     },
   },
 });

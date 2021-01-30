@@ -1,23 +1,30 @@
 import { uuid } from "@/utils/uuid";
+import { getPlayer } from "../authService";
 import { sanityDocument } from "@/types/base";
 import { sanityClient } from "@/instances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
 import { reference, referenceWithKey } from "@/utils/sanityQueryBuilder";
-import { secretHitlerMatch, secretHitlerMatchPlayer } from "@/types/sanity";
+import {
+  player,
+  secretHitlerMatch,
+  secretHitlerMatchPlayer,
+} from "@/types/sanity";
 
 export const secretHitlerService = {
-  async saveNewMatch(match: secretHitlerMatch) {
+  async saveNewMatch(match: Partial<secretHitlerMatch>) {
     const matchToCreate = {
       _id: uuid(),
       _type: sanityTypes.secretHitlerMatch,
       matchDate: match.matchDate,
       players: [],
       winningRole: match.winningRole,
+      createdBy: reference(getPlayer() as player),
+      updatedBy: null,
     } as sanityDocument<secretHitlerMatch>;
 
     let result = await sanityClient.create(matchToCreate);
 
-    const playersPromises = match.players.map((p) =>
+    const playersPromises = match.players?.map((p) =>
       sanityClient.create({
         _id: uuid(),
         _key: uuid(),
@@ -30,7 +37,7 @@ export const secretHitlerService = {
       } as sanityDocument<secretHitlerMatchPlayer>)
     );
 
-    const savedPlayers = await Promise.all(playersPromises);
+    const savedPlayers = await Promise.all(playersPromises ?? []);
 
     result = await sanityClient
       .patch(result._id)

@@ -39,7 +39,9 @@
           <div class="flex justify-evenly items-center">
             <img
               class="w-10 h-10 rounded-full"
-              :src="urlFor(mate.player.player.profileImage).width(100)"
+              :src="
+                urlFor(mate.player.profileImage).width(100).toString() ?? ''
+              "
             />
             <span
               class="ml-2 text-gray-700 font-semibold font-sans tracking-wide"
@@ -66,7 +68,9 @@
           <div class="flex justify-around items-center">
             <img
               class="w-10 h-10 rounded-full"
-              :src="urlFor(mate.player.player.profileImage).width(100)"
+              :src="
+                urlFor(mate.player.profileImage).width(100).toString() ?? ''
+              "
             />
             <span
               class="ml-2 text-gray-700 font-semibold font-sans tracking-wide"

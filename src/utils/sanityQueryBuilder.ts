@@ -137,6 +137,8 @@ export class QueryBuilder {
   }
 
   private cleanUnFreezed(): void {
+    // eslint-disable-next-line no-debugger
+    // debugger;
     QueryBuilder.filterFreezed(this._conditions);
     QueryBuilder.filterFreezed(this._params);
     QueryBuilder.filterFreezed(this._select);

@@ -20,9 +20,9 @@
 </template>
 
 <script lang="ts">
-import { player, trumpMatchPlayer } from "@/types/sanity";
 import { defineComponent, PropType } from "vue";
 import UserAutocomplete from "./UserAutocomplete.vue";
+import { player, trumpMatchPlayer } from "@/types/sanity";
 
 export default defineComponent({
   name: "TrumpMatchPlayer",
@@ -37,14 +37,15 @@ export default defineComponent({
       type: Array as PropType<player[]>,
       default: () => [] as player[],
     },
+    modelValue: {
+      type: Object as PropType<trumpMatchPlayer>,
+      default: () =>
+        ({ player: {}, win: false, penaltyPoint: false } as trumpMatchPlayer),
+    },
   },
   data() {
     return {
-      match: {
-        player: {},
-        win: false,
-        penaltyPoint: false,
-      } as trumpMatchPlayer,
+      match: this.modelValue,
     };
   },
   watch: {

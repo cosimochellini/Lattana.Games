@@ -1,8 +1,9 @@
 import { uuid } from "@/utils/uuid";
+import { getPlayer } from "../authService";
 import { sanityDocument } from "@/types/base";
 import { sanityClient } from "@/instances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
-import { trumpMatch, trumpMatchPlayer } from "@/types/sanity";
+import { player, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
 import { reference, referenceWithKey } from "@/utils/sanityQueryBuilder";
 
 export const trumpService = {
@@ -18,9 +19,11 @@ export const trumpService = {
       finalScore: match.finalScore,
       callingPlayer: reference(match.callingPlayer),
       players: [],
+      createdBy: reference(getPlayer() as player),
+      updatedBy: undefined,
     } as sanityDocument<trumpMatch>;
 
-    const matchPromise = sanityClient.create(matchToCreate);
+    await sanityClient.create(matchToCreate);
 
     const playersPromises = match.players.map((p) =>
       sanityClient.create({
@@ -36,14 +39,14 @@ export const trumpService = {
 
     const savedPlayers = await Promise.all(playersPromises);
 
-    let result = await matchPromise;
-
-    result = await sanityClient
-      .patch(result._id)
+    return sanityClient
+      .patch(matchToCreate._id)
       .append("players", savedPlayers.map(referenceWithKey))
       .commit();
+  },
 
-    return result;
+  async updateMatch(match: trumpMatch) {
+    return sanityClient.createOrReplace(match);
   },
 
   async deleteExistingMatch(match: trumpMatch) {
