@@ -152,7 +152,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { urlFor } from "@/instances/sanity";
+import { image } from "@/instances/sanity";
 import { getPlayer } from "@/services/authService";
 
 export default defineComponent({
@@ -198,12 +198,7 @@ export default defineComponent({
   },
   computed: {
     profileSrc(): string {
-      return (
-        urlFor(this.player?.profileImage ?? "")
-          .maxWidth(200)
-          .width(200) //todo ottimizzare l'immagine
-          .url() ?? ""
-      );
+      return image(this.player?.profileImage ?? "", 200);
     },
     locale(): string {
       return this.$i18n.locale;

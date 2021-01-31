@@ -1,6 +1,6 @@
 import { uuid } from "./uuid";
 import { Dictionary } from "@/types/base";
-import { sanityClient } from "@/instances/sanity";
+import { readOnlySanityClient, sanityClient } from "@/instances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
 import { QueryableParam, sanityEntity, sanityReference } from "@/types/base";
 
@@ -33,6 +33,7 @@ export class QueryBuilder {
   private _orderBy: Freezable<Order>[] = [];
   private _pagination: { page: number; pageSize: number } | null = null;
   private _freezed: boolean = false;
+  private _sanityClient = sanityClient;
 
   constructor(type: sanityTypes | null = null) {
     if (type) this._type = type;
@@ -88,16 +89,19 @@ export class QueryBuilder {
     return this;
   }
 
-  public fetch<T>(useCdn: boolean = true) {
-    const client = useCdn ? sanityClient : sanityClient;
+  public cached(): Readonly<QueryBuilder> {
+    this._sanityClient = readOnlySanityClient;
 
+    return this;
+  }
+  public fetch<T>() {
     const params = this._params.reduce((x, y) => ({ ...x, ...y.value }), {});
 
     const query = this.build();
 
     if (this._freezed) this.cleanUnFreezed();
 
-    return client.fetch<T>(query, params);
+    return this._sanityClient.fetch<T>(query, params);
   }
 
   private handlePagination(): string {

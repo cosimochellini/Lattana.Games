@@ -39,9 +39,7 @@
           <div class="flex justify-evenly items-center">
             <img
               class="w-10 h-10 rounded-full"
-              :src="
-                urlFor(mate.player.profileImage).width(100).toString() ?? ''
-              "
+              :src="image(mate.player.profileImage, 100)"
             />
             <span
               class="ml-2 text-gray-700 font-semibold font-sans tracking-wide"
@@ -68,9 +66,7 @@
           <div class="flex justify-around items-center">
             <img
               class="w-10 h-10 rounded-full"
-              :src="
-                urlFor(mate.player.profileImage).width(100).toString() ?? ''
-              "
+              :src="image(mate.player.profileImage, 100)"
             />
             <span
               class="ml-2 text-gray-700 font-semibold font-sans tracking-wide"
@@ -92,7 +88,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { urlFor } from "@/instances/sanity";
+import { image } from "@/instances/sanity";
 import { byNumber, byValue } from "sort-es";
 import { getPlayer } from "@/services/authService";
 import { Mate } from "@/utils/classes/stats/baseStats";
@@ -121,7 +117,7 @@ export default defineComponent({
     this.loadMatches();
   },
   methods: {
-    urlFor,
+    image,
     percentageFormatter,
     loadMatches() {
       matchesQuery

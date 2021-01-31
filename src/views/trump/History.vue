@@ -13,7 +13,7 @@
           <img
             v-for="p in match.players"
             :key="p._id"
-            :src="image(p.player.profileImage)"
+            :src="image(p.player.profileImage, 40)"
             :title="`${p.player.name} ${p.player.surname}`"
             class="inline-block h-10 w-10 rounded-full ring-2 my-2"
             :class="borderColor(p.win)"
@@ -26,7 +26,7 @@
         Giocatore chiamante :
         <span class="ml-1">
           <img
-            :src="image(match.callingPlayer.profileImage)"
+            :src="image(match.callingPlayer.profileImage, 40)"
             loading="lazy"
             class="rounded-full"
             :title="`${match.callingPlayer.name} ${match.callingPlayer.surname}`"
@@ -60,7 +60,7 @@
 
 <script lang="ts">
 import { useRouter } from "vue-router";
-import { urlFor } from "@/instances/sanity";
+import { image } from "@/instances/sanity";
 import { trumpMatch } from "@/types/sanity";
 import { dayFormatter } from "@/utils/formatters";
 import { defineComponent, onMounted, ref } from "vue";
@@ -68,7 +68,6 @@ import { sanityTypes } from "@/constants/roleConstants";
 import { overlayService } from "@/services/overlayService";
 import { trumpService } from "@/services/games/trumpService";
 import { notificationService } from "@/services/notificationService";
-import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { OrderBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
 
 const matchesQuery = new QueryBuilder(sanityTypes.trumpMatch)
@@ -92,8 +91,6 @@ export default defineComponent({
         })
         .catch(notificationService.danger);
     };
-
-    const image = (img: SanityImageSource) => urlFor(img).width(40);
 
     const deleteMatch = (match: trumpMatch) =>
       overlayService.showOverlay() &&

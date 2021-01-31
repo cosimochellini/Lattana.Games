@@ -10,7 +10,7 @@
     </span>
     <img
       class="w-10 h-10 rounded-full text-right"
-      :src="image(user.profileImage).width(100).toString() ?? ''"
+      :src="image(user.profileImage, 100)"
     />
     <button
       class="bg-transparent border border-red-800 rounded-md p-1 px-2"
@@ -24,11 +24,8 @@
 
 <script lang="ts">
 import { player } from "@/types/sanity";
-import { urlFor } from "@/instances/sanity";
+import { image } from "@/instances/sanity";
 import { defineComponent, PropType } from "vue";
-import { SanityImageSource } from "@sanity/image-url/lib/types/types";
-
-const image = (img: SanityImageSource) => urlFor(img).width(100);
 
 export default defineComponent({
   name: "draggable-user",

@@ -22,7 +22,7 @@ const login = (name: string, pin: string) =>
         "(nickname == $name && pin == $pin) || (email == $name && pin == $pin)"
       ).params({ name: name.toLowerCase(), pin: Number.parseInt(pin) })
     )
-    .fetch<player | null>(false)
+    .fetch<player | null>()
     .then((p) => setPlayer(p));
 
 const isAuthorized = (

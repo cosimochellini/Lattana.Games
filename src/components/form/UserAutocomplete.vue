@@ -45,9 +45,9 @@ export default defineComponent({
     return {
       fetchedPlayers: [] as player[],
       selectedId: this.modelValue._id ?? "",
-      playerQuery: new QueryBuilder(sanityTypes.player).orderBy(
-        new OrderBuilder("name")
-      ),
+      playerQuery: new QueryBuilder(sanityTypes.player)
+        .orderBy(new OrderBuilder("name"))
+        .cached(),
     };
   },
   mounted() {

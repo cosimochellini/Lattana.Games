@@ -12,7 +12,7 @@
           <img
             v-for="p in match.players"
             :key="p._id"
-            :src="image(p.player.profileImage)"
+            :src="image(p.player.profileImage, 100)"
             :title="`${p.player.name} ${p.player.surname}`"
             :class="borderColor(p.role)"
             class="inline-block h-8 w-8 rounded-full ring-2 my-2"
@@ -45,14 +45,13 @@
 
 <script lang="ts">
 import { useRouter } from "vue-router";
-import { urlFor } from "@/instances/sanity";
+import { image } from "@/instances/sanity";
 import { dayFormatter } from "@/utils/formatters";
 import { secretHitlerMatch } from "@/types/sanity";
 import { defineComponent, onMounted, ref } from "vue";
 import { overlayService } from "@/services/overlayService";
 import { byRole } from "@/utils/sortables/secratHitlerSortables";
 import { notificationService } from "@/services/notificationService";
-import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { OrderBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
 import { secretHitlerService } from "@/services/games/secretHitlerService";
@@ -75,8 +74,6 @@ export default defineComponent({
         })
         .catch(notificationService.danger);
     };
-
-    const image = (img: SanityImageSource) => urlFor(img).width(100);
 
     const deleteMatch = (match: secretHitlerMatch) =>
       overlayService.showOverlay() &&

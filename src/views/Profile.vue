@@ -88,7 +88,7 @@
 
 <script lang="ts">
 import { player } from "@/types/sanity";
-import { urlFor } from "@/instances/sanity";
+import { image as imageBuilder } from "@/instances/sanity";
 import { getPlayer } from "@/services/authService";
 import { PhotoTaker } from "@/services/photoTakerService";
 import { computed, defineComponent, onMounted, ref } from "vue";
@@ -110,7 +110,7 @@ export default defineComponent({
     const load = () => imageService.value.load();
 
     const profileImage = computed(() =>
-      urlFor(currentPlayer.value.profileImage).toString()
+      imageBuilder(currentPlayer.value.profileImage, 500)
     );
 
     onMounted(() => {

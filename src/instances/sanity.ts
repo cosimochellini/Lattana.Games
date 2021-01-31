@@ -21,4 +21,9 @@ const readOnlySanityClient = sanityClientFactory({
 const urlFor = (source: SanityImageSource) =>
   imageUrlBuilder(readOnlySanityClient).image(source);
 
-export { sanityClient, readOnlySanityClient, urlFor };
+const image = (source: SanityImageSource, width: number) =>
+  urlFor(source)
+    .width(width)
+    .toString() as string;
+
+export { sanityClient, readOnlySanityClient, urlFor, image };

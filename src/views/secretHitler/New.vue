@@ -86,11 +86,9 @@
 <script lang="ts">
 import draggable from "vuedraggable";
 import { defineComponent } from "vue";
-import { urlFor } from "@/instances/sanity";
 import { overlayService } from "@/services/overlayService";
 import DraggableUser from "@/components/base/DraggableUser.vue";
 import { notificationService } from "@/services/notificationService";
-import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
 import { secretHitlerService } from "@/services/games/secretHitlerService";
@@ -101,8 +99,6 @@ import {
   secretHitlerMatch,
   secretHitlerMatchPlayer,
 } from "@/types/sanity";
-
-const image = (img: SanityImageSource) => urlFor(img).width(100);
 
 const playersQuery = new QueryBuilder(
   sanityTypes.secretHitlerMatchPlayer
@@ -140,14 +136,13 @@ export default defineComponent({
     }
   },
   methods: {
-    image,
     saveMatch() {
       try {
-        const matchToSave = {
+        const matchToSave: Partial<secretHitlerMatch> = {
           matchDate: new Date(),
           winningRole: this.winningRole,
           players: this.totalPlayers,
-        } as secretHitlerMatch;
+        };
 
         overlayService.showOverlay();
 
