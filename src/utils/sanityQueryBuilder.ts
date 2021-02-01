@@ -94,14 +94,15 @@ export class QueryBuilder {
 
     return this;
   }
-  public fetch<T>() {
+  public fetch<T>(): Promise<T> {
     const params = this._params.reduce((x, y) => ({ ...x, ...y.value }), {});
 
     const query = this.build();
 
-    if (this._freezed) this.cleanUnFreezed();
-
-    return this._sanityClient.fetch<T>(query, params);
+    return this._sanityClient.fetch<T>(query, params).then((response) => {
+      if (this._freezed) this.cleanUnFreezed();
+      return response;
+    });
   }
 
   private handlePagination(): string {

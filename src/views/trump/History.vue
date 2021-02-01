@@ -35,23 +35,17 @@
       </div>
       <hr class="my-2" />
       <div class="flex justify-items-center justify-around">
-        <button
-          class="px-2 py-1 shadow-sm bg-red-200 rounded-md w-20"
-          @click="deleteMatch(match)"
-        >
+        <button class="base-button danger" @click="deleteMatch(match)">
           Delete
+          <i class="fas fa-trash-alt"></i>
         </button>
-        <button
-          class="px-2 py-1 shadow-sm bg-gray-200 rounded-md w-20"
-          @click="editMatch(match)"
-        >
+        <button class="base-button info" @click="editMatch(match)">
           Edit
+          <i class="fas fa-edit"></i>
         </button>
-        <button
-          class="px-2 py-1 shadow-sm bg-blue-200 rounded-md w-20"
-          @click="copyMatch(match)"
-        >
+        <button class="base-button primary" @click="copyMatch(match)">
           Copy
+          <i class="fas fa-copy"></i>
         </button>
       </div>
     </article>

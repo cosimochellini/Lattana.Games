@@ -11,3 +11,28 @@
 .base-select {
   @apply shadow-md rounded-sm bg-gray-200 p-2;
 }
+
+.base-button {
+  @apply group inline-flex items-center content-center place-items-center py-2 px-3 text-gray-900 rounded-lg shadow-sm  focus:outline-none;
+  @apply tracking-wider font-sans;
+}
+
+.base-button.primary {
+  @apply bg-blue-300 focus:bg-blue-400 hover:bg-blue-400;
+}
+
+.base-button.danger {
+  @apply bg-red-300 focus:bg-red-400 hover:bg-red-400;
+}
+
+.base-button.warning {
+  @apply bg-yellow-300 focus:bg-yellow-400  hover:bg-yellow-400;
+}
+
+.base-button.info {
+  @apply bg-gray-300 focus:bg-gray-400  hover:bg-gray-400;
+}
+
+.base-button .fas {
+  @apply ml-1;
+}

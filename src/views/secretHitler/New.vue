@@ -8,7 +8,7 @@
       :list="remainingPlayers"
       group="people"
       itemKey="_id"
-      class="base-card"
+      class="base-card m-auto"
     >
       <template #header>
         <label class="font-semibold"> Giocatori da smistare </label>
@@ -28,7 +28,7 @@
       :list="liberalPlayers"
       group="people"
       itemKey="_id"
-      class="base-card mt-2 hover:border-2 hover:border-blue-400"
+      class="base-card mt-2 m-auto"
     >
       <template #header>
         <label class="font-semibold"> Giocatori liberali </label>
@@ -42,7 +42,7 @@
       :list="fascistPlayers"
       group="people"
       itemKey="_id"
-      class="base-card mt-2"
+      class="base-card mt-2 m-auto"
     >
       <template #header>
         <label class="font-semibold"> Giocatori fascisti </label>
@@ -73,11 +73,9 @@
         />
       </div>
 
-      <button
-        class="bg-blue-500 px-2 text-pink-50 py-1 block p-1 mt-2 md:w-1/4 w-full"
-        @click.prevent="saveMatch"
-      >
+      <button class="base-button primary mt-1" @click.prevent="saveMatch">
         salva
+        <i class="fas fa-save ml-1"></i>
       </button>
     </form>
   </div>

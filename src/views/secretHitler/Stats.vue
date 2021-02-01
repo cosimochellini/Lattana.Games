@@ -108,12 +108,10 @@ export default defineComponent({
   data() {
     return {
       matches: [] as secretHitlerMatchPlayer[],
-      currentPlayer: {} as player,
+      currentPlayer: getPlayer() as player,
     };
   },
   mounted() {
-    this.currentPlayer = getPlayer() as player;
-
     this.loadMatches();
   },
   methods: {
