@@ -1,10 +1,13 @@
 <template>
   <select v-model="selectedId" class="base-select">
-    <option disabled :value="''">seleziona giocatore</option>
+    <option disabled :value="''" class="base-option">
+      seleziona giocatore
+    </option>
     <option
       v-for="player in fetchedPlayers"
       :key="player._id"
       :value="player._id"
+      class="base-option"
     >
       {{ player.name }} {{ player.surname }}
     </option>

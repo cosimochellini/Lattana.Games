@@ -4,20 +4,20 @@
     :class="color"
   >
     <span
-      class="ml-2 text-gray-700 font-semibold font-sans tracking-wide text-left"
+      class="ml-2 text-gray-700 font-semibold font-sans tracking-wide text-left flex-1"
     >
       {{ user.name }} {{ user.surname }}
     </span>
     <img
-      class="w-10 h-10 rounded-full text-right"
+      class="w-10 h-10 rounded-full text-right mr-2"
       :src="image(user.profileImage, 100)"
     />
     <button
-      class="bg-transparent border border-red-800 rounded-md p-1 px-2"
+      class="base-button transparent w-12"
       v-show="showDelete"
       @click.prevent="emitDelete"
     >
-      <i class="fas fa-trash-alt"></i>
+      <i class="fas fa-trash-alt mr-1"></i>
     </button>
   </div>
 </template>

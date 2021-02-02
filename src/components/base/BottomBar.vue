@@ -2,7 +2,7 @@
   <div class="w-full">
     <div class="mt-14"></div>
     <section
-      class="fixed inset-x-0 bottom-0 z-10 bg-white shadow-md rounded-t-md"
+      class="fixed inset-x-0 bottom-0 z-50 bg-white border rounded-t-md"
     >
       <div class="flex justify-between">
         <router-link
