@@ -1,21 +1,15 @@
 <template>
-  <nav class="bg-gray-800 rounded-b-sm">
+  <nav class="rounded-b-md" :class="currentState.color">
     <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
       <div class="relative flex items-center justify-between h-16">
         <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
           <!-- Mobile menu button-->
           <button
-            class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-purple-800 hover:bg-gray-700 focus:outline-none focus:bg-gray-700 focus:text-white transition duration-150 ease-in-out"
+            class="inline-flex items-center justify-center p-2 rounded-md text-gray-900 focus:bg-transparent transition duration-150 ease-in-out"
             aria-label="Main menu"
             aria-expanded="false"
             @click.stop="menuClick"
           >
-            <!-- Icon when menu is closed. -->
-            <!--
-            Heroicon name: menu
-
-            Menu open: "hidden", Menu closed: "block"
-          -->
             <svg
               class="h-6 w-6"
               :class="{
@@ -34,12 +28,7 @@
                 d="M4 6h16M4 12h16M4 18h16"
               />
             </svg>
-            <!-- Icon when menu is open. -->
-            <!--
-            Heroicon name: x
 
-            Menu open: "block", Menu closed: "hidden"
-          -->
             <svg
               class="h-6 w-6"
               :class="{
@@ -61,14 +50,19 @@
           </button>
         </div>
         <div
-          class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start"
+          class="flex-1 flex items-center place-items-center content-center justify-center sm:items-stretch sm:justify-start justify-items-center text-gray-900"
         >
+          <span
+            class="font-semibold leading-3 text-2xl tracking-widest capitalize"
+          >
+            {{ currentState.name }}
+          </span>
           <div class="flex-shrink-0">
-            <img
-              class="block h-8 w-auto"
-              :src="`${publicPath}heart.svg`"
-              alt="Workflow logo"
-            />
+            <i
+              class="block w-auto"
+              :class="`ml-1 text-2xl ${currentState.icon}`"
+            >
+            </i>
           </div>
           <div class="hidden sm:block sm:ml-6">
             <div class="flex">
@@ -76,7 +70,8 @@
                 v-for="(route, index) in navbarRoutes"
                 :key="route.route"
                 :to="{ name: route.route, params: { locale } }"
-                :class="getDesktopMenuClass(route.route, index)"
+                class="px-3 py-2 rounded-md text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out text-gray-900 hover:text-white"
+                :class="index ? 'ml-4' : ''"
               >
                 {{ route.name }}
               </router-link>
@@ -97,7 +92,7 @@
               >
                 <img
                   @click="profileClick"
-                  class="h-8 w-8 rounded-full"
+                  class="h-10 w-10 rounded-full border border-gray-900"
                   :src="profileSrc"
                   alt="User Profile"
                 />
@@ -120,7 +115,7 @@
                   v-for="route in profileRoutes"
                   :key="route.route"
                   :to="{ name: route.route, params: { locale } }"
-                  class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                  class="block px-4 py-2 text-sm leading-5 text-gray-900 transition duration-150 ease-in-out"
                   role="menuitem"
                 >
                   {{ route.name }}
@@ -141,7 +136,7 @@
           v-for="route in navbarRoutes"
           :key="route.route"
           :to="{ name: route.route, params: { locale } }"
-          class="block px-3 py-2 rounded-md text-base font-medium focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out text-gray-300 hover:text-white hover:bg-gray-700"
+          class="block px-3 py-2 rounded-md text-base font-medium focus:outline-none transition duration-150 ease-in-out text-gray-900"
         >
           {{ route.name }}
         </router-link>
@@ -152,8 +147,25 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { Dictionary } from "@/types/base";
 import { image } from "@/instances/sanity";
 import { getPlayer } from "@/services/authService";
+
+type State = {
+  name: string;
+  color: string;
+  icon: string;
+};
+
+const availableStates: Dictionary<State> = {
+  trump: { name: "trump", color: "bg-blue-500", icon: "far fa-heart" },
+  secretHitler: {
+    name: "secretHitler",
+    color: "bg-red-400",
+    icon: "fas fa-skull-crossbones",
+  },
+  default: { name: "Lattana Games", color: "bg-gray-600", icon: "" },
+};
 
 export default defineComponent({
   data() {
@@ -183,25 +195,20 @@ export default defineComponent({
       this.state.menuOpen = !this.state.menuOpen;
       setTimeout(() => (this.state.menuOpen = false), 2000);
     },
-    getDesktopMenuClass(route: string, index: number): string {
-      const classes = [
-        "px-3 py-2 rounded-md text-sm font-medium leading-5 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out",
-      ];
-
-      if (this.$route.path === route) classes.push(`text-white bg-gray-900`);
-      else classes.push(`text-gray-300 hover:text-white hover:bg-gray-700`);
-
-      if (index === 0) classes.push(`ml-4`);
-
-      return classes.join(" ");
-    },
   },
   computed: {
     profileSrc(): string {
-      return image(this.player?.profileImage ?? "", 200);
+      return image(this.player?.profileImage ?? "", 300);
     },
     locale(): string {
       return this.$i18n.locale;
+    },
+    currentState(): State {
+      for (const key in availableStates)
+        if (this.$route.matched.find((r) => r.name === key))
+          return availableStates[key];
+
+      return availableStates["default"];
     },
   },
 });
