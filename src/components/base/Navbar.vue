@@ -55,7 +55,7 @@
           <span
             class="font-semibold leading-3 text-2xl tracking-widest capitalize"
           >
-            {{ currentState.name }}
+            {{ $t(`navbar.route.${currentState.name}`) }}
           </span>
           <div class="flex-shrink-0">
             <i
@@ -73,7 +73,7 @@
                 class="px-3 py-2 rounded-md text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out text-gray-900 hover:text-white"
                 :class="index ? 'ml-4' : ''"
               >
-                {{ route.name }}
+                {{ $t(`navbar.route.${route.name}`) }}
               </router-link>
             </div>
           </div>
@@ -115,10 +115,10 @@
                   v-for="route in profileRoutes"
                   :key="route.route"
                   :to="{ name: route.route, params: { locale } }"
-                  class="block px-4 py-2 text-sm leading-5 text-gray-900 transition duration-150 ease-in-out"
+                  class="block px-4 py-2 capitalize text-md tracking-wider leading-5 text-gray-900 transition duration-150 ease-in-out"
                   role="menuitem"
                 >
-                  {{ route.name }}
+                  {{ $t(`navbar.profileRoute.${route.name}`) }}
                 </router-link>
               </div>
             </div>
@@ -136,9 +136,9 @@
           v-for="route in navbarRoutes"
           :key="route.route"
           :to="{ name: route.route, params: { locale } }"
-          class="block px-3 py-2 rounded-md text-base font-medium focus:outline-none transition duration-150 ease-in-out text-gray-900"
+          class="block px-3 py-2 capitalize rounded-md text-base font-semibold tracking-widest focus:outline-none transition duration-150 ease-in-out text-gray-900"
         >
-          {{ route.name }}
+          {{ $t(`navbar.route.${route.name}`) }}
         </router-link>
       </div>
     </div>
@@ -177,12 +177,12 @@ export default defineComponent({
       },
       player: getPlayer(),
       navbarRoutes: [
-        { name: "Briscola", route: "trumpHistory" },
-        { name: "SecretHitler", route: "secretHitlerHistory" },
+        { name: "trump", route: "trumpHistory" },
+        { name: "secretHitler", route: "secretHitlerHistory" },
       ],
       profileRoutes: [
-        { name: "Your Profile", route: "profile" },
-        { name: "Logout", route: "logout" },
+        { name: "profile", route: "profile" },
+        { name: "logout", route: "logout" },
       ],
     };
   },

@@ -1,3 +1,28 @@
 {
-    "message": "ciao!"
+    "bottom": {
+        "route": {
+            "history": "cronologia",
+            "new": "aggiungi",
+            "stats": "statistiche"
+        }
+    },
+    "navbar": {
+        "route": {
+            "trump": "briscola",
+            "secretHitler": "duce segreto"
+        },
+        "profileRoute": {
+            "profile": "profilo",
+            "logout": "sloggati"
+        }
+    },
+    "buttons": {
+        "base": {
+            "add": "aggiungi",
+            "save": "salva",
+            "edit": "modifica",
+            "delete": "cancella",
+            "copy": "copia"
+        }
+    }
 }

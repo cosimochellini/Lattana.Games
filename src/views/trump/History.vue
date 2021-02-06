@@ -3,13 +3,13 @@
     class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 lg:max-w-screen-2xl m-auto p-4"
   >
     <article v-for="match in matches" :key="match._id" class="base-card">
-      <div>data : {{ dayFormatter(match.matchDate) }}</div>
-      <div>punteggio iniziale : {{ match.startingScore }}</div>
-      <div>punteggio finale : {{ match.finalScore }}</div>
+      <div>Data : {{ dayFormatter(match.matchDate) }}</div>
+      <div>Punteggio iniziale : {{ match.startingScore }}</div>
+      <div>Punteggio finale : {{ match.finalScore }}</div>
       <hr class="my-2" />
-      <div class="flex flex-row items-center justify-evenly">
-        Giocatori:
-        <div class="flex -space-x-1 overflow-hidden px-1">
+      <div class="flex flex-row items-center place-content-between">
+        <span class="">Giocatori:</span>
+        <div class="flex flex-grow m-auto -space-x-1 overflow-hidden px-1 ml-10">
           <img
             v-for="p in match.players"
             :key="p._id"
@@ -24,7 +24,7 @@
       <hr class="my-2" />
       <div class="flex flex-row items-center justify-self-auto">
         Giocatore chiamante :
-        <span class="ml-1">
+        <span class="text-center m-auto ml-16">
           <img
             :src="image(match.callingPlayer.profileImage, 40)"
             loading="lazy"
@@ -36,15 +36,16 @@
       <hr class="my-2" />
       <div class="flex justify-items-center justify-around">
         <button class="base-button danger" @click="deleteMatch(match)">
-          Delete
+          {{ $t("buttons.base.delete") }}
           <i class="fas fa-trash-alt"></i>
         </button>
-        <button class="base-button info" @click="editMatch(match)">
-          Edit
+        <!-- @click="editMatch(match)" -->
+        <button class="base-button info">
+          {{ $t("buttons.base.edit") }}
           <i class="fas fa-edit"></i>
         </button>
         <button class="base-button primary" @click="copyMatch(match)">
-          Copy
+          {{ $t("buttons.base.copy") }}
           <i class="fas fa-copy"></i>
         </button>
       </div>

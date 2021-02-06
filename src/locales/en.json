@@ -1,3 +1,28 @@
 {
-    "message": "hi!"
+    "bottom": {
+        "route": {
+            "history": "history",
+            "new": "create",
+            "stats": "statistics"
+        }
+    },
+    "navbar": {
+        "route": {
+            "trump": "trump",
+            "secretHitler": "secret hitler"
+        },
+        "profileRoute": {
+            "profile": "profile",
+            "logout": "logout"
+        }
+    },
+    "buttons": {
+        "base": {
+            "add": "add",
+            "save": "save",
+            "edit": "edit",
+            "delete": "delete",
+            "copy": "copy"
+        }
+    }
 }

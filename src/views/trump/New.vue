@@ -98,10 +98,11 @@
         </div>
       </article>
       <button
-        class="bg-blue-500 px-2 text-pink-50 py-1 block p-1 mt-2 md:w-1/4 w-full"
+        class="base-button primary w-full"
         @click.prevent="saveMatch"
       >
         salva
+        <i class="fas fa-save ml-1"></i>
       </button>
     </form>
   </div>
