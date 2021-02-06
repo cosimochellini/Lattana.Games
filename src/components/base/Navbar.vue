@@ -120,6 +120,24 @@
                 >
                   {{ $t(`navbar.profileRoute.${route.name}`) }}
                 </router-link>
+                <div class="w-full mt-2">
+                  <div class="inline-flex">
+                    <button
+                      class="lang-button rounded-l-lg"
+                      @click="() => (currentLocale = 'it')"
+                      :class="{ active: currentLocale === 'it' }"
+                    >
+                      ita
+                    </button>
+                    <button
+                      class="lang-button rounded-r-lg"
+                      :class="{ active: currentLocale === 'en' }"
+                      @click="() => (currentLocale = 'en')"
+                    >
+                      eng
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -146,10 +164,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import { Dictionary } from "@/types/base";
 import { image } from "@/instances/sanity";
 import { getPlayer } from "@/services/authService";
+import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 
 type State = {
   name: string;
@@ -186,6 +206,27 @@ export default defineComponent({
       ],
     };
   },
+  setup() {
+    const router = useRouter();
+    const { locale } = useI18n({ useScope: "global" });
+
+    const currentLocale = ref(locale.value);
+    // sync to switch locale from router locale path
+    watch(router.currentRoute, (route) => {
+      currentLocale.value = route.params.locale as string;
+    });
+
+    watch(currentLocale, (val) => {
+      router.push({
+        name: router.currentRoute.value.name as string,
+        params: { locale: val },
+      });
+    });
+
+    return {
+      currentLocale,
+    };
+  },
   methods: {
     profileClick() {
       this.state.profileOpen = true;
@@ -215,4 +256,10 @@ export default defineComponent({
 </script>
 
 <style>
+.lang-button {
+  @apply w-24 bg-white text-gray-900 font-bold border appearance-none focus:ring border-blue-600 outline-none tracking-widest;
+}
+.lang-button.active {
+  @apply bg-blue-400;
+}
 </style>

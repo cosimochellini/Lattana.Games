@@ -3,8 +3,8 @@
     class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 lg:max-w-screen-2xl m-auto p-4"
   >
     <article v-for="match in matches" :key="match._id" class="base-card">
-      <div>data : {{ dayFormatter(match.matchDate) }}</div>
-      <div>partito vittorioso : {{ match.winningRole }}</div>
+      <div>Data : {{ dayFormatter(match.matchDate) }}</div>
+      <div>Partito vittorioso : {{ match.winningRole }}</div>
       <hr class="my-2" />
       <div class="flex flex-row items-center justify-around">
         Giocatori:
@@ -24,15 +24,18 @@
       <hr class="my-2" />
       <div class="flex justify-items-center justify-around">
         <button class="base-button danger" @click="deleteMatch(match)">
-          Delete
+          {{ $t("buttons.base.delete") }}
+
           <i class="fas fa-trash-alt"></i>
         </button>
         <button class="base-button info">
-          Edit
+          {{ $t("buttons.base.edit") }}
+
           <i class="fas fa-edit"></i>
         </button>
         <button class="base-button primary" @click="copyMatch(match)">
-          Copy
+          {{ $t("buttons.base.copy") }}
+
           <i class="fas fa-copy"></i>
         </button>
       </div>

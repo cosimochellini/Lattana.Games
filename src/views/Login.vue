@@ -1,9 +1,16 @@
 <template>
   <div class="grid place-items-center mt-16 pt-16">
     <div class="w-full md:w-1/2 lg:w-1/3 pt-4 block">
-      <span class="text-xl font-extrabold leading-4 m-auto pt-2 px-16">
-        Sign in with your credentials
+      <span
+        class="text-2xl text-center block font-extrabold font-sans tracking-wider leading-4 pt-2"
+      >
+        Lattana Games
       </span>
+      <div
+        class="text-xl text-center font-semibold tracking-wider leading-4 mt-6"
+      >
+        Sign in with your credentials
+      </div>
       <form class="px-8 pt-6 pb-8">
         <input
           type="text"
@@ -19,7 +26,10 @@
           class="rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
           autocomplete="current-password"
         />
-        <button @click.prevent="doLogin" class="loginButton w-full">
+        <button
+          @click.prevent="doLogin"
+          class="loginButton w-full tracking-widest"
+        >
           Sign in
         </button>
         <alert v-show="state.incorrectCredential" class="mt-4 text-left">
@@ -81,7 +91,7 @@ export default defineComponent({
 }
 
 .loginButton {
-  @apply bg-gradient-to-r from-purple-600 to-purple-800 py-2 my-4 text-white font-bold rounded;
+  @apply bg-gradient-to-r from-blue-600 to-blue-800 py-2 my-4 text-white font-bold rounded;
 }
 
 .loginButton:hover {
