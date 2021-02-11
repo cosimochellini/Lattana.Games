@@ -112,7 +112,7 @@ export class QueryBuilder {
 
     if (pageSize === 1) return `[${page - 1}]`;
 
-    return `$[{(page - 1) * pageSize}...${page * pageSize}]`;
+    return `[${(page - 1) * pageSize}...${page * pageSize}]`;
   }
 
   private build(): string {

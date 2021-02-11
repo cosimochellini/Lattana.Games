@@ -1,10 +1,10 @@
 <template>
   <div class="max-w-xl md:max-w-4xl px-4 py-4 mx-auto">
     <div class="font-semibold my-4">
-      <label>Giocatore corrente</label>
+      <h2 class="base-title my-1 py-1">Giocatore corrente</h2>
       <user-autocomplete v-model="currentPlayer" class="block px-2 py-1" />
     </div>
-    <h2 class="font-semibold">Statistiche 📊</h2>
+    <h2 class="base-title my-1 py-1">Statistiche 📊</h2>
     <div
       class="grid grid-flow-row gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-5"
     >

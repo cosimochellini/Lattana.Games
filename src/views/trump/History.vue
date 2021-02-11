@@ -2,6 +2,7 @@
   <div
     class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 lg:max-w-screen-2xl m-auto p-4"
   >
+  <h2 class="base-title">Le tue partite recenti</h2>
     <article v-for="match in matches" :key="match._id" class="base-card">
       <div>Data : {{ dayFormatter(match.matchDate) }}</div>
       <div>Punteggio iniziale : {{ match.startingScore }}</div>
@@ -9,7 +10,9 @@
       <hr class="my-2" />
       <div class="flex flex-row items-center place-content-between">
         <span class="">Giocatori:</span>
-        <div class="flex flex-grow m-auto -space-x-1 overflow-hidden px-1 ml-10">
+        <div
+          class="flex flex-grow m-auto -space-x-1 overflow-hidden px-1 ml-10"
+        >
           <img
             v-for="p in match.players"
             :key="p._id"
@@ -56,18 +59,33 @@
 <script lang="ts">
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
-import { trumpMatch } from "@/types/sanity";
+import { player, trumpMatch } from "@/types/sanity";
 import { dayFormatter } from "@/utils/formatters";
 import { defineComponent, onMounted, ref } from "vue";
 import { sanityTypes } from "@/constants/roleConstants";
 import { overlayService } from "@/services/overlayService";
 import { trumpService } from "@/services/games/trumpService";
 import { notificationService } from "@/services/notificationService";
-import { OrderBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
+import {
+  OrderBuilder,
+  QueryBuilder,
+  ConditionBuilder,
+  PaginationBuilder,
+} from "@/utils/sanityQueryBuilder";
+import { getPlayer } from "@/services/authService";
+
+const currentPlayer = getPlayer() as player;
 
 const matchesQuery = new QueryBuilder(sanityTypes.trumpMatch)
   .select(`...,  callingPlayer ->, players[] -> {player ->,...}`)
-  .orderBy(new OrderBuilder("matchDate", true));
+  .where(
+    new ConditionBuilder(`$userId in players[] -> player._ref`).params({
+      userId: currentPlayer._id,
+    })
+  )
+  .orderBy(new OrderBuilder("matchDate", true))
+  .get(new PaginationBuilder(1, 6))
+  .cached();
 
 export default defineComponent({
   components: {},

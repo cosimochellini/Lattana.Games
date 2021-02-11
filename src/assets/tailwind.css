@@ -44,3 +44,7 @@
 .base-button .fas {
   @apply ml-1;
 }
+
+.base-title {
+  @apply font-semibold leading-5 text-xl block
+}

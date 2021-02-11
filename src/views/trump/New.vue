@@ -1,6 +1,6 @@
 <template>
   <div class="container m-auto p-4">
-    <p>Inserisci nuova partita di briscola in 5 🃏🃏</p>
+    <h2 class="base-title my-1 py-1">Inserisci nuova partita 🃏🃏</h2>
     <draggable
       :list="remainingPlayers"
       group="people"

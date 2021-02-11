@@ -47,18 +47,32 @@
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
 import { dayFormatter } from "@/utils/formatters";
-import { secretHitlerMatch } from "@/types/sanity";
+import { player, secretHitlerMatch } from "@/types/sanity";
+import { getPlayer } from "@/services/authService";
 import { defineComponent, onMounted, ref } from "vue";
 import { overlayService } from "@/services/overlayService";
 import { byRole } from "@/utils/sortables/secratHitlerSortables";
 import { notificationService } from "@/services/notificationService";
-import { OrderBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
 import { secretHitlerService } from "@/services/games/secretHitlerService";
+import {
+  OrderBuilder,
+  QueryBuilder,
+  ConditionBuilder,
+  PaginationBuilder,
+} from "@/utils/sanityQueryBuilder";
+
+const currentPlayer = getPlayer() as player;
 
 const matchesQuery = new QueryBuilder(sanityTypes.secretHitlerMatch)
-  .select(`...,  players[] -> {..., player -> {name, surname, profileImage}}`)
-  .orderBy(new OrderBuilder("matchDate", true));
+  .select(`...,  players[] -> {..., player ->}`)
+  .where(
+    new ConditionBuilder(`$userId in players[] -> player._ref`).params({
+      userId: currentPlayer._id,
+    })
+  )
+  .orderBy(new OrderBuilder("matchDate", true))
+  .get(new PaginationBuilder(1, 6));
 
 export default defineComponent({
   setup() {
