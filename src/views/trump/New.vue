@@ -1,6 +1,6 @@
 <template>
   <div class="container m-auto p-4">
-    <h2 class="base-title my-1 py-1">Inserisci nuova partita 🃏🃏</h2>
+    <h2 class="base-title my-1 py-1">Inserisci nuova partita 🃏</h2>
     <draggable
       :list="remainingPlayers"
       group="people"
@@ -8,7 +8,7 @@
       class="base-card"
     >
       <template #header>
-        <h3>Giocatori da smistare</h3>
+        <h2 class="base-subtitle">Giocatori da smistare</h2>
 
         <user-autocomplete
           class="w-full"
@@ -33,7 +33,7 @@
       class="base-card mt-2 hover:border-2 hover:border-blue-400"
     >
       <template #header>
-        <h3>Squadra 1</h3>
+        <h2 class="base-subtitle">Squadra 1</h2>
       </template>
       <template #item="{ element }">
         <draggable-user :user="element" color="bg-blue-100" />
@@ -47,7 +47,7 @@
       class="base-card mt-2"
     >
       <template #header>
-        <h3>Squadra 2</h3>
+        <h2 class="base-subtitle">Squadra 2</h2>
       </template>
       <template #item="{ element }">
         <draggable-user :user="element" color="bg-red-100" />
@@ -58,11 +58,11 @@
       <article
         class="base-card flex flex-col items-stretch m-2 justify-between sm:w-4/5 md:w-1/2 w-full"
       >
-        <label class="font-semibold"> Giocatore chiamante</label>
+        <h2 class="base-subtitle">Giocatore chiamante</h2>
         <user-autocomplete :exactPlayers="allPlayers" v-model="callingPlayer" />
 
         <div class="m-2 flex justify-between">
-          <label class="font-semibold" for="initial points">
+          <label class="base-subtitle" for="initial points">
             Punteggio chiamato
           </label>
           <input
@@ -75,7 +75,7 @@
           />
         </div>
         <div class="m-2 flex justify-between">
-          <label class="font-semibold" for="initial points">
+          <label class="base-subtitle" for="initial points">
             Punteggio finale
           </label>
           <input
@@ -88,7 +88,7 @@
           />
         </div>
         <div class="m-2 flex justify-between">
-          <label class="font-semibold" for="initial points">
+          <label class="base-subtitle" for="initial points">
             Squadra vincente
           </label>
           <select class="base-select" v-model="firstTeamWin">
@@ -97,10 +97,7 @@
           </select>
         </div>
       </article>
-      <button
-        class="base-button primary w-full"
-        @click.prevent="saveMatch"
-      >
+      <button class="base-button primary" @click.prevent="saveMatch">
         salva
         <i class="fas fa-save ml-1"></i>
       </button>

@@ -1,8 +1,8 @@
 <template>
   <div class="container m-auto p-4">
-    <label class="font-semibold">
-      Inserisci nuova partita di secret hitler ☠☠
-    </label>
+    <h2 class="base-title my-1 py-1">
+      Aggiungi nuova partita di secret hitler ☠
+    </h2>
 
     <draggable
       :list="remainingPlayers"
@@ -11,7 +11,7 @@
       class="base-card m-auto"
     >
       <template #header>
-        <label class="font-semibold"> Giocatori da smistare </label>
+        <h2 class="base-subtitle">Giocatori da smistare</h2>
 
         <user-autocomplete
           class="w-full"
@@ -20,7 +20,11 @@
         />
       </template>
       <template #item="{ element }">
-        <draggable-user :user="element" showDelete @delete="deletePlayer" />
+        <draggable-user
+          :user="element"
+          showDelete
+          @deletePlayer="deletePlayer"
+        />
       </template>
     </draggable>
 
@@ -31,7 +35,7 @@
       class="base-card mt-2 m-auto"
     >
       <template #header>
-        <label class="font-semibold"> Giocatori liberali </label>
+        <h2 class="base-subtitle">Giocatori liberali</h2>
       </template>
       <template #item="{ element }">
         <draggable-user :user="element" color="bg-blue-100" />
@@ -45,7 +49,7 @@
       class="base-card mt-2 m-auto"
     >
       <template #header>
-        <label class="font-semibold"> Giocatori fascisti </label>
+        <h2 class="base-subtitle">Giocatori fascisti</h2>
       </template>
       <template #item="{ element }">
         <draggable-user :user="element" color="bg-red-100" />
@@ -54,7 +58,7 @@
 
     <form @submit.prevent="saveMatch" class="flex flex-col items-center mt-2">
       <div class="base-card w-full mx-2 py-4">
-        <label class="font-semibold"> Ruolo vincitore </label>
+        <h2 class="base-subtitle">Ruolo vincitore</h2>
         <select
           v-model="winningRole"
           class="w-full shadow-md rounded-sm bg-gray-200 p-2"
@@ -64,8 +68,7 @@
           </option>
         </select>
 
-        <label class="font-semibold pt-1"> Hitler</label>
-
+        <h2 class="base-subtitle">Hitler</h2>
         <user-autocomplete
           :exactPlayers="fascistPlayers"
           class="w-full"
@@ -98,9 +101,9 @@ import {
   secretHitlerMatchPlayer,
 } from "@/types/sanity";
 
-const playersQuery = new QueryBuilder(
-  sanityTypes.secretHitlerMatchPlayer
-).select("player ->");
+const playersQuery = new QueryBuilder(sanityTypes.secretHitlerMatchPlayer)
+  .select("player ->")
+  .cached();
 
 export default defineComponent({
   components: { UserAutocomplete, draggable, DraggableUser },

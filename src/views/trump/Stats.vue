@@ -1,7 +1,7 @@
 <template>
   <div class="max-w-xl md:max-w-4xl px-4 py-4 mx-auto">
     <div class="font-semibold my-4">
-      <h2 class="base-title my-1 py-1">Giocatore corrente</h2>
+      <h2 class="base-subtitle my-1 py-1">Giocatore corrente</h2>
       <user-autocomplete v-model="currentPlayer" class="block px-2 py-1" />
     </div>
     <h2 class="base-title my-1 py-1">Statistiche 📊</h2>
@@ -23,13 +23,12 @@
         </div>
       </div>
     </div>
-    <h3 class="font-semibold" v-show="topMates.length">Accoppiamenti</h3>
 
     <div
       class="sm:grid sm:grid-flow-row sm:gap-4 sm:grid-cols-1 md:grid-cols-2"
     >
       <div>
-        <h3 class="font-medium">Migliori 👑</h3>
+        <h3 class="base-subtitle">Accoppiamenti migliori 👑</h3>
 
         <div
           class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded m-2"
@@ -56,7 +55,7 @@
         </div>
       </div>
       <div>
-        <h3 class="font-medium">Peggiori 👎</h3>
+        <h3 class="base-subtitle">Accoppiamenti peggiori 👎</h3>
 
         <div
           class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded m-2"

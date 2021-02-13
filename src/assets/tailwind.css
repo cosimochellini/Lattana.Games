@@ -46,5 +46,9 @@
 }
 
 .base-title {
-  @apply font-semibold leading-5 text-xl block
+  @apply font-semibold leading-5 text-xl block py-1 my-1
+}
+
+.base-subtitle {
+  @apply font-semibold leading-3 block tracking-wider py-1
 }

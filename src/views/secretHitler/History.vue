@@ -2,6 +2,8 @@
   <div
     class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 lg:max-w-screen-2xl m-auto p-4"
   >
+    <h2 class="base-title">Le tue partite recenti</h2>
+
     <article v-for="match in matches" :key="match._id" class="base-card">
       <div>Data : {{ dayFormatter(match.matchDate) }}</div>
       <div>Partito vittorioso : {{ match.winningRole }}</div>
