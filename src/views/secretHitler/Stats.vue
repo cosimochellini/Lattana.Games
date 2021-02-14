@@ -99,6 +99,7 @@ import { SecretHitlerStats } from "@/utils/classes/stats/secretHitlerMatchStats"
 
 const matchesQuery = new QueryBuilder(sanityTypes.secretHitlerMatchPlayer)
   .select("..., player ->, match -> {..., players[] -> {...,player -> } }")
+  .cached()
   .freeze();
 
 export default defineComponent({

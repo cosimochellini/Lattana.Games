@@ -100,6 +100,7 @@ import { ConditionBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
 
 const matchesQuery = new QueryBuilder(sanityTypes.trumpMatchPlayer)
   .select("..., player ->, match -> {..., players[] -> {...,player -> } }")
+  .cached()
   .freeze();
 
 export default defineComponent({
