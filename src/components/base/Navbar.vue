@@ -184,7 +184,7 @@ const availableStates: Dictionary<State> = {
     color: "bg-red-400",
     icon: "fas fa-skull-crossbones",
   },
-  default: { name: "Lattana Games", color: "bg-gray-600", icon: "" },
+  default: { name: "lattanaGames", color: "bg-gray-600", icon: "" },
 };
 
 export default defineComponent({

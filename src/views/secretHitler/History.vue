@@ -6,7 +6,9 @@
 
     <article v-for="match in matches" :key="match._id" class="base-card">
       <div>Data : {{ dayFormatter(match.matchDate) }}</div>
-      <div>Partito vittorioso : {{ match.winningRole }}</div>
+      <div>
+        Partito vittorioso : {{ $t(`secretHitler.roles.${match.winningRole}`) }}
+      </div>
       <hr class="my-2" />
       <div class="flex flex-row items-center justify-around">
         Giocatori:

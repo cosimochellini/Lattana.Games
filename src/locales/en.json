@@ -9,7 +9,8 @@
     "navbar": {
         "route": {
             "trump": "trump",
-            "secretHitler": "secret hitler"
+            "secretHitler": "secret hitler",
+            "lattanaGames": "Lattana Games"
         },
         "profileRoute": {
             "profile": "profile",
@@ -23,6 +24,13 @@
             "edit": "edit",
             "delete": "delete",
             "copy": "copy"
+        }
+    },
+    "secretHitler": {
+        "roles": {
+            "hitler": "hitler",
+            "fascist": "fascist",
+            "liberal": "liberal"
         }
     }
 }

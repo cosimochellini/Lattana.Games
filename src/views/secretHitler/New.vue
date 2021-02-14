@@ -64,7 +64,7 @@
           class="w-full shadow-md rounded-sm bg-gray-200 p-2"
         >
           <option v-for="role in allRoles" :key="role" :value="role">
-            {{ role }}
+            {{ $t(`secretHitler.roles.${role}`) }}
           </option>
         </select>
 
@@ -77,7 +77,7 @@
       </div>
 
       <button class="base-button primary mt-1" @click.prevent="saveMatch">
-        salva
+        {{ $t("buttons.base.save") }}
         <i class="fas fa-save ml-1"></i>
       </button>
     </form>
@@ -112,14 +112,11 @@ export default defineComponent({
   data() {
     return {
       hitlerPlayer: {} as player,
-      allRoles: secretHitlerRole,
+      allRoles: [secretHitlerRole.fascist, secretHitlerRole.liberal],
       winningRole: secretHitlerRole.liberal,
       remainingPlayers: [] as player[],
       liberalPlayers: [] as player[],
       fascistPlayers: [] as player[],
-      classes: {
-        liberal: "",
-      },
     };
   },
   mounted() {
@@ -170,15 +167,16 @@ export default defineComponent({
     bindPlayer(
       player: player,
       role: secretHitlerRole,
-      hitler: player | null = null
+      hitlerPlayer: player | null = null
     ) {
-      if (role === secretHitlerRole.fascist && player._id === hitler?._id) {
-        role = secretHitlerRole.hitler;
-      }
+      const isHitler = player._id === hitlerPlayer?._id;
+      const fascistAreWinning = role === this.winningRole;
+      const win = this.winningRole === role;
+
       return {
         role,
         player,
-        win: this.winningRole === role,
+        win: win || (isHitler && fascistAreWinning),
       } as secretHitlerMatchPlayer;
     },
   },

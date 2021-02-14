@@ -98,7 +98,7 @@
         </div>
       </article>
       <button class="base-button primary" @click.prevent="saveMatch">
-        salva
+        {{ $t("buttons.base.save") }}
         <i class="fas fa-save ml-1"></i>
       </button>
     </form>
