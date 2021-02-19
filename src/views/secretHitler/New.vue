@@ -3,66 +3,63 @@
     <h2 class="base-title my-1 py-1">
       Aggiungi nuova partita di secret hitler ☠
     </h2>
+    <div class="flex flex-col items-center">
+      <draggable
+        :list="remainingPlayers"
+        group="people"
+        itemKey="_id"
+        class="base-card card-width"
+      >
+        <template #header>
+          <h2 class="base-subtitle">Giocatori da smistare</h2>
 
-    <draggable
-      :list="remainingPlayers"
-      group="people"
-      itemKey="_id"
-      class="base-card m-auto"
-    >
-      <template #header>
-        <h2 class="base-subtitle">Giocatori da smistare</h2>
+          <user-autocomplete
+            class="w-full"
+            :excludedPlayers="excludedPlayers"
+            @update:modelValue="addPlayer"
+          />
+        </template>
+        <template #item="{ element }">
+          <draggable-user
+            :user="element"
+            showDelete
+            @deletePlayer="deletePlayer"
+          />
+        </template>
+      </draggable>
 
-        <user-autocomplete
-          class="w-full"
-          :excludedPlayers="excludedPlayers"
-          @update:modelValue="addPlayer"
-        />
-      </template>
-      <template #item="{ element }">
-        <draggable-user
-          :user="element"
-          showDelete
-          @deletePlayer="deletePlayer"
-        />
-      </template>
-    </draggable>
+      <draggable
+        :list="liberalPlayers"
+        group="people"
+        itemKey="_id"
+        class="base-card mt-2 card-width"
+      >
+        <template #header>
+          <h2 class="base-subtitle">Giocatori liberali</h2>
+        </template>
+        <template #item="{ element }">
+          <draggable-user :user="element" color="bg-blue-100" />
+        </template>
+      </draggable>
 
-    <draggable
-      :list="liberalPlayers"
-      group="people"
-      itemKey="_id"
-      class="base-card mt-2 m-auto"
-    >
-      <template #header>
-        <h2 class="base-subtitle">Giocatori liberali</h2>
-      </template>
-      <template #item="{ element }">
-        <draggable-user :user="element" color="bg-blue-100" />
-      </template>
-    </draggable>
-
-    <draggable
-      :list="fascistPlayers"
-      group="people"
-      itemKey="_id"
-      class="base-card mt-2 m-auto"
-    >
-      <template #header>
-        <h2 class="base-subtitle">Giocatori fascisti</h2>
-      </template>
-      <template #item="{ element }">
-        <draggable-user :user="element" color="bg-red-100" />
-      </template>
-    </draggable>
-
+      <draggable
+        :list="fascistPlayers"
+        group="people"
+        itemKey="_id"
+        class="base-card mt-2 card-width"
+      >
+        <template #header>
+          <h2 class="base-subtitle">Giocatori fascisti</h2>
+        </template>
+        <template #item="{ element }">
+          <draggable-user :user="element" color="bg-red-100" />
+        </template>
+      </draggable>
+    </div>
     <form @submit.prevent="saveMatch" class="flex flex-col items-center mt-2">
-      <div class="base-card w-full mx-2 py-4">
+      <div class="base-card w-full mx-2 py-4 card-width">
         <h2 class="base-subtitle">Ruolo vincitore</h2>
-        <select
-          v-model="winningRole"
-          class="w-full shadow-md rounded-sm bg-gray-200 p-2"
-        >
+        <select v-model="winningRole" class="base-select w-full">
           <option v-for="role in allRoles" :key="role" :value="role">
             {{ $t(`secretHitler.roles.${role}`) }}
           </option>
@@ -201,4 +198,7 @@ export default defineComponent({
 </script>
 
 <style>
+.card-width {
+  @apply sm:w-4/5 md:w-1/2 w-full;
+}
 </style>

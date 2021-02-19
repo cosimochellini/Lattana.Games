@@ -1,62 +1,63 @@
 <template>
   <div class="container m-auto p-4">
     <h2 class="base-title my-1 py-1">Inserisci nuova partita 🃏</h2>
-    <draggable
-      :list="remainingPlayers"
-      group="people"
-      itemKey="_id"
-      class="base-card"
-    >
-      <template #header>
-        <h2 class="base-subtitle">Giocatori da smistare</h2>
+    <div class="flex flex-col items-center">
+      <draggable
+        :list="remainingPlayers"
+        group="people"
+        itemKey="_id"
+        class="base-card card-width"
+      >
+        <template #header>
+          <h2 class="base-subtitle">Giocatori da smistare</h2>
 
-        <user-autocomplete
-          class="w-full"
-          v-show="allPlayers.length < 5"
-          :excludedPlayers="allPlayers"
-          @update:modelValue="addPlayer"
-        />
-      </template>
-      <template #item="{ element }">
-        <draggable-user
-          :user="element"
-          showDelete
-          @deletePlayer="deletePlayer"
-        />
-      </template>
-    </draggable>
+          <user-autocomplete
+            class="w-full"
+            v-show="allPlayers.length < 5"
+            :excludedPlayers="allPlayers"
+            @update:modelValue="addPlayer"
+          />
+        </template>
+        <template #item="{ element }">
+          <draggable-user
+            :user="element"
+            showDelete
+            @deletePlayer="deletePlayer"
+          />
+        </template>
+      </draggable>
 
-    <draggable
-      :list="callingPlayers"
-      group="people"
-      itemKey="_id"
-      class="base-card mt-2 hover:border-2 hover:border-blue-400"
-    >
-      <template #header>
-        <h2 class="base-subtitle">Squadra 1</h2>
-      </template>
-      <template #item="{ element }">
-        <draggable-user :user="element" color="bg-blue-100" />
-      </template>
-    </draggable>
+      <draggable
+        :list="callingPlayers"
+        group="people"
+        itemKey="_id"
+        class="base-card mt-2 card-width"
+      >
+        <template #header>
+          <h2 class="base-subtitle">Squadra 1</h2>
+        </template>
+        <template #item="{ element }">
+          <draggable-user :user="element" color="bg-blue-100" />
+        </template>
+      </draggable>
 
-    <draggable
-      :list="opposingPlayers"
-      group="people"
-      itemKey="_id"
-      class="base-card mt-2"
-    >
-      <template #header>
-        <h2 class="base-subtitle">Squadra 2</h2>
-      </template>
-      <template #item="{ element }">
-        <draggable-user :user="element" color="bg-red-100" />
-      </template>
-    </draggable>
-
+      <draggable
+        :list="opposingPlayers"
+        group="people"
+        itemKey="_id"
+        class="base-card mt-2 card-width"
+      >
+        <template #header>
+          <h2 class="base-subtitle">Squadra 2</h2>
+        </template>
+        <template #item="{ element }">
+          <draggable-user :user="element" color="bg-red-100" />
+        </template>
+      </draggable>
+    </div>
     <form @submit.prevent="saveMatch" class="flex flex-col items-center">
       <article
-        class="base-card flex flex-col items-stretch m-2 justify-between sm:w-4/5 md:w-1/2 w-full"
+        class="base-card flex flex-col items-stretch m-2 justify-between card-width"
       >
         <h2 class="base-subtitle">Giocatore chiamante</h2>
         <user-autocomplete :exactPlayers="allPlayers" v-model="callingPlayer" />
@@ -200,4 +201,7 @@ export default defineComponent({
 </script>
 
 <style>
+.card-width {
+  @apply sm:w-4/5 md:w-1/2 w-full;
+}
 </style>

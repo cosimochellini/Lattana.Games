@@ -53,7 +53,7 @@
           class="flex-1 flex items-center place-items-center content-center justify-center sm:items-stretch sm:justify-start justify-items-center text-gray-900"
         >
           <span
-            class="font-semibold leading-3 text-2xl tracking-widest capitalize"
+            class="font-semibold leading-3 text-2xl tracking-widest capitalize md:mt-2"
           >
             {{ $t(`navbar.route.${currentState.name}`) }}
           </span>
