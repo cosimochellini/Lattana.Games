@@ -6,11 +6,15 @@ import { toast, toastOption } from "./plugins/vueToastification";
 
 import "./assets/tailwind.css";
 
-const i18n = setupI18n();
-const router = setupRouter(i18n);
+const loader = async () => {
+  const i18n = await setupI18n();
+  const router = setupRouter(i18n);
 
-createApp(App)
-  .use(i18n)
-  .use(router)
-  .use(toast, toastOption)
-  .mount("#app");
+  createApp(App)
+    .use(i18n)
+    .use(router)
+    .use(toast, toastOption)
+    .mount("#app");
+};
+
+loader().catch(console.error);

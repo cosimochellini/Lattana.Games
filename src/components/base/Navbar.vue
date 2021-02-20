@@ -170,6 +170,7 @@ import { image } from "@/instances/sanity";
 import { getPlayer } from "@/services/authService";
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
+import { setLanguage } from "@/services/langService";
 
 type State = {
   name: string;
@@ -217,15 +218,14 @@ export default defineComponent({
     });
 
     watch(currentLocale, (val) => {
+      setLanguage(val);
       router.push({
         name: router.currentRoute.value.name as string,
         params: { locale: val },
       });
     });
 
-    return {
-      currentLocale,
-    };
+    return { currentLocale };
   },
   methods: {
     profileClick() {
