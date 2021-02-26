@@ -82,7 +82,7 @@ export default defineComponent({
   components: { CardSkeleton },
   setup() {
     const router = useRouter();
-    const shouldContinueLoading = ref(true);
+    const shouldContinueLoading = ref(false);
     const matches = ref<secretHitlerMatch[]>([]);
     const currentPagination = new PaginationBuilder(0, 9);
 
