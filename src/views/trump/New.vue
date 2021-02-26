@@ -206,16 +206,6 @@ export default defineComponent({
       return this.startingScore >= this.finalScore;
     },
   },
-  watch: {
-    allMatchPlayers() {
-      console.table([
-        ...this.allMatchPlayers.map((p) => ({
-          n: p.player.nickname,
-          win: p.win,
-        })),
-      ]);
-    },
-  },
 });
 </script>
 
