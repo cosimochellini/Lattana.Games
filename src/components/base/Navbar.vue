@@ -10,43 +10,8 @@
             aria-expanded="false"
             @click.stop="menuClick"
           >
-            <svg
-              class="h-6 w-6"
-              :class="{
-                block: !state.profileOpen,
-                hidden: state.profileOpen,
-              }"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-
-            <svg
-              class="h-6 w-6"
-              :class="{
-                block: state.profileOpen,
-                hidden: !state.profileOpen,
-              }"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <i class="fas fa-bars" v-if="!state.menuOpen"></i>
+            <i class="fas fa-times" v-else></i>
           </button>
         </div>
         <div
@@ -70,7 +35,7 @@
                 v-for="(route, index) in navbarRoutes"
                 :key="route.route"
                 :to="{ name: route.route, params: { locale } }"
-                class="px-3 py-2 rounded-md text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out text-gray-900 hover:text-white"
+                class="px-3 py-2 rounded-md text-md font-medium leading-5 focus:outline-none transition duration-150 ease-in-out text-gray-900 hover:text-white"
                 :class="index ? 'ml-4' : ''"
               >
                 {{ $t(`navbar.route.${route.name}`) }}
@@ -249,7 +214,7 @@ export default defineComponent({
         if (this.$route.matched.find((r) => r.name === key))
           return availableStates[key];
 
-      return availableStates["default"];
+      return availableStates.default;
     },
   },
 });

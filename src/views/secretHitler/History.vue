@@ -1,7 +1,7 @@
 <template>
   <h2 class="base-title p-4">Le tue partite recenti</h2>
   <div
-    class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 lg:max-w-screen-2xl m-auto p-4"
+    class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:max-w-screen-2xl m-auto p-4"
   >
     <article v-for="match in matches" :key="match._id" class="base-card">
       <div>Data : {{ dayFormatter(match.matchDate) }}</div>
@@ -43,6 +43,7 @@
         </button>
       </div>
     </article>
+    <card-skeleton @visible="loadMatched" v-show="shouldContinueLoading" />
   </div>
 </template>
 
@@ -50,10 +51,11 @@
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
 import { dayFormatter } from "@/utils/formatters";
-import { player, secretHitlerMatch } from "@/types/sanity";
 import { getPlayer } from "@/services/authService";
 import { defineComponent, onMounted, ref } from "vue";
 import { overlayService } from "@/services/overlayService";
+import { player, secretHitlerMatch } from "@/types/sanity";
+import CardSkeleton from "@/components/base/CardSkeleton.vue";
 import { byRole } from "@/utils/sortables/secratHitlerSortables";
 import { notificationService } from "@/services/notificationService";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
@@ -74,20 +76,36 @@ const matchesQuery = new QueryBuilder(sanityTypes.secretHitlerMatch)
       userId: currentPlayer._id,
     })
   )
-  .orderBy(new OrderBuilder("matchDate", true))
-  .get(new PaginationBuilder(1, 6));
+  .orderBy(new OrderBuilder("matchDate", true));
 
 export default defineComponent({
+  components: { CardSkeleton },
   setup() {
-    const matches = ref<secretHitlerMatch[]>([]);
     const router = useRouter();
+    const shouldContinueLoading = ref(true);
+    const matches = ref<secretHitlerMatch[]>([]);
+    const currentPagination = new PaginationBuilder(0, 9);
 
-    const loadMatched = () => {
+    const resetMatches = () => {
+      currentPagination.resetPage();
+      matches.value = [];
+      shouldContinueLoading.value = true;
+    };
+
+    const loadMatched = (fromZero: boolean = false) => {
+      fromZero && resetMatches();
+
       matchesQuery
+        .get(currentPagination.next())
         .fetch<secretHitlerMatch[]>()
-        .then((responseMatches) => {
-          responseMatches.forEach((m) => m.players.sort(byRole));
-          matches.value = responseMatches;
+        .then((response) => {
+          response.forEach((m) => m.players.sort(byRole));
+
+          matches.value = [...matches.value, ...response];
+
+          shouldContinueLoading.value = currentPagination.shouldContinue(
+            response
+          );
         })
         .catch(notificationService.danger);
     };
@@ -98,9 +116,7 @@ export default defineComponent({
         .deleteExistingMatch(match)
         .then(() => notificationService.success("eliminazione eseguita"))
         .catch(notificationService.danger)
-        .finally(() => overlayService.hideOverlay() && loadMatched());
-
-    onMounted(loadMatched);
+        .finally(() => overlayService.hideOverlay() && loadMatched(true));
 
     const borderColor = (role: secretHitlerRole) => {
       switch (role) {
@@ -116,6 +132,8 @@ export default defineComponent({
     const copyMatch = (match: secretHitlerMatch) =>
       router.push({ name: "secretHitlerNew", query: { ref: match._id } });
 
+    onMounted(() => loadMatched());
+
     return {
       image,
       matches,
@@ -124,6 +142,7 @@ export default defineComponent({
       loadMatched,
       borderColor,
       dayFormatter,
+      shouldContinueLoading,
     };
   },
 });

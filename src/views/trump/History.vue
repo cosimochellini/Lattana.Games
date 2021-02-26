@@ -51,6 +51,7 @@
         </button>
       </div>
     </article>
+    <card-skeleton @visible="loadMatched" v-show="shouldContinueLoading" />
   </div>
 </template>
 
@@ -71,6 +72,7 @@ import {
   PaginationBuilder,
 } from "@/utils/sanityQueryBuilder";
 import { getPlayer } from "@/services/authService";
+import CardSkeleton from "@/components/base/CardSkeleton.vue";
 
 const currentPlayer = getPlayer() as player;
 
@@ -81,24 +83,36 @@ const matchesQuery = new QueryBuilder(sanityTypes.trumpMatch)
       userId: currentPlayer._id,
     })
   )
-  .orderBy(new OrderBuilder("matchDate", true))
-  .get(new PaginationBuilder(1, 9))
-  .cached();
+  .orderBy(new OrderBuilder("matchDate", true));
 
 export default defineComponent({
-  components: {},
+  components: { CardSkeleton },
   setup() {
-    const matches = ref<trumpMatch[]>([]);
     const router = useRouter();
+    const matches = ref<trumpMatch[]>([]);
+    const shouldContinueLoading = ref(false);
+    const currentPagination = new PaginationBuilder(0, 12);
 
-    const loadMatched = () => {
+    const resetMatches = () => {
+      currentPagination.resetPage();
+      matches.value = [];
+      shouldContinueLoading.value = true;
+    };
+
+    const loadMatched = (fromZero: boolean = false) => {
+      fromZero && resetMatches();
+
       matchesQuery
+        .get(currentPagination.next())
         .fetch<trumpMatch[]>()
-        .then((responseMatches) => {
-          responseMatches.forEach((m) =>
+        .then((response) => {
+          response.forEach((m) =>
             m.players.sort((m1, m2) => Number(m1.win) - Number(m2.win))
           );
-          matches.value = responseMatches;
+          matches.value = [...matches.value, ...response];
+          shouldContinueLoading.value = currentPagination.shouldContinue(
+            response
+          );
         })
         .catch(notificationService.danger);
     };
@@ -109,9 +123,7 @@ export default defineComponent({
         .deleteExistingMatch(match)
         .then(() => notificationService.success("eliminazione eseguita"))
         .catch(notificationService.danger)
-        .finally(() => overlayService.hideOverlay() && loadMatched());
-
-    onMounted(loadMatched);
+        .finally(() => overlayService.hideOverlay() && loadMatched(true));
 
     const borderColor = (win: boolean) =>
       win ? "ring-blue-500" : "ring-red-500";
@@ -122,6 +134,8 @@ export default defineComponent({
     const editMatch = (match: trumpMatch) =>
       router.push({ name: "trumpEdit", params: { id: match._id } });
 
+    onMounted(() => loadMatched());
+
     return {
       image,
       matches,
@@ -131,6 +145,7 @@ export default defineComponent({
       deleteMatch,
       borderColor,
       dayFormatter,
+      shouldContinueLoading,
     };
   },
 });

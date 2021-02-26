@@ -267,6 +267,21 @@ export class PaginationBuilder {
     return this;
   }
 
+  public next(): PaginationBuilder {
+    this._page++;
+
+    return this;
+  }
+
+  public shouldContinue(response: unknown[]): boolean {
+    return response.length === this._pageSize;
+  }
+
+  public resetPage(): PaginationBuilder {
+    this._page = 0;
+    return this;
+  }
+
   public expose() {
     return { page: this._page, pageSize: this._pageSize };
   }
