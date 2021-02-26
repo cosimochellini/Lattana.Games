@@ -100,7 +100,11 @@
           />
         </div>
       </article>
-      <button class="base-button primary" @click.prevent="saveMatch">
+      <button
+        class="base-button primary large"
+        @click.prevent="saveMatch"
+        :disabled="!contextValidated"
+      >
         {{ $t("buttons.base.save") }}
         <i class="fas fa-save ml-1"></i>
       </button>
@@ -119,10 +123,11 @@ import { notificationService } from "@/services/notificationService";
 import { player, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { ConditionBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
+import { range } from "@/utils/range";
 
-const playersQuery = new QueryBuilder(sanityTypes.trumpMatchPlayer).select(
-  "player ->"
-);
+const playersQuery = new QueryBuilder(sanityTypes.trumpMatchPlayer)
+  .select("player ->")
+  .cached();
 
 export default defineComponent({
   components: { UserAutocomplete, DraggableUser, draggable },
@@ -205,12 +210,26 @@ export default defineComponent({
     callingPlayersWin(): boolean {
       return this.startingScore >= this.finalScore;
     },
+    contextValidated(): boolean {
+      const is120 = this.startingScore === 120;
+      const difference =
+        this.opposingPlayers.length - this.callingPlayers.length;
+      return (
+        (this.callingPlayer._id &&
+          range([60, 120], this.startingScore) &&
+          range([1, 120], this.finalScore) &&
+          this.remainingPlayers.length === 0 &&
+          this.allPlayers.length === 5 &&
+          difference === 1) ||
+        (is120 && range([-1, 0], difference))
+      );
+    },
   },
 });
 </script>
 
 <style>
 .card-width {
-  @apply sm:w-4/5 md:w-1/2 w-full;
+  @apply w-full md:w-10/12 lg:w-4/5 xl:w-3/5;
 }
 </style>

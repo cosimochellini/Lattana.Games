@@ -15,6 +15,7 @@
 
           <user-autocomplete
             class="w-full"
+            v-show="totalPlayers.length + remainingPlayers.length < 10"
             :excludedPlayers="excludedPlayers"
             @update:modelValue="addPlayer"
           />
@@ -76,6 +77,7 @@
       <div class="base-card w-full mx-2 py-4 card-width">
         <h2 class="base-subtitle">Ruolo vincitore</h2>
         <select v-model="winningRole" class="base-select w-full">
+          <option value="">seleziona ruolo</option>
           <option v-for="role in allRoles" :key="role" :value="role">
             {{ $t(`secretHitler.roles.${role}`) }}
           </option>
@@ -89,8 +91,14 @@
         />
       </div>
 
-      <button class="base-button primary mt-1" @click.prevent="saveMatch">
-        {{ $t("buttons.base.save") }}
+      <button
+        class="base-button primary large mt-1"
+        @click.prevent="saveMatch"
+        :disabled="!contextValidated"
+      >
+        <span>
+          {{ $t("buttons.base.save") }}
+        </span>
         <i class="fas fa-save ml-1"></i>
       </button>
     </form>
@@ -113,6 +121,7 @@ import {
   secretHitlerMatch,
   secretHitlerMatchPlayer,
 } from "@/types/sanity";
+import { range } from "@/utils/range";
 
 const playersQuery = new QueryBuilder(sanityTypes.secretHitlerMatchPlayer)
   .select("player ->")
@@ -127,7 +136,7 @@ export default defineComponent({
       secretHitlerRole,
       hitlerPlayer: {} as player,
       allRoles: [secretHitlerRole.fascist, secretHitlerRole.liberal],
-      winningRole: secretHitlerRole.liberal,
+      winningRole: "" as secretHitlerRole,
       remainingPlayers: [] as player[],
       liberalPlayers: [] as player[],
       fascistPlayers: [] as player[],
@@ -210,12 +219,21 @@ export default defineComponent({
         .map((x) => x.player)
         .concat(this.remainingPlayers);
     },
+    contextValidated(): boolean {
+      return (
+        !!this.hitlerPlayer._id &&
+        !!this.winningRole &&
+        this.remainingPlayers.length === 0 &&
+        range([6, 11], this.totalPlayers.length) &&
+        range([1, 2], this.liberalPlayers.length - this.fascistPlayers.length)
+      );
+    },
   },
 });
 </script>
 
 <style>
 .card-width {
-  @apply sm:w-4/5 md:w-1/2 w-full;
+  @apply w-full md:w-10/12 lg:w-4/5 xl:w-3/5;
 }
 </style>

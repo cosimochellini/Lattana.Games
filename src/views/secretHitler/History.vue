@@ -43,7 +43,7 @@
         </button>
       </div>
     </article>
-    <card-skeleton @visible="loadMatched" v-show="shouldContinueLoading" />
+    <card-skeleton @visible="loadMatched" v-if="shouldContinueLoading" />
   </div>
 </template>
 
@@ -52,7 +52,7 @@ import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
 import { dayFormatter } from "@/utils/formatters";
 import { getPlayer } from "@/services/authService";
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, nextTick, ref } from "vue";
 import { overlayService } from "@/services/overlayService";
 import { player, secretHitlerMatch } from "@/types/sanity";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
@@ -76,15 +76,16 @@ const matchesQuery = new QueryBuilder(sanityTypes.secretHitlerMatch)
       userId: currentPlayer._id,
     })
   )
-  .orderBy(new OrderBuilder("matchDate", true));
+  .orderBy(new OrderBuilder("matchDate", true))
+  .cached();
 
 export default defineComponent({
   components: { CardSkeleton },
   setup() {
     const router = useRouter();
-    const shouldContinueLoading = ref(false);
+    const shouldContinueLoading = ref(true);
     const matches = ref<secretHitlerMatch[]>([]);
-    const currentPagination = new PaginationBuilder(0, 9);
+    const currentPagination = new PaginationBuilder(0, 10);
 
     const resetMatches = () => {
       currentPagination.resetPage();
@@ -103,9 +104,12 @@ export default defineComponent({
 
           matches.value = [...matches.value, ...response];
 
-          shouldContinueLoading.value = currentPagination.shouldContinue(
-            response
-          );
+          shouldContinueLoading.value = false;
+          nextTick(() => {
+            shouldContinueLoading.value = currentPagination.shouldContinue(
+              response
+            );
+          });
         })
         .catch(notificationService.danger);
     };
@@ -132,7 +136,7 @@ export default defineComponent({
     const copyMatch = (match: secretHitlerMatch) =>
       router.push({ name: "secretHitlerNew", query: { ref: match._id } });
 
-    onMounted(() => loadMatched());
+    // onMounted(() => loadMatched());
 
     return {
       image,

@@ -17,7 +17,12 @@
 }
 
 .base-button {
-  @apply text-sm font-medium p-3 inline-flex items-center content-center place-items-center py-2 px-3 text-gray-900 rounded-lg shadow-sm  focus:outline-none tracking-wider font-sans capitalize;
+  @apply text-sm font-medium p-3 items-center content-center place-items-center py-2 px-3 text-gray-900 rounded-lg shadow-sm focus:outline-none tracking-wider font-sans capitalize;
+  @apply disabled:opacity-70 text-center;
+}
+
+.base-button.large {
+  @apply text-base w-64;
 }
 
 .base-button.primary {
@@ -45,9 +50,9 @@
 }
 
 .base-title {
-  @apply font-semibold leading-5 text-xl block py-1 my-1
+  @apply font-semibold leading-5 text-xl block py-1 my-1;
 }
 
 .base-subtitle {
-  @apply font-semibold leading-3 block tracking-wider py-1
+  @apply font-semibold leading-3 block tracking-wider py-1;
 }

@@ -51,7 +51,7 @@
         </button>
       </div>
     </article>
-    <card-skeleton @visible="loadMatched" v-show="shouldContinueLoading" />
+    <card-skeleton @visible="loadMatched" v-if="shouldContinueLoading" />
   </div>
 </template>
 
@@ -60,7 +60,7 @@ import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
 import { player, trumpMatch } from "@/types/sanity";
 import { dayFormatter } from "@/utils/formatters";
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, nextTick, ref } from "vue";
 import { sanityTypes } from "@/constants/roleConstants";
 import { overlayService } from "@/services/overlayService";
 import { trumpService } from "@/services/games/trumpService";
@@ -83,15 +83,16 @@ const matchesQuery = new QueryBuilder(sanityTypes.trumpMatch)
       userId: currentPlayer._id,
     })
   )
-  .orderBy(new OrderBuilder("matchDate", true));
+  .orderBy(new OrderBuilder("matchDate", true))
+  .cached();
 
 export default defineComponent({
   components: { CardSkeleton },
   setup() {
     const router = useRouter();
     const matches = ref<trumpMatch[]>([]);
-    const shouldContinueLoading = ref(false);
-    const currentPagination = new PaginationBuilder(0, 12);
+    const shouldContinueLoading = ref(true);
+    const currentPagination = new PaginationBuilder(0, 10);
 
     const resetMatches = () => {
       currentPagination.resetPage();
@@ -110,9 +111,14 @@ export default defineComponent({
             m.players.sort((m1, m2) => Number(m1.win) - Number(m2.win))
           );
           matches.value = [...matches.value, ...response];
-          shouldContinueLoading.value = currentPagination.shouldContinue(
-            response
-          );
+
+          shouldContinueLoading.value = false;
+
+          nextTick(() => {
+            shouldContinueLoading.value = currentPagination.shouldContinue(
+              response
+            );
+          });
         })
         .catch(notificationService.danger);
     };
@@ -133,8 +139,6 @@ export default defineComponent({
 
     const editMatch = (match: trumpMatch) =>
       router.push({ name: "trumpEdit", params: { id: match._id } });
-
-    onMounted(() => loadMatched());
 
     return {
       image,
