@@ -17,8 +17,7 @@
 }
 
 .base-button {
-  @apply group inline-flex items-center content-center place-items-center py-2 px-3 text-gray-900 rounded-lg shadow-sm  focus:outline-none;
-  @apply tracking-wider font-sans capitalize;
+  @apply text-sm font-medium p-3 inline-flex items-center content-center place-items-center py-2 px-3 text-gray-900 rounded-lg shadow-sm  focus:outline-none tracking-wider font-sans capitalize;
 }
 
 .base-button.primary {
@@ -38,7 +37,7 @@
 }
 
 .base-button.transparent {
-  @apply bg-transparent border border-black;
+  @apply bg-transparent border border-gray-800 border-opacity-80;
 }
 
 .base-button .fas {

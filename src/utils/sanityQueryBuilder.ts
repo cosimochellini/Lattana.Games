@@ -35,8 +35,8 @@ export class QueryBuilder {
   private _freezed: boolean = false;
   private _sanityClient = sanityClient;
 
-  constructor(type: sanityTypes | null = null) {
-    if (type) this._type = type;
+  constructor(type: string | null = null) {
+    this._type = type ?? "";
   }
 
   public type(type: sanityTypes): QueryBuilder {
@@ -142,8 +142,6 @@ export class QueryBuilder {
   }
 
   private cleanUnFreezed(): void {
-    // eslint-disable-next-line no-debugger
-    // debugger;
     QueryBuilder.filterFreezed(this._conditions);
     QueryBuilder.filterFreezed(this._params);
     QueryBuilder.filterFreezed(this._select);
@@ -157,11 +155,11 @@ export class QueryBuilder {
     QueryBuilder.setAsFreezed(this._orderBy);
   }
 
-  static filterFreezed(props: Freezable<any>[]) {
+  static filterFreezed(props: Freezable<unknown>[]) {
     props = props.filter((p) => p.freezed);
   }
 
-  static setAsFreezed(props: Freezable<any>[]) {
+  static setAsFreezed(props: Freezable<unknown>[]) {
     props.forEach((p) => (p.freezed = true));
   }
 }

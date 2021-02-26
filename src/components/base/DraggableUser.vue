@@ -10,6 +10,7 @@
     </span>
     <img
       class="w-10 h-10 rounded-full text-right mr-2"
+      :class="avatarColor ? ' ring ' + avatarColor : ''"
       :src="image(user.profileImage, 100)"
     />
     <button
@@ -42,6 +43,10 @@ export default defineComponent({
     showDelete: {
       type: Boolean,
       default: () => false,
+    },
+    avatarColor: {
+      type: String,
+      default: () => "",
     },
   },
   methods: {

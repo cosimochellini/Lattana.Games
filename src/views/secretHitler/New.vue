@@ -38,7 +38,15 @@
           <h2 class="base-subtitle">Giocatori liberali</h2>
         </template>
         <template #item="{ element }">
-          <draggable-user :user="element" color="bg-blue-100" />
+          <draggable-user
+            color="bg-blue-100"
+            :user="element"
+            :avatarColor="
+              winningRole === secretHitlerRole.liberal
+                ? 'ring-green-600'
+                : 'ring-red-600'
+            "
+          />
         </template>
       </draggable>
 
@@ -52,7 +60,15 @@
           <h2 class="base-subtitle">Giocatori fascisti</h2>
         </template>
         <template #item="{ element }">
-          <draggable-user :user="element" color="bg-red-100" />
+          <draggable-user
+            :user="element"
+            color="bg-red-100"
+            :avatarColor="
+              winningRole === secretHitlerRole.fascist
+                ? 'ring-green-600'
+                : 'ring-red-600'
+            "
+          />
         </template>
       </draggable>
     </div>
@@ -108,6 +124,7 @@ export default defineComponent({
 
   data() {
     return {
+      secretHitlerRole,
       hitlerPlayer: {} as player,
       allRoles: [secretHitlerRole.fascist, secretHitlerRole.liberal],
       winningRole: secretHitlerRole.liberal,

@@ -34,10 +34,14 @@
         class="base-card mt-2 card-width"
       >
         <template #header>
-          <h2 class="base-subtitle">Squadra 1</h2>
+          <h2 class="base-subtitle">Squadra chiamante</h2>
         </template>
         <template #item="{ element }">
-          <draggable-user :user="element" color="bg-blue-100" />
+          <draggable-user
+            :user="element"
+            color="bg-blue-100"
+            :avatarColor="callingPlayersWin ? 'ring-green-600' : 'ring-red-600'"
+          />
         </template>
       </draggable>
 
@@ -48,10 +52,14 @@
         class="base-card mt-2 card-width"
       >
         <template #header>
-          <h2 class="base-subtitle">Squadra 2</h2>
+          <h2 class="base-subtitle">Squadra avversaria</h2>
         </template>
         <template #item="{ element }">
-          <draggable-user :user="element" color="bg-red-100" />
+          <draggable-user
+            :user="element"
+            color="bg-red-100"
+            :avatarColor="callingPlayersWin ? 'ring-red-600' : 'ring-green-600'"
+          />
         </template>
       </draggable>
     </div>
@@ -60,7 +68,10 @@
         class="base-card flex flex-col items-stretch m-2 justify-between card-width"
       >
         <h2 class="base-subtitle">Giocatore chiamante</h2>
-        <user-autocomplete :exactPlayers="allPlayers" v-model="callingPlayer" />
+        <user-autocomplete
+          :exactPlayers="callingPlayers"
+          v-model="callingPlayer"
+        />
 
         <div class="m-2 flex justify-between">
           <label class="base-subtitle" for="initial points">
@@ -77,7 +88,7 @@
         </div>
         <div class="m-2 flex justify-between">
           <label class="base-subtitle" for="initial points">
-            Punteggio finale
+            Punteggio finale (squadra chiamante)
           </label>
           <input
             name="initial points"
@@ -87,15 +98,6 @@
             class="pa-2 border rounded-md text-center"
             v-model.number="finalScore"
           />
-        </div>
-        <div class="m-2 flex justify-between">
-          <label class="base-subtitle" for="initial points">
-            Squadra vincente
-          </label>
-          <select class="base-select" v-model="firstTeamWin">
-            <option :value="true">Squadra 1</option>
-            <option :value="false">Squadra 2</option>
-          </select>
         </div>
       </article>
       <button class="base-button primary" @click.prevent="saveMatch">
@@ -133,7 +135,6 @@ export default defineComponent({
       callingPlayer: {} as player,
       startingScore: 0,
       finalScore: 0,
-      firstTeamWin: true,
     };
   },
   mounted() {
@@ -183,10 +184,15 @@ export default defineComponent({
   },
   computed: {
     allMatchPlayers(): trumpMatchPlayer[] {
-      const win = this.firstTeamWin;
       return [
-        ...this.callingPlayers.map((p) => ({ player: p, win })),
-        ...this.opposingPlayers.map((p) => ({ player: p, win: !win })),
+        ...this.callingPlayers.map((player) => ({
+          player,
+          win: this.callingPlayersWin,
+        })),
+        ...this.opposingPlayers.map((player) => ({
+          player,
+          win: !this.callingPlayersWin,
+        })),
       ] as trumpMatchPlayer[];
     },
     allPlayers(): player[] {
@@ -195,6 +201,19 @@ export default defineComponent({
         ...this.callingPlayers,
         ...this.opposingPlayers,
       ].filter((p) => p?._id);
+    },
+    callingPlayersWin(): boolean {
+      return this.startingScore >= this.finalScore;
+    },
+  },
+  watch: {
+    allMatchPlayers() {
+      console.table([
+        ...this.allMatchPlayers.map((p) => ({
+          n: p.player.nickname,
+          win: p.win,
+        })),
+      ]);
     },
   },
 });

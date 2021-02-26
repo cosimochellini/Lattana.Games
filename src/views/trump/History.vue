@@ -1,7 +1,7 @@
 <template>
   <h2 class="base-title p-4">Le tue partite recenti</h2>
   <div
-    class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 lg:max-w-screen-2xl m-auto p-4"
+    class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:max-w-screen-2xl m-auto p-4"
   >
     <article v-for="match in matches" :key="match._id" class="base-card">
       <div>Data : {{ dayFormatter(match.matchDate) }}</div>
@@ -20,7 +20,6 @@
             :title="`${p.player.name} ${p.player.surname}`"
             class="inline-block h-10 w-10 rounded-full ring-2 my-2"
             :class="borderColor(p.win)"
-            loading="lazy"
           />
         </div>
       </div>
@@ -30,7 +29,6 @@
         <span class="text-center m-auto ml-16">
           <img
             :src="image(match.callingPlayer.profileImage, 40)"
-            loading="lazy"
             class="rounded-full"
             :title="`${match.callingPlayer.name} ${match.callingPlayer.surname}`"
           />
@@ -84,7 +82,7 @@ const matchesQuery = new QueryBuilder(sanityTypes.trumpMatch)
     })
   )
   .orderBy(new OrderBuilder("matchDate", true))
-  .get(new PaginationBuilder(1, 6))
+  .get(new PaginationBuilder(1, 9))
   .cached();
 
 export default defineComponent({
