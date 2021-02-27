@@ -220,12 +220,21 @@ export default defineComponent({
         .concat(this.remainingPlayers);
     },
     contextValidated(): boolean {
+      const difference =
+        this.liberalPlayers.length - this.fascistPlayers.length;
+
+      const hitlerSelected = !!this.hitlerPlayer._id;
+      const winningRoleSelected = !!this.winningRole;
+      const noRemaingPlayers = this.remainingPlayers.length === 0;
+      const correctPlayersNumber = range([6, 11], this.totalPlayers.length);
+      const correctPlayerDistribution = range([1, 2], difference);
+
       return (
-        !!this.hitlerPlayer._id &&
-        !!this.winningRole &&
-        this.remainingPlayers.length === 0 &&
-        range([6, 11], this.totalPlayers.length) &&
-        range([1, 2], this.liberalPlayers.length - this.fascistPlayers.length)
+        hitlerSelected &&
+        noRemaingPlayers &&
+        winningRoleSelected &&
+        correctPlayersNumber &&
+        correctPlayerDistribution 
       );
     },
   },

@@ -211,17 +211,26 @@ export default defineComponent({
       return this.startingScore >= this.finalScore;
     },
     contextValidated(): boolean {
-      const is120 = this.startingScore === 120;
       const difference =
         this.opposingPlayers.length - this.callingPlayers.length;
+
+      const callingPlayerSelected = !!this.callingPlayer._id;
+      const startingScoreCorrect = range([60, 120], this.startingScore);
+      const finalScoreCorrect = range([1, 120], this.finalScore);
+      const noRemaingPlayers = this.remainingPlayers.length === 0;
+      const correctPlayersNumber = this.allPlayers.length === 5;
+      const correctDifference = difference === 1;
+
+      const is120 = this.startingScore === 120;
+      const correct120Difference = range([-1, 0], difference);
+
       return (
-        (this.callingPlayer._id &&
-          range([60, 120], this.startingScore) &&
-          range([1, 120], this.finalScore) &&
-          this.remainingPlayers.length === 0 &&
-          this.allPlayers.length === 5 &&
-          difference === 1) ||
-        (is120 && range([-1, 0], difference))
+        noRemaingPlayers &&
+        finalScoreCorrect &&
+        startingScoreCorrect &&
+        correctPlayersNumber &&
+        callingPlayerSelected &&
+        (correctDifference || (is120 && correct120Difference))
       );
     },
   },
