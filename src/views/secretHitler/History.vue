@@ -19,7 +19,6 @@
             :title="`${p.player.name} ${p.player.surname}`"
             :class="borderColor(p.role)"
             class="inline-block h-8 w-8 rounded-full ring-2 my-2"
-            loading="lazy"
           />
         </div>
       </div>
@@ -76,8 +75,7 @@ const matchesQuery = new QueryBuilder(sanityTypes.secretHitlerMatch)
       userId: currentPlayer._id,
     })
   )
-  .orderBy(new OrderBuilder("matchDate", true))
-  .cached();
+  .orderBy(new OrderBuilder("matchDate", true));
 
 export default defineComponent({
   components: { CardSkeleton },

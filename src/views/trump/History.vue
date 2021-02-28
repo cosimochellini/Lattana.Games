@@ -83,9 +83,8 @@ const matchesQuery = new QueryBuilder(sanityTypes.trumpMatch)
       userId: currentPlayer._id,
     })
   )
-  .orderBy(new OrderBuilder("matchDate", true))
-  .cached();
-
+  .orderBy(new OrderBuilder("matchDate", true));
+  
 export default defineComponent({
   components: { CardSkeleton },
   setup() {

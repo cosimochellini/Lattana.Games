@@ -63,7 +63,9 @@
         <template #item="{ element }">
           <draggable-user
             :user="element"
-            color="bg-red-100"
+            :color="
+              element._id === hitlerPlayer._id ? 'bg-gray-300' : 'bg-red-100'
+            "
             :avatarColor="
               winningRole === secretHitlerRole.fascist
                 ? 'ring-green-600'
@@ -107,6 +109,7 @@
 
 <script lang="ts">
 import draggable from "vuedraggable";
+import { range } from "@/utils/range";
 import { defineComponent } from "vue";
 import { overlayService } from "@/services/overlayService";
 import DraggableUser from "@/components/base/DraggableUser.vue";
@@ -121,11 +124,10 @@ import {
   secretHitlerMatch,
   secretHitlerMatchPlayer,
 } from "@/types/sanity";
-import { range } from "@/utils/range";
 
-const playersQuery = new QueryBuilder(sanityTypes.secretHitlerMatchPlayer)
-  .select("player ->")
-  .cached();
+const playersQuery = new QueryBuilder(
+  sanityTypes.secretHitlerMatchPlayer
+).select("player ->");
 
 export default defineComponent({
   components: { UserAutocomplete, draggable, DraggableUser },
@@ -192,14 +194,14 @@ export default defineComponent({
       role: secretHitlerRole,
       hitlerPlayer: player | null = null
     ) {
+      const win = this.winningRole === role;
       const isHitler = player._id === hitlerPlayer?._id;
       const fascistAreWinning = role === this.winningRole;
-      const win = this.winningRole === role;
 
       return {
-        role,
         player,
         win: win || (isHitler && fascistAreWinning),
+        role: isHitler ? secretHitlerRole.hitler : role,
       } as secretHitlerMatchPlayer;
     },
   },
@@ -234,7 +236,7 @@ export default defineComponent({
         noRemaingPlayers &&
         winningRoleSelected &&
         correctPlayersNumber &&
-        correctPlayerDistribution 
+        correctPlayerDistribution
       );
     },
   },

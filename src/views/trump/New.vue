@@ -39,7 +39,9 @@
         <template #item="{ element }">
           <draggable-user
             :user="element"
-            color="bg-blue-100"
+            :color="
+              element._id === callingPlayer._id ? 'bg-blue-300' : 'bg-blue-100'
+            "
             :avatarColor="callingPlayersWin ? 'ring-green-600' : 'ring-red-600'"
           />
         </template>
@@ -114,6 +116,7 @@
 
 <script lang="ts">
 import draggable from "vuedraggable";
+import { range } from "@/utils/range";
 import { defineComponent } from "vue";
 import { sanityTypes } from "@/constants/roleConstants";
 import { overlayService } from "@/services/overlayService";
@@ -123,11 +126,10 @@ import { notificationService } from "@/services/notificationService";
 import { player, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { ConditionBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
-import { range } from "@/utils/range";
 
-const playersQuery = new QueryBuilder(sanityTypes.trumpMatchPlayer)
-  .select("player ->")
-  .cached();
+const playersQuery = new QueryBuilder(sanityTypes.trumpMatchPlayer).select(
+  "player ->"
+);
 
 export default defineComponent({
   components: { UserAutocomplete, DraggableUser, draggable },
