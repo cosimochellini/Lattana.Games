@@ -35,14 +35,36 @@
     },
     "trump": {
         "titles": {
-            "recentMatches": "le tue partite recenti"
+            "recentMatches": "le tue partite recenti",
+            "insertNewMatch": "inserisci nuova partita",
+            "stats": "statistiche"
         },
         "form": {
             "matchDate": "data del match",
             "startingScore": "punteggio iniziale",
             "finalScore": "punteggio finale",
             "players": "giocatori",
-            "callingPlayer": "giocatore chiamante"
+            "callingPlayer": "giocatore chiamante",
+            "remainingPlayers": "giocatori da smistare",
+            "callingTeam": "squadra chiamante",
+            "opposingTeam": "squadra avversaria",
+            "currentPlayer": "giocatore corrente"
+        },
+        "stats": {
+            "totalMatches": "totale partite",
+            "totalWin": "vittorie totali",
+            "totalLose": "sconfitte totali",
+            "win": "vittorie",
+            "penaltyPoints": "penalità",
+            "120Match": "partite 120",
+            "callingMatches": "partite chiamate",
+            "callingMatchesWin": "chiamate vittoriose",
+            "mediaCallingScore": "media punteggio chiamato"
+        }
+    },
+    "form": {
+        "userSelect": {
+            "placeholder": "seleziona giocatore"
         }
     }
 }

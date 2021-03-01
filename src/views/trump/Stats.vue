@@ -1,10 +1,14 @@
 <template>
   <div class="max-w-xl md:max-w-4xl px-4 py-4 mx-auto">
     <div class="font-semibold my-4">
-      <h2 class="base-subtitle my-1 py-1">Giocatore corrente</h2>
+      <h2 class="base-subtitle my-1 py-1 first-capitalize">
+        {{ $t("trump.form.currentPlayer") }}
+      </h2>
       <user-autocomplete v-model="currentPlayer" class="block px-2 py-1" />
     </div>
-    <h2 class="base-title my-1 py-1">Statistiche 📊</h2>
+    <h2 class="base-title my-1 py-1 first-capitalize">
+      {{ $t("trump.titles.stats") }} 📊
+    </h2>
     <div
       class="grid grid-flow-row gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-5"
     >
@@ -18,7 +22,7 @@
             {{ statistic.value }}
           </p>
           <p class="text-lg text-center text-gray-500">
-            {{ statistic.message }}
+            {{ $t("trump.stats." + statistic.message) }}
           </p>
         </div>
       </div>
@@ -147,26 +151,26 @@ export default defineComponent({
       const { mediaScore } = callingStats;
 
       return [
-        { message: "totale partite", value: matches.length.toString() },
-        { message: "vittorie", value: wonMatches.length.toString() },
-        { message: "sconfitte", value: lostMatches.length.toString() },
-        { message: "vittorie", value: `${percentageFormatter(ratio)} %` },
-        { message: "penalità", value: penaltyPoints.length.toString() },
-        { message: "partite 120", value: fullScoreMatches.length.toString() },
+        { message: "totalMatches", value: matches.length.toString() },
+        { message: "totalWin", value: wonMatches.length.toString() },
+        { message: "totalLose", value: lostMatches.length.toString() },
+        { message: "win", value: `${percentageFormatter(ratio)} %` },
+        { message: "penaltyPoints", value: penaltyPoints.length.toString() },
+        { message: "120Match", value: fullScoreMatches.length.toString() },
         {
-          message: "partite chiamate",
+          message: "callingMatches",
           value: callingStats.matches.length.toString(),
         },
         {
-          message: "partite chiamate",
+          message: "callingMatches",
           value: `${percentageFormatter(callingMatchesRatio)} %`,
         },
         {
-          message: "chiamate vittoriose",
+          message: "callingMatchesWin",
           value: `${percentageFormatter(callingStats.ratio)} %`,
         },
         {
-          message: "media punteggio chiamato",
+          message: "mediaCallingScore",
           value: mediaScore.toFixed(0),
         },
       ];

@@ -1,7 +1,7 @@
 <template>
   <select v-model="selectedId" class="base-select">
     <option disabled :value="''" class="base-option">
-      seleziona giocatore
+      {{ $t("form.userSelect.placeholder") }}
     </option>
     <option
       v-for="player in fetchedPlayers"

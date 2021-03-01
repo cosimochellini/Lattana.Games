@@ -35,14 +35,23 @@
     },
     "trump": {
         "titles": {
-            "recentMatches": "your recent matches"
+            "recentMatches": "your recent matches",
+            "insertNewMatch": "insert new match"
         },
         "form": {
             "matchDate": "match date",
             "startingScore": "starting score",
             "finalScore": "final score",
             "players": "players",
-            "callingPlayer": "calling player"
+            "callingPlayer": "calling player",
+            "remainingPlayers": "remaining players",
+            "callingTeam": "calling team",
+            "opposingTeam": "opposing team"
+        }
+    },
+    "form": {
+        "userSelect": {
+            "placeholder": "choose player"
         }
     }
 }

@@ -1,6 +1,8 @@
 <template>
   <div class="container m-auto p-4">
-    <h2 class="base-title my-1 py-1">Inserisci nuova partita 🃏</h2>
+    <h2 class="base-title my-1 py-1 first-capitalize">
+      {{ $t("trump.titles.insertNewMatch") }}
+    </h2>
     <div class="flex flex-col items-center">
       <draggable
         :list="remainingPlayers"
@@ -9,7 +11,9 @@
         class="base-card card-width"
       >
         <template #header>
-          <h2 class="base-subtitle">Giocatori da smistare</h2>
+          <h2 class="base-subtitle first-capitalize">
+            {{ $t("trump.form.remainingPlayers") }}
+          </h2>
 
           <user-autocomplete
             class="w-full"
@@ -34,7 +38,9 @@
         class="base-card mt-2 card-width"
       >
         <template #header>
-          <h2 class="base-subtitle">Squadra chiamante</h2>
+          <h2 class="base-subtitle first-capitalize">
+            {{ $t("trump.form.callingTeam") }}
+          </h2>
         </template>
         <template #item="{ element }">
           <draggable-user
@@ -54,7 +60,9 @@
         class="base-card mt-2 card-width"
       >
         <template #header>
-          <h2 class="base-subtitle">Squadra avversaria</h2>
+          <h2 class="base-subtitle first-capitalize">
+            {{ $t("trump.form.opposingTeam") }}
+          </h2>
         </template>
         <template #item="{ element }">
           <draggable-user
@@ -69,15 +77,17 @@
       <article
         class="base-card flex flex-col items-stretch m-2 justify-between card-width"
       >
-        <h2 class="base-subtitle">Giocatore chiamante</h2>
+        <h2 class="base-subtitle first-capitalize">
+          {{ $t("trump.form.callingPlayer") }}
+        </h2>
         <user-autocomplete
           :exactPlayers="callingPlayers"
           v-model="callingPlayer"
         />
 
         <div class="m-2 flex justify-between">
-          <label class="base-subtitle" for="initial points">
-            Punteggio chiamato
+          <label class="base-subtitle first-capitalize" for="initial points">
+            {{ $t("trump.form.startingScore") }}
           </label>
           <input
             name="initial points"
@@ -89,8 +99,8 @@
           />
         </div>
         <div class="m-2 flex justify-between">
-          <label class="base-subtitle" for="initial points">
-            Punteggio finale (squadra chiamante)
+          <label class="base-subtitle first-capitalize" for="initial points">
+            {{ $t("trump.form.finalScore") }}
           </label>
           <input
             name="initial points"
