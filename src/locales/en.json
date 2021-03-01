@@ -32,5 +32,17 @@
             "fascist": "fascist",
             "liberal": "liberal"
         }
+    },
+    "trump": {
+        "titles": {
+            "recentMatches": "your recent matches"
+        },
+        "form": {
+            "matchDate": "match date",
+            "startingScore": "starting score",
+            "finalScore": "final score",
+            "players": "players",
+            "callingPlayer": "calling player"
+        }
     }
 }

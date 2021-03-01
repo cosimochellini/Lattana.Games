@@ -32,5 +32,17 @@
             "fascist": "nazista",
             "liberal": "comunista"
         }
+    },
+    "trump": {
+        "titles": {
+            "recentMatches": "le tue partite recenti"
+        },
+        "form": {
+            "matchDate": "data del match",
+            "startingScore": "punteggio iniziale",
+            "finalScore": "punteggio finale",
+            "players": "giocatori",
+            "callingPlayer": "giocatore chiamante"
+        }
     }
 }

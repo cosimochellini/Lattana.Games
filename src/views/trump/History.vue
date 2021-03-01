@@ -1,15 +1,24 @@
 <template>
-  <h2 class="base-title p-4">Le tue partite recenti</h2>
+  <h2 class="base-title p-4 first-capitalize">
+    {{ $t("trump.titles.recentMatches") }}
+  </h2>
   <div
     class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:max-w-screen-2xl m-auto p-4"
   >
     <article v-for="match in matches" :key="match._id" class="base-card">
-      <div>Data : {{ dayFormatter(match.matchDate) }}</div>
-      <div>Punteggio iniziale : {{ match.startingScore }}</div>
-      <div>Punteggio finale : {{ match.finalScore }}</div>
+      <div class="first-capitalize">
+        {{ $t("trump.form.matchDate") }} :
+        {{ dayFormatter(match.matchDate) }}
+      </div>
+      <div class="first-capitalize">
+        {{ $t("trump.form.startingScore") }} : {{ match.startingScore }}
+      </div>
+      <div class="first-capitalize">
+        {{ $t("trump.form.finalScore") }} : {{ match.finalScore }}
+      </div>
       <hr class="my-2" />
       <div class="flex flex-row items-center place-content-between">
-        <span class="">Giocatori:</span>
+        <span class="first-capitalize"> {{ $t("trump.form.players") }} : </span>
         <div
           class="flex flex-grow m-auto -space-x-1 overflow-hidden px-1 ml-10"
         >
@@ -25,7 +34,9 @@
       </div>
       <hr class="my-2" />
       <div class="flex flex-row items-center justify-self-auto">
-        Giocatore chiamante :
+        <span class="first-capitalize">
+          {{ $t("trump.form.callingPlayer") }} :
+        </span>
         <span class="text-center m-auto ml-16">
           <img
             :src="image(match.callingPlayer.profileImage, 40)"
@@ -84,7 +95,7 @@ const matchesQuery = new QueryBuilder(sanityTypes.trumpMatch)
     })
   )
   .orderBy(new OrderBuilder("matchDate", true));
-  
+
 export default defineComponent({
   components: { CardSkeleton },
   setup() {

@@ -56,3 +56,7 @@
 .base-subtitle {
   @apply font-semibold leading-3 block tracking-wider py-1;
 }
+
+.first-capitalize:first-letter {
+  @apply uppercase;
+}
