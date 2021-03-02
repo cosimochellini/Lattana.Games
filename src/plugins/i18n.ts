@@ -10,7 +10,7 @@ export async function setupI18n() {
     globalInjection: true,
     legacy: false,
     locale: DEFAULT_LOCALE,
-    fallbackLocale: DEFAULT_LOCALE,
+    fallbackLocale: "it",
     messages: {
       [DEFAULT_LOCALE]: await import(
         /* webpackChunkName: "locale-[request]" */ `../locales/${DEFAULT_LOCALE}.json`

@@ -27,6 +27,31 @@
         }
     },
     "secretHitler": {
+        "titles": {
+            "recentMatches": "your recent matches",
+            "insertNewMatch": "insert new match",
+            "stats": "statistics",
+            "bestMatches": "best matches",
+            "worstMatches": "worst matches"
+        },
+        "form": {
+            "matchDate": "match date",
+            "winningRole": "winning role",
+            "players": "players",
+            "remainingPlayers": "remaining players",
+            "currentPlayer": "current player"
+        },
+        "stats": {
+            "totalMatches": "total matches",
+            "totalWin": "total win",
+            "totalLose": "total lose",
+            "win": "win",
+            "penaltyPoints": "penalty points",
+            "120Match": "120 matches",
+            "callingMatches": "calling matches",
+            "callingMatchesWin": "calling match won",
+            "mediaCallingScore": "media calling score"
+        },
         "roles": {
             "hitler": "hitler",
             "fascist": "fascist",
@@ -36,7 +61,10 @@
     "trump": {
         "titles": {
             "recentMatches": "your recent matches",
-            "insertNewMatch": "insert new match"
+            "insertNewMatch": "insert new match",
+            "stats": "statistics",
+            "bestMatches": "best matches",
+            "worstMatches": "worst matches"
         },
         "form": {
             "matchDate": "match date",
@@ -46,7 +74,19 @@
             "callingPlayer": "calling player",
             "remainingPlayers": "remaining players",
             "callingTeam": "calling team",
-            "opposingTeam": "opposing team"
+            "opposingTeam": "opposing team",
+            "currentPlayer": "current player"
+        },
+        "stats": {
+            "totalMatches": "total matches",
+            "totalWin": "total win",
+            "totalLose": "total lose",
+            "win": "win",
+            "penaltyPoints": "penalty points",
+            "120Match": "120 matches",
+            "callingMatches": "calling matches",
+            "callingMatchesWin": "calling match won",
+            "mediaCallingScore": "media calling score"
         }
     },
     "form": {

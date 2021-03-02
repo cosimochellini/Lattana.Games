@@ -1,4 +1,4 @@
-const defaultLocale = "it-IT" as const;
+const defaultLocale = "it-IT";
 
 const dayFormat = new Intl.DateTimeFormat(defaultLocale, {
   hour12: false,

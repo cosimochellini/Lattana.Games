@@ -27,6 +27,20 @@
         }
     },
     "secretHitler": {
+        "titles": {
+            "recentMatches": "le tue partite recenti",
+            "insertNewMatch": "inserisci nuova partita",
+            "stats": "statistiche",
+            "bestMatches": "accoppiamenti migliori",
+            "worstMatches": "accoppiamenti peggiori"
+        },
+        "form": {
+            "matchDate": "data partita",
+            "winningRole": "ruolo vincitore",
+            "players": "giocatori",
+            "remainingPlayers": "giocatori da smistare",
+            "currentPlayer": "giocatore corrente"
+        },
         "roles": {
             "hitler": "hitler",
             "fascist": "nazista",
@@ -37,7 +51,9 @@
         "titles": {
             "recentMatches": "le tue partite recenti",
             "insertNewMatch": "inserisci nuova partita",
-            "stats": "statistiche"
+            "stats": "statistiche",
+            "bestMatches": "accoppiamenti migliori",
+            "worstMatches": "accoppiamenti peggiori"
         },
         "form": {
             "matchDate": "data del match",

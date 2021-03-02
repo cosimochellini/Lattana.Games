@@ -1,16 +1,39 @@
 <template>
-  <h2 class="base-title p-4">Le tue partite recenti</h2>
+  <h2 class="base-title p-4 first-capitalize">
+    {{ $t("secretHitler.titles.recentMatches") }}
+  </h2>
   <div
     class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:max-w-screen-2xl m-auto p-4"
   >
     <article v-for="match in matches" :key="match._id" class="base-card">
-      <div>Data : {{ dayFormatter(match.matchDate) }}</div>
-      <div>
-        Partito vittorioso : {{ $t(`secretHitler.roles.${match.winningRole}`) }}
+      <div class="first-capitalize">
+        {{ $t("secretHitler.form.matchDate") }} :
+        {{ dayFormatter(match.matchDate) }}
+      </div>
+      <div class="inline-flex content-center align-middle my-2">
+        <span class="first-capitalize">
+          {{ $t("secretHitler.form.winningRole") }} :
+        </span>
+        <badge
+          class="ml-1"
+          :text="$t(`secretHitler.roles.${match.winningRole}`)"
+          :background="
+            match.winningRole === secretHitlerRole.liberal
+              ? 'bg-blue-200'
+              : 'bg-red-200'
+          "
+          :textColor="
+            match.winningRole === secretHitlerRole.liberal
+              ? 'text-blue-900'
+              : 'text-red-900'
+          "
+        />
       </div>
       <hr class="my-2" />
       <div class="flex flex-row items-center justify-around">
-        Giocatori:
+        <span class="first-capitalize">
+          {{ $t("secretHitler.form.players") }}:
+        </span>
         <div class="flex -space-x-1 overflow-hidden px-1">
           <img
             v-for="p in match.players"
@@ -49,6 +72,7 @@
 <script lang="ts">
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
+import Badge from "@/components/base/Badge.vue";
 import { dayFormatter } from "@/utils/formatters";
 import { getPlayer } from "@/services/authService";
 import { defineComponent, nextTick, ref } from "vue";
@@ -78,7 +102,7 @@ const matchesQuery = new QueryBuilder(sanityTypes.secretHitlerMatch)
   .orderBy(new OrderBuilder("matchDate", true));
 
 export default defineComponent({
-  components: { CardSkeleton },
+  components: { CardSkeleton, Badge },
   setup() {
     const router = useRouter();
     const shouldContinueLoading = ref(true);
@@ -144,6 +168,7 @@ export default defineComponent({
       loadMatched,
       borderColor,
       dayFormatter,
+      secretHitlerRole,
       shouldContinueLoading,
     };
   },

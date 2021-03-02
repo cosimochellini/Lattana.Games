@@ -32,7 +32,9 @@
       class="sm:grid sm:grid-flow-row sm:gap-4 sm:grid-cols-1 md:grid-cols-2"
     >
       <div>
-        <h3 class="base-subtitle">Accoppiamenti migliori 👑</h3>
+        <h3 class="base-subtitle first-capitalize">
+          {{ $t("trump.titles.bestMatches") }} 👑
+        </h3>
 
         <div
           class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded m-2"
@@ -59,8 +61,9 @@
         </div>
       </div>
       <div>
-        <h3 class="base-subtitle">Accoppiamenti peggiori 👎</h3>
-
+        <h3 class="base-subtitle first-capitalize">
+          {{ $t("trump.titles.worstMatches") }} 👎
+        </h3>
         <div
           class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded m-2"
           v-for="mate in worstMates"
