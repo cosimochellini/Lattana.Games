@@ -37,6 +37,7 @@
         "form": {
             "matchDate": "match date",
             "winningRole": "winning role",
+            "yourRole": "your role",
             "players": "players",
             "remainingPlayers": "remaining players",
             "currentPlayer": "current player"

@@ -16,6 +16,14 @@ const dateFormat = new Intl.DateTimeFormat(defaultLocale, {
   day: "2-digit",
 });
 
+const recentDayFormat = new Intl.DateTimeFormat(defaultLocale, {
+  hour12: false,
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+});
+
 export const longNumberFormatter = (n: number) =>
   n.toLocaleString(defaultLocale, {
     minimumIntegerDigits: 4,
@@ -38,4 +46,12 @@ export const dayFormatter = (date: string | Date | null) => {
   if (typeof date === "string") return dayFormat.format(new Date(date));
 
   return dayFormat.format(date);
+};
+
+export const recentDayFormatter = (date: string | Date | null) => {
+  if (!date) return "";
+
+  if (typeof date === "string") return recentDayFormat.format(new Date(date));
+
+  return recentDayFormat.format(date);
 };

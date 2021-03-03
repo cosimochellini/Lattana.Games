@@ -37,6 +37,7 @@
         "form": {
             "matchDate": "data partita",
             "winningRole": "ruolo vincitore",
+            "yourRole": "il tuo ruolo",
             "players": "giocatori",
             "remainingPlayers": "giocatori da smistare",
             "currentPlayer": "giocatore corrente"

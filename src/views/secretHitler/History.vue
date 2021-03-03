@@ -6,28 +6,32 @@
     class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:max-w-screen-2xl m-auto p-4"
   >
     <article v-for="match in matches" :key="match._id" class="base-card">
-      <div class="first-capitalize">
-        {{ $t("secretHitler.form.matchDate") }} :
-        {{ dayFormatter(match.matchDate) }}
+      <div class="flex">
+        <span class="flex-1 first-capitalize">
+          {{ $t("secretHitler.form.matchDate") }} :
+        </span>
+        <span class="flex-1 text-center">
+          <badge
+            :text="recentDayFormatter(match.matchDate)"
+            background="bg-gray-200"
+          ></badge>
+        </span>
       </div>
-      <div class="inline-flex content-center align-middle my-2">
-        <span class="first-capitalize">
+      <div class="flex my-2">
+        <span class="flex-1 first-capitalize">
           {{ $t("secretHitler.form.winningRole") }} :
         </span>
-        <badge
-          class="ml-1"
-          :text="$t(`secretHitler.roles.${match.winningRole}`)"
-          :background="
-            match.winningRole === secretHitlerRole.liberal
-              ? 'bg-blue-200'
-              : 'bg-red-200'
-          "
-          :textColor="
-            match.winningRole === secretHitlerRole.liberal
-              ? 'text-blue-900'
-              : 'text-red-900'
-          "
-        />
+        <span class="flex-1 text-center">
+          <secret-hitler-badge :role="match.winningRole" />
+        </span>
+      </div>
+      <div class="flex my-2">
+        <span class="flex-1 first-capitalize">
+          {{ $t("secretHitler.form.yourRole") }} :
+        </span>
+        <span class="flex-1 text-center">
+          <secret-hitler-badge :role="getCurrentPlayerRole(match)" />
+        </span>
       </div>
       <hr class="my-2" />
       <div class="flex flex-row items-center justify-around">
@@ -65,15 +69,14 @@
         </button>
       </div>
     </article>
-    <card-skeleton @visible="loadMatched" v-if="shouldContinueLoading" />
+    <card-skeleton @visible="loadMatched" v-if="moreDataAvaiable" />
   </div>
 </template>
 
 <script lang="ts">
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
-import Badge from "@/components/base/Badge.vue";
-import { dayFormatter } from "@/utils/formatters";
+import { recentDayFormatter } from "@/utils/formatters";
 import { getPlayer } from "@/services/authService";
 import { defineComponent, nextTick, ref } from "vue";
 import { overlayService } from "@/services/overlayService";
@@ -83,12 +86,14 @@ import { byRole } from "@/utils/sortables/secratHitlerSortables";
 import { notificationService } from "@/services/notificationService";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
 import { secretHitlerService } from "@/services/games/secretHitlerService";
+import SecretHitlerBadge from "@/components/secretHitler/secretHitlerBadge.vue";
 import {
   OrderBuilder,
   QueryBuilder,
   ConditionBuilder,
   PaginationBuilder,
 } from "@/utils/sanityQueryBuilder";
+import Badge from "@/components/base/Badge.vue";
 
 const currentPlayer = getPlayer() as player;
 
@@ -102,17 +107,17 @@ const matchesQuery = new QueryBuilder(sanityTypes.secretHitlerMatch)
   .orderBy(new OrderBuilder("matchDate", true));
 
 export default defineComponent({
-  components: { CardSkeleton, Badge },
+  components: { CardSkeleton, SecretHitlerBadge, Badge },
   setup() {
     const router = useRouter();
-    const shouldContinueLoading = ref(true);
+    const moreDataAvaiable = ref(true);
     const matches = ref<secretHitlerMatch[]>([]);
     const currentPagination = new PaginationBuilder(0, 10);
 
     const resetMatches = () => {
       currentPagination.resetPage();
       matches.value = [];
-      shouldContinueLoading.value = true;
+      moreDataAvaiable.value = true;
     };
 
     const loadMatched = (fromZero: boolean = false) => {
@@ -126,11 +131,9 @@ export default defineComponent({
 
           matches.value = [...matches.value, ...response];
 
-          shouldContinueLoading.value = false;
+          moreDataAvaiable.value = false;
           nextTick(() => {
-            shouldContinueLoading.value = currentPagination.shouldContinue(
-              response
-            );
+            moreDataAvaiable.value = currentPagination.shouldContinue(response);
           });
         })
         .catch(notificationService.danger);
@@ -155,6 +158,9 @@ export default defineComponent({
       }
     };
 
+    const getCurrentPlayerRole = (match: secretHitlerMatch) =>
+      match.players.find((p) => p.player._id === currentPlayer._id)?.role;
+
     const copyMatch = (match: secretHitlerMatch) =>
       router.push({ name: "secretHitlerNew", query: { ref: match._id } });
 
@@ -167,9 +173,9 @@ export default defineComponent({
       deleteMatch,
       loadMatched,
       borderColor,
-      dayFormatter,
-      secretHitlerRole,
-      shouldContinueLoading,
+      moreDataAvaiable,
+      recentDayFormatter,
+      getCurrentPlayerRole,
     };
   },
 });

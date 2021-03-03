@@ -79,7 +79,7 @@
       <div class="base-card w-full mx-2 py-4 card-width">
         <h2 class="base-subtitle">Ruolo vincitore</h2>
         <select v-model="winningRole" class="base-select w-full">
-          <option value="">seleziona ruolo</option>
+          <option value="" disabled>seleziona ruolo</option>
           <option v-for="role in allRoles" :key="role" :value="role">
             {{ $t(`secretHitler.roles.${role}`) }}
           </option>
