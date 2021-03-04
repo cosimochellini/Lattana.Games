@@ -5,8 +5,8 @@
 
 <script lang="ts">
 import Overlay from "./components/base/Overlay.vue";
-import { overlayService } from "./services/overlayService";
 import { defineComponent, onMounted, ref } from "vue";
+import { overlayService } from "./services/overlayService";
 
 export default defineComponent({
   components: { Overlay },
@@ -27,6 +27,6 @@ export default defineComponent({
 
 <style>
 body {
-  @apply bg-gradient-to-r from-gray-200 to-gray-400 h-full;
+  @apply bg-gradient-to-r from-gray-200 to-gray-300 h-full;
 }
 </style>

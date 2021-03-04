@@ -38,6 +38,7 @@
             "matchDate": "match date",
             "winningRole": "winning role",
             "yourRole": "your role",
+            "yourMatch": "your match",
             "players": "players",
             "remainingPlayers": "remaining players",
             "currentPlayer": "current player"
@@ -91,6 +92,10 @@
         }
     },
     "form": {
+        "base": {
+            "win": "win",
+            "lose": "lose"
+        },
         "userSelect": {
             "placeholder": "choose player"
         }

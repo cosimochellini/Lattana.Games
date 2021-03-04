@@ -38,6 +38,7 @@
             "matchDate": "data partita",
             "winningRole": "ruolo vincitore",
             "yourRole": "il tuo ruolo",
+            "yourMatch": "la tua partita",
             "players": "giocatori",
             "remainingPlayers": "giocatori da smistare",
             "currentPlayer": "giocatore corrente"
@@ -80,6 +81,10 @@
         }
     },
     "form": {
+        "base": {
+            "win": "vittoria",
+            "lose": "sconfitta"
+        },
         "userSelect": {
             "placeholder": "seleziona giocatore"
         }

@@ -11,10 +11,7 @@
           {{ $t("secretHitler.form.matchDate") }} :
         </span>
         <span class="flex-1 text-center">
-          <badge
-            :text="recentDayFormatter(match.matchDate)"
-            background="bg-gray-200"
-          ></badge>
+          <date-badge :date="match.matchDate" />
         </span>
       </div>
       <div class="flex my-2">
@@ -27,10 +24,11 @@
       </div>
       <div class="flex my-2">
         <span class="flex-1 first-capitalize">
-          {{ $t("secretHitler.form.yourRole") }} :
+          {{ $t("secretHitler.form.yourMatch") }} :
         </span>
         <span class="flex-1 text-center">
-          <secret-hitler-badge :role="getCurrentPlayerRole(match)" />
+          <secret-hitler-badge :role="getCurrentPlayer(match)?.role" />
+          <win-badge :win="getCurrentPlayer(match)?.win" />
         </span>
       </div>
       <hr class="my-2" />
@@ -76,9 +74,9 @@
 <script lang="ts">
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
-import { recentDayFormatter } from "@/utils/formatters";
 import { getPlayer } from "@/services/authService";
 import { defineComponent, nextTick, ref } from "vue";
+import DateBadge from "@/components/base/DateBadge.vue";
 import { overlayService } from "@/services/overlayService";
 import { player, secretHitlerMatch } from "@/types/sanity";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
@@ -87,13 +85,14 @@ import { notificationService } from "@/services/notificationService";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
 import { secretHitlerService } from "@/services/games/secretHitlerService";
 import SecretHitlerBadge from "@/components/secretHitler/secretHitlerBadge.vue";
+
 import {
   OrderBuilder,
   QueryBuilder,
   ConditionBuilder,
   PaginationBuilder,
 } from "@/utils/sanityQueryBuilder";
-import Badge from "@/components/base/Badge.vue";
+import WinBadge from "@/components/base/WinBadge.vue";
 
 const currentPlayer = getPlayer() as player;
 
@@ -107,7 +106,7 @@ const matchesQuery = new QueryBuilder(sanityTypes.secretHitlerMatch)
   .orderBy(new OrderBuilder("matchDate", true));
 
 export default defineComponent({
-  components: { CardSkeleton, SecretHitlerBadge, Badge },
+  components: { CardSkeleton, SecretHitlerBadge, DateBadge, WinBadge },
   setup() {
     const router = useRouter();
     const moreDataAvaiable = ref(true);
@@ -158,8 +157,8 @@ export default defineComponent({
       }
     };
 
-    const getCurrentPlayerRole = (match: secretHitlerMatch) =>
-      match.players.find((p) => p.player._id === currentPlayer._id)?.role;
+    const getCurrentPlayer = (match: secretHitlerMatch) =>
+      match.players.find((p) => p.player._id === currentPlayer._id);
 
     const copyMatch = (match: secretHitlerMatch) =>
       router.push({ name: "secretHitlerNew", query: { ref: match._id } });
@@ -174,8 +173,7 @@ export default defineComponent({
       loadMatched,
       borderColor,
       moreDataAvaiable,
-      recentDayFormatter,
-      getCurrentPlayerRole,
+      getCurrentPlayer,
     };
   },
 });

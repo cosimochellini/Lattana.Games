@@ -1,18 +1,14 @@
 <template>
   <badge
     :text="$t(`secretHitler.roles.${role}`)"
-    :background="
-      role === secretHitlerRole.liberal ? 'bg-blue-200' : 'bg-red-200'
-    "
-    :textColor="
-      role === secretHitlerRole.liberal ? 'text-blue-900' : 'text-red-900'
-    "
+    :background="background"
+    :textColor="textColor"
   />
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
 import Badge from "../base/Badge.vue";
+import { computed, defineComponent } from "vue";
 import { secretHitlerRole } from "@/constants/roleConstants";
 
 export default defineComponent({
@@ -24,8 +20,30 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
+  setup(props) {
+    const background = computed(() => {
+      switch (props.role) {
+        case secretHitlerRole.liberal:
+          return "bg-blue-200";
+        case secretHitlerRole.fascist:
+          return "bg-red-200";
+        default:
+          return "bg-gray-400";
+      }
+    });
+    const textColor = computed(() => {
+      switch (props.role) {
+        case secretHitlerRole.liberal:
+          return "text-blue-900";
+        case secretHitlerRole.fascist:
+          return "text-red-900";
+        default:
+          return "text-black";
+      }
+    });
     return {
+      textColor,
+      background,
       secretHitlerRole,
     };
   },
