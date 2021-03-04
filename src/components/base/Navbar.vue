@@ -89,15 +89,15 @@
                   <div class="inline-flex">
                     <button
                       class="lang-button rounded-l-lg"
-                      @click="() => (currentLocale = 'it')"
-                      :class="{ active: currentLocale === 'it' }"
+                      @click="() => (currentLanguage = 'it')"
+                      :class="{ active: currentLanguage === 'it' }"
                     >
                       ita
                     </button>
                     <button
                       class="lang-button rounded-r-lg"
-                      :class="{ active: currentLocale === 'en' }"
-                      @click="() => (currentLocale = 'en')"
+                      :class="{ active: currentLanguage === 'en' }"
+                      @click="() => (currentLanguage = 'en')"
                     >
                       eng
                     </button>
@@ -129,13 +129,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from "vue";
+import { useRouter } from "vue-router";
 import { Dictionary } from "@/types/base";
 import { image } from "@/instances/sanity";
+import { defineComponent, watch } from "vue";
 import { getPlayer } from "@/services/authService";
-import { useRouter } from "vue-router";
-import { useI18n } from "vue-i18n";
-import { setLanguage } from "@/services/langService";
+import { currentLanguage } from "@/services/langService";
 
 type State = {
   name: string;
@@ -174,23 +173,21 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter();
-    const { locale } = useI18n({ useScope: "global" });
 
-    const currentLocale = ref(locale.value);
     // sync to switch locale from router locale path
     watch(router.currentRoute, (route) => {
-      currentLocale.value = route.params.locale as string;
+      currentLanguage.value = route.params.locale as string;
     });
 
-    watch(currentLocale, (val) => {
-      setLanguage(val);
+    watch(currentLanguage, (val) => {
+      currentLanguage.value = val;
       router.push({
         name: router.currentRoute.value.name as string,
         params: { locale: val },
       });
     });
 
-    return { currentLocale };
+    return { currentLanguage };
   },
   methods: {
     profileClick() {

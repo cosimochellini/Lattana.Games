@@ -30,3 +30,5 @@ export type sanityPostProp<T> = T extends null
 export type sanityDocument<T> = {
   [key in keyof T]: sanityPostProp<T[key]>;
 };
+
+export type datable = string | Date | null | number | undefined;

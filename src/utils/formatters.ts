@@ -1,57 +1,122 @@
-const defaultLocale = "it-IT";
+import { computed } from "vue";
+import { differenceInDays } from "./date";
+import { datable, Dictionary } from "@/types/base";
+import { currentLocale } from "@/services/langService";
 
-const dayFormat = new Intl.DateTimeFormat(defaultLocale, {
-  hour12: false,
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-  hour: "2-digit",
-  minute: "2-digit",
-});
+const dayFormat = computed(
+  () =>
+    new Intl.DateTimeFormat(currentLocale.value, {
+      hour12: false,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+);
 
-const dateFormat = new Intl.DateTimeFormat(defaultLocale, {
-  hour12: false,
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-});
+const dateFormat = computed(
+  () =>
+    new Intl.DateTimeFormat(currentLocale.value, {
+      hour12: false,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    })
+);
 
-const recentDayFormat = new Intl.DateTimeFormat(defaultLocale, {
-  hour12: false,
-  month: "2-digit",
-  day: "2-digit",
-  hour: "2-digit",
-  minute: "2-digit",
-});
+const recentDayFormat = computed(
+  () =>
+    new Intl.DateTimeFormat(currentLocale.value, {
+      hour12: false,
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+);
+
+const units = {
+  year: 24 * 60 * 60 * 1000 * 365,
+  month: (24 * 60 * 60 * 1000 * 365) / 12,
+  day: 24 * 60 * 60 * 1000,
+  hour: 60 * 60 * 1000,
+  minute: 60 * 1000,
+  second: 1000,
+} as Dictionary<number>;
+
+const relativeTimeFormat = computed(
+  () =>
+    new Intl.RelativeTimeFormat(currentLocale.value, {
+      numeric: "auto",
+    })
+);
+
+const relativeTime = (d1: Date, d2: Date = new Date()) => {
+  const elapsed = d1.getTime() - d2.getTime();
+
+  // "Math.abs" accounts for both "past" & "future" scenarios
+  for (const unit of Object.keys(units)) {
+    if (Math.abs(elapsed) > units[unit] || unit == "second")
+      return relativeTimeFormat.value.format(
+        Math.round(elapsed / units[unit]),
+        unit as Intl.RelativeTimeFormatUnit
+      );
+  }
+  return "";
+};
 
 export const longNumberFormatter = (n: number) =>
-  n.toLocaleString(defaultLocale, {
+  n.toLocaleString(currentLocale.value, {
     minimumIntegerDigits: 4,
     useGrouping: false,
   });
 
 export const percentageFormatter = (n: number) => (n * 100).toFixed(0);
 
-export const dateFormatter = (date: string | Date | null) => {
-  if (!date) return "";
+const parseDate = (date: datable): [boolean, Date] => {
+  const isValid = false;
 
-  if (typeof date === "string") return dateFormat.format(new Date(date));
+  if (!date) return [isValid, new Date()];
 
-  return dateFormat.format(date);
+  if (date instanceof Date) return [true, date];
+
+  if (typeof date === "string" || typeof date === "number")
+    return [true, new Date(date)];
+
+  return [false, new Date()];
 };
 
-export const dayFormatter = (date: string | Date | null) => {
-  if (!date) return "";
-
-  if (typeof date === "string") return dayFormat.format(new Date(date));
-
-  return dayFormat.format(date);
+export const dateFormatter = (date: datable) => {
+  const [isValid, d] = parseDate(date);
+  if (!isValid) return "";
+  return dateFormat.value.format(d);
 };
 
-export const recentDayFormatter = (date: string | Date | null) => {
-  if (!date) return "";
+export const dayFormatter = (date: datable) => {
+  const [isValid, d] = parseDate(date);
+  if (!isValid) return "";
+  return dayFormat.value.format(d);
+};
 
-  if (typeof date === "string") return recentDayFormat.format(new Date(date));
+export const recentDayFormatter = (date: datable) => {
+  const [isValid, d] = parseDate(date);
+  if (!isValid) return "";
+  return recentDayFormat.value.format(d);
+};
 
-  return recentDayFormat.format(date);
+export const relativeTimeFormatter = (date: datable) => {
+  const [isValid, d] = parseDate(date);
+  if (!isValid) return "";
+  return relativeTime(d);
+};
+
+export const smartRelativeTime = (date: datable, range: number = 1) => {
+  const [isValid, d] = parseDate(date);
+  if (!isValid) return "";
+
+  if (differenceInDays(d) >= range) {
+    return recentDayFormat.value.format(d);
+  }
+  return relativeTime(d);
 };

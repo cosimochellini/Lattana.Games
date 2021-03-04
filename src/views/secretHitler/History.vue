@@ -6,6 +6,7 @@
     class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:max-w-screen-2xl m-auto p-4"
   >
     <article v-for="match in matches" :key="match._id" class="base-card">
+      <div class="grid grid-cols-3">
         <span class="first-capitalize">
           {{ $t("secretHitler.form.matchDate") }} :
         </span>
@@ -75,6 +76,7 @@ import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
 import { getPlayer } from "@/services/authService";
 import { defineComponent, nextTick, ref } from "vue";
+import WinBadge from "@/components/base/WinBadge.vue";
 import DateBadge from "@/components/base/DateBadge.vue";
 import { overlayService } from "@/services/overlayService";
 import { player, secretHitlerMatch } from "@/types/sanity";
@@ -91,7 +93,6 @@ import {
   ConditionBuilder,
   PaginationBuilder,
 } from "@/utils/sanityQueryBuilder";
-import WinBadge from "@/components/base/WinBadge.vue";
 
 const currentPlayer = getPlayer() as player;
 

@@ -1,24 +1,25 @@
-import { nextTick } from "vue";
+import { nextTick, unref } from "vue";
 import { createI18n } from "vue-i18n";
-import { getLanguage } from "@/services/langService";
+import { currentLanguage } from "@/services/langService";
 
-export const DEFAULT_LOCALE = getLanguage();
 export const SUPPORT_LOCALES = ["en", "it"];
 
 export async function setupI18n() {
+  const initialLanguage = unref(currentLanguage);
+
   const i18n = createI18n({
     globalInjection: true,
     legacy: false,
-    locale: DEFAULT_LOCALE,
+    locale: initialLanguage,
     fallbackLocale: "it",
     messages: {
-      [DEFAULT_LOCALE]: await import(
-        /* webpackChunkName: "locale-[request]" */ `../locales/${DEFAULT_LOCALE}.json`
+      [initialLanguage]: await import(
+        /* webpackChunkName: "locale-[request]" */ `../locales/${initialLanguage}.json`
       ),
     },
   });
 
-  setI18nLanguage(i18n, DEFAULT_LOCALE);
+  setI18nLanguage(i18n, initialLanguage);
 
   return i18n;
 }

@@ -1,22 +1,24 @@
 import { isAuthorized } from "@/services/authService";
+import { currentLanguage } from "@/services/langService";
 import { overlayService } from "@/services/overlayService";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import {
-  DEFAULT_LOCALE,
-  SUPPORT_LOCALES,
-  setI18nLanguage,
-  loadLocaleMessages,
-} from "./i18n";
+import { SUPPORT_LOCALES, setI18nLanguage, loadLocaleMessages } from "./i18n";
 
 const routes: RouteRecordRaw[] = [
   {
     path: "",
-    redirect: { name: "trumpHistory", params: { locale: DEFAULT_LOCALE } },
+    redirect: {
+      name: "trumpHistory",
+      params: { locale: currentLanguage.value },
+    },
   },
   {
     path: "/:pathMatch(.*)*",
     name: "NotFound",
-    redirect: { name: "trumpHistory", params: { locale: DEFAULT_LOCALE } },
+    redirect: {
+      name: "trumpHistory",
+      params: { locale: currentLanguage.value },
+    },
   },
   {
     path: "/:locale",
