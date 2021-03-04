@@ -6,27 +6,26 @@
     class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:max-w-screen-2xl m-auto p-4"
   >
     <article v-for="match in matches" :key="match._id" class="base-card">
-      <div class="flex">
-        <span class="flex-1 first-capitalize">
+        <span class="first-capitalize">
           {{ $t("secretHitler.form.matchDate") }} :
         </span>
-        <span class="flex-1 text-center">
+        <span class="col-span-2 text-center">
           <date-badge :date="match.matchDate" />
         </span>
       </div>
-      <div class="flex my-2">
-        <span class="flex-1 first-capitalize">
+      <div class="grid grid-cols-3 my-2">
+        <span class="first-capitalize">
           {{ $t("secretHitler.form.winningRole") }} :
         </span>
-        <span class="flex-1 text-center">
+        <span class="col-span-2 text-center">
           <secret-hitler-badge :role="match.winningRole" />
         </span>
       </div>
-      <div class="flex my-2">
-        <span class="flex-1 first-capitalize">
+      <div class="grid grid-cols-3 my-2">
+        <span class="first-capitalize">
           {{ $t("secretHitler.form.yourMatch") }} :
         </span>
-        <span class="flex-1 text-center">
+        <span class="col-span-2 text-center m-auto">
           <secret-hitler-badge :role="getCurrentPlayer(match)?.role" />
           <win-badge :win="getCurrentPlayer(match)?.win" />
         </span>
