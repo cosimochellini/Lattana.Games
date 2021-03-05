@@ -65,13 +65,15 @@
         <span class="first-capitalize">
           {{ $t("trump.form.callingPlayer") }}
         </span>
-        <span class="text-center m-auto ml-16">
+        <div
+          class="flex flex-grow m-auto -space-x-1 overflow-hidden px-1 content-center justify-center"
+        >
           <img
             :src="image(match.callingPlayer.profileImage, 40)"
             class="rounded-full"
             :title="`${match.callingPlayer.name} ${match.callingPlayer.surname}`"
           />
-        </span>
+        </div>
       </div>
       <hr class="my-2" />
       <div class="flex justify-items-center justify-around">
