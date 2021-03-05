@@ -58,9 +58,10 @@
             "worstMatches": "accoppiamenti peggiori"
         },
         "form": {
-            "matchDate": "data del match",
-            "startingScore": "punteggio iniziale",
+            "matchDate": "data partita",
+            "startingScore": "punteggio chiamato",
             "finalScore": "punteggio finale",
+            "scores": "punteggi",
             "players": "giocatori",
             "callingPlayer": "giocatore chiamante",
             "remainingPlayers": "giocatori da smistare",

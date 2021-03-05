@@ -12,7 +12,7 @@ export default defineComponent({
   props: {
     win: {
       type: Boolean,
-      required: true,
+      default: () => false,
     },
   },
   setup(props) {

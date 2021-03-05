@@ -3,39 +3,67 @@
     {{ $t("trump.titles.recentMatches") }}
   </h2>
   <div
-    class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:max-w-screen-2xl m-auto p-4"
+    class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:max-w-screen-2xl m-auto p-3"
   >
     <article v-for="match in matches" :key="match._id" class="base-card">
-      <div class="first-capitalize">
-        {{ $t("trump.form.matchDate") }} :
-        {{ dayFormatter(match.matchDate) }}
+      <div class="grid grid-cols-2">
+        <span class="first-capitalize">
+          {{ $t("trump.form.matchDate") }}
+        </span>
+        <span class="text-center">
+          <date-badge :date="match.matchDate" />
+        </span>
       </div>
-      <div class="first-capitalize">
-        {{ $t("trump.form.startingScore") }} : {{ match.startingScore }}
+      <div class="grid grid-cols-2 my-2">
+        <span class="first-capitalize">
+          {{ $t("trump.form.scores") }}
+        </span>
+        <span class="text-center">
+          <badge :text="match.startingScore.toString()" />
+          <badge
+            :text="match.finalScore.toString()"
+            :background="
+              match.finalScore >= match.startingScore
+                ? 'bg-green-200'
+                : 'bg-red-200'
+            "
+            :textColor="
+              match.finalScore >= match.startingScore
+                ? 'text-green-900'
+                : 'text-red-900'
+            "
+          />
+        </span>
       </div>
-      <div class="first-capitalize">
-        {{ $t("trump.form.finalScore") }} : {{ match.finalScore }}
+
+      <div class="grid grid-cols-2 my-2">
+        <span class="first-capitalize">
+          {{ $t("trump.form.finalScore") }}
+        </span>
+        <span class="text-center">
+          <win-badge :win="getCurrentPlayer(match)?.win" />
+        </span>
       </div>
       <hr class="my-2" />
       <div class="flex flex-row items-center place-content-between">
-        <span class="first-capitalize"> {{ $t("trump.form.players") }} : </span>
+        <span class="first-capitalize"> {{ $t("trump.form.players") }} </span>
         <div
-          class="flex flex-grow m-auto -space-x-1 overflow-hidden px-1 ml-10"
+          class="flex flex-grow m-auto -space-x-1 overflow-hidden px-1 content-center justify-center"
         >
           <img
             v-for="p in match.players"
             :key="p._id"
             :src="image(p.player.profileImage, 40)"
             :title="`${p.player.name} ${p.player.surname}`"
-            class="inline-block h-10 w-10 rounded-full ring-2 my-2"
             :class="borderColor(p.win)"
+            class="inline-block h-10 w-10 rounded-full ring-2 my-2"
           />
         </div>
       </div>
       <hr class="my-2" />
       <div class="flex flex-row items-center justify-self-auto">
         <span class="first-capitalize">
-          {{ $t("trump.form.callingPlayer") }} :
+          {{ $t("trump.form.callingPlayer") }}
         </span>
         <span class="text-center m-auto ml-16">
           <img
@@ -62,28 +90,32 @@
         </button>
       </div>
     </article>
-    <card-skeleton @visible="loadMatched" v-if="shouldContinueLoading" />
+    <card-skeleton @visible="loadMatched" v-if="moreData" />
   </div>
 </template>
 
 <script lang="ts">
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
-import { player, trumpMatch } from "@/types/sanity";
+import Badge from "@/components/base/Badge.vue";
 import { dayFormatter } from "@/utils/formatters";
+import { getPlayer } from "@/services/authService";
+import { player, trumpMatch } from "@/types/sanity";
 import { defineComponent, nextTick, ref } from "vue";
+import WinBadge from "@/components/base/WinBadge.vue";
+import DateBadge from "@/components/base/DateBadge.vue";
 import { sanityTypes } from "@/constants/roleConstants";
 import { overlayService } from "@/services/overlayService";
 import { trumpService } from "@/services/games/trumpService";
+import CardSkeleton from "@/components/base/CardSkeleton.vue";
 import { notificationService } from "@/services/notificationService";
+
 import {
   OrderBuilder,
   QueryBuilder,
   ConditionBuilder,
   PaginationBuilder,
 } from "@/utils/sanityQueryBuilder";
-import { getPlayer } from "@/services/authService";
-import CardSkeleton from "@/components/base/CardSkeleton.vue";
 
 const currentPlayer = getPlayer() as player;
 
@@ -97,17 +129,17 @@ const matchesQuery = new QueryBuilder(sanityTypes.trumpMatch)
   .orderBy(new OrderBuilder("matchDate", true));
 
 export default defineComponent({
-  components: { CardSkeleton },
+  components: { CardSkeleton, DateBadge, Badge, WinBadge },
   setup() {
     const router = useRouter();
     const matches = ref<trumpMatch[]>([]);
-    const shouldContinueLoading = ref(true);
+    const moreData = ref(true);
     const currentPagination = new PaginationBuilder(0, 10);
 
     const resetMatches = () => {
       currentPagination.resetPage();
       matches.value = [];
-      shouldContinueLoading.value = true;
+      moreData.value = true;
     };
 
     const loadMatched = (fromZero: boolean = false) => {
@@ -117,17 +149,12 @@ export default defineComponent({
         .get(currentPagination.next())
         .fetch<trumpMatch[]>()
         .then((response) => {
-          response.forEach((m) =>
-            m.players.sort((m1, m2) => Number(m1.win) - Number(m2.win))
-          );
           matches.value = [...matches.value, ...response];
 
-          shouldContinueLoading.value = false;
+          moreData.value = false;
 
           nextTick(() => {
-            shouldContinueLoading.value = currentPagination.shouldContinue(
-              response
-            );
+            moreData.value = currentPagination.shouldContinue(response);
           });
         })
         .catch(notificationService.danger);
@@ -150,16 +177,20 @@ export default defineComponent({
     const editMatch = (match: trumpMatch) =>
       router.push({ name: "trumpEdit", params: { id: match._id } });
 
+    const getCurrentPlayer = (match: trumpMatch) =>
+      match.players.find((p) => p.player._id === currentPlayer._id);
+
     return {
       image,
       matches,
+      moreData,
       copyMatch,
       editMatch,
       loadMatched,
       deleteMatch,
       borderColor,
       dayFormatter,
-      shouldContinueLoading,
+      getCurrentPlayer,
     };
   },
 });
