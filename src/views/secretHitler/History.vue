@@ -8,7 +8,7 @@
     <article v-for="match in matches" :key="match._id" class="base-card">
       <div class="grid grid-cols-3">
         <span class="first-capitalize">
-          {{ $t("secretHitler.form.matchDate") }} :
+          {{ $t("secretHitler.form.matchDate") }}
         </span>
         <span class="col-span-2 text-center">
           <date-badge :date="match.matchDate" />
@@ -16,7 +16,7 @@
       </div>
       <div class="grid grid-cols-3 my-2">
         <span class="first-capitalize">
-          {{ $t("secretHitler.form.winningRole") }} :
+          {{ $t("secretHitler.form.winningRole") }}
         </span>
         <span class="col-span-2 text-center">
           <secret-hitler-badge :role="match.winningRole" />
@@ -24,7 +24,7 @@
       </div>
       <div class="grid grid-cols-3 my-2">
         <span class="first-capitalize">
-          {{ $t("secretHitler.form.yourMatch") }} :
+          {{ $t("secretHitler.form.yourMatch") }}
         </span>
         <span class="col-span-2 text-center m-auto">
           <secret-hitler-badge :role="getCurrentPlayer(match)?.role" />
@@ -34,9 +34,9 @@
       <hr class="my-2" />
       <div class="flex flex-row items-center justify-around">
         <span class="first-capitalize">
-          {{ $t("secretHitler.form.players") }}:
+          {{ $t("secretHitler.form.players") }}
         </span>
-        <div class="flex -space-x-1 overflow-hidden px-1">
+        <div class="flex overflow-hidden px-1" :class="bindSpace(match)">
           <img
             v-for="p in match.players"
             :key="p._id"
@@ -93,6 +93,7 @@ import {
   ConditionBuilder,
   PaginationBuilder,
 } from "@/utils/sanityQueryBuilder";
+import { range } from "@/utils/range";
 
 const currentPlayer = getPlayer() as player;
 
@@ -163,15 +164,24 @@ export default defineComponent({
     const copyMatch = (match: secretHitlerMatch) =>
       router.push({ name: "secretHitlerNew", query: { ref: match._id } });
 
+    const bindSpace = (match: secretHitlerMatch) => {
+      const players = match.players.length;
+
+      if (range([9, 10], players)) return "-space-x-2";
+      if (range([8, 9], players)) return "-space-x-1";
+      return "";
+    };
+
     // onMounted(() => loadMatched());
 
     return {
       image,
       matches,
+      bindSpace,
       copyMatch,
+      borderColor,
       deleteMatch,
       loadMatched,
-      borderColor,
       moreDataAvaiable,
       getCurrentPlayer,
     };
