@@ -49,10 +49,6 @@
             "totalLose": "total lose",
             "win": "win",
             "penaltyPoints": "penalty points",
-            "120Match": "120 matches",
-            "callingMatches": "calling matches",
-            "callingMatchesWin": "calling match won",
-            "mediaCallingScore": "media calling score"
         },
         "roles": {
             "hitler": "hitler",
@@ -72,6 +68,7 @@
             "matchDate": "match date",
             "startingScore": "starting score",
             "finalScore": "final score",
+            "outcome": "outcome",
             "scores": "scores",
             "players": "players",
             "callingPlayer": "calling player",

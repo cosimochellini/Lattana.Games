@@ -43,6 +43,13 @@
             "remainingPlayers": "giocatori da smistare",
             "currentPlayer": "giocatore corrente"
         },
+        "stats": {
+            "totalMatches": "totale partite",
+            "totalWin": "vittorie totali",
+            "totalLose": "sconfitte totali",
+            "win": "vittorie",
+            "penaltyPoints": "penalità",
+        },
         "roles": {
             "hitler": "hitler",
             "fascist": "nazista",
@@ -61,6 +68,7 @@
             "matchDate": "data partita",
             "startingScore": "punteggio chiamato",
             "finalScore": "punteggio finale",
+            "outcome": "esito",
             "scores": "punteggi",
             "players": "giocatori",
             "callingPlayer": "giocatore chiamante",

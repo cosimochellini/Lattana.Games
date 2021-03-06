@@ -248,7 +248,7 @@ export class PaginationBuilder {
   private _page: number;
   private _pageSize: number;
 
-  constructor(page: number = 1, pageSize: number = 10) {
+  constructor(page: number = 0, pageSize: number = 10) {
     this._page = page;
     this._pageSize = pageSize;
   }

@@ -38,7 +38,7 @@
 
       <div class="grid grid-cols-2 my-2">
         <span class="first-capitalize">
-          {{ $t("trump.form.finalScore") }}
+          {{ $t("trump.form.outcome") }}
         </span>
         <span class="text-center">
           <win-badge :win="getCurrentPlayer(match)?.win" />
@@ -92,31 +92,31 @@
         </button>
       </div>
     </article>
-    <card-skeleton @visible="loadMatched" v-if="moreData" />
+    <card-skeleton @visible="getMoreData" v-if="moreDataAvailable" />
   </div>
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
 import Badge from "@/components/base/Badge.vue";
 import { dayFormatter } from "@/utils/formatters";
 import { getPlayer } from "@/services/authService";
 import { player, trumpMatch } from "@/types/sanity";
-import { defineComponent, nextTick, ref } from "vue";
 import WinBadge from "@/components/base/WinBadge.vue";
 import DateBadge from "@/components/base/DateBadge.vue";
 import { sanityTypes } from "@/constants/roleConstants";
 import { overlayService } from "@/services/overlayService";
 import { trumpService } from "@/services/games/trumpService";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
+import { useInfiniteLoading } from "@/composable/infiniteLoading";
 import { notificationService } from "@/services/notificationService";
 
 import {
   OrderBuilder,
   QueryBuilder,
   ConditionBuilder,
-  PaginationBuilder,
 } from "@/utils/sanityQueryBuilder";
 
 const currentPlayer = getPlayer() as player;
@@ -134,33 +134,12 @@ export default defineComponent({
   components: { CardSkeleton, DateBadge, Badge, WinBadge },
   setup() {
     const router = useRouter();
-    const matches = ref<trumpMatch[]>([]);
-    const moreData = ref(true);
-    const currentPagination = new PaginationBuilder(0, 10);
 
-    const resetMatches = () => {
-      currentPagination.resetPage();
-      matches.value = [];
-      moreData.value = true;
-    };
-
-    const loadMatched = (fromZero: boolean = false) => {
-      fromZero && resetMatches();
-
-      matchesQuery
-        .get(currentPagination.next())
-        .fetch<trumpMatch[]>()
-        .then((response) => {
-          matches.value = [...matches.value, ...response];
-
-          moreData.value = false;
-
-          nextTick(() => {
-            moreData.value = currentPagination.shouldContinue(response);
-          });
-        })
-        .catch(notificationService.danger);
-    };
+    const {
+      getMoreData,
+      items: matches,
+      moreDataAvailable,
+    } = useInfiniteLoading<trumpMatch>(matchesQuery, { pageSize: 6 });
 
     const deleteMatch = (match: trumpMatch) =>
       overlayService.showOverlay() &&
@@ -168,7 +147,7 @@ export default defineComponent({
         .deleteExistingMatch(match)
         .then(() => notificationService.success("eliminazione eseguita"))
         .catch(notificationService.danger)
-        .finally(() => overlayService.hideOverlay() && loadMatched(true));
+        .finally(() => overlayService.hideOverlay() && getMoreData(true));
 
     const borderColor = (win: boolean) =>
       win ? "ring-blue-500" : "ring-red-500";
@@ -185,14 +164,14 @@ export default defineComponent({
     return {
       image,
       matches,
-      moreData,
       copyMatch,
       editMatch,
-      loadMatched,
+      getMoreData,
       deleteMatch,
       borderColor,
       dayFormatter,
       getCurrentPlayer,
+      moreDataAvailable,
     };
   },
 });

@@ -5,7 +5,7 @@
   <div
     class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:max-w-screen-2xl m-auto p-3"
   >
-    <article v-for="match in matches" :key="match._id" class="base-card">
+    <article v-for="match in items" :key="match._id" class="base-card">
       <div class="grid grid-cols-3">
         <span class="first-capitalize">
           {{ $t("secretHitler.form.matchDate") }}
@@ -67,21 +67,23 @@
         </button>
       </div>
     </article>
-    <card-skeleton @visible="loadMatched" v-if="moreDataAvaiable" />
+    <card-skeleton v-if="moreDataAvailable" @visible="getMoreData" />
   </div>
 </template>
 
 <script lang="ts">
+import { range } from "@/utils/range";
+import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
 import { getPlayer } from "@/services/authService";
-import { defineComponent, nextTick, ref } from "vue";
 import WinBadge from "@/components/base/WinBadge.vue";
 import DateBadge from "@/components/base/DateBadge.vue";
 import { overlayService } from "@/services/overlayService";
 import { player, secretHitlerMatch } from "@/types/sanity";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
 import { byRole } from "@/utils/sortables/secratHitlerSortables";
+import { useInfiniteLoading } from "@/composable/infiniteLoading";
 import { notificationService } from "@/services/notificationService";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
 import { secretHitlerService } from "@/services/games/secretHitlerService";
@@ -91,9 +93,7 @@ import {
   OrderBuilder,
   QueryBuilder,
   ConditionBuilder,
-  PaginationBuilder,
 } from "@/utils/sanityQueryBuilder";
-import { range } from "@/utils/range";
 
 const currentPlayer = getPlayer() as player;
 
@@ -110,42 +110,25 @@ export default defineComponent({
   components: { CardSkeleton, SecretHitlerBadge, DateBadge, WinBadge },
   setup() {
     const router = useRouter();
-    const moreDataAvaiable = ref(true);
-    const matches = ref<secretHitlerMatch[]>([]);
-    const currentPagination = new PaginationBuilder(0, 10);
 
-    const resetMatches = () => {
-      currentPagination.resetPage();
-      matches.value = [];
-      moreDataAvaiable.value = true;
-    };
-
-    const loadMatched = (fromZero: boolean = false) => {
-      fromZero && resetMatches();
-
-      matchesQuery
-        .get(currentPagination.next())
-        .fetch<secretHitlerMatch[]>()
-        .then((response) => {
-          response.forEach((m) => m.players.sort(byRole));
-
-          matches.value = [...matches.value, ...response];
-
-          moreDataAvaiable.value = false;
-          nextTick(() => {
-            moreDataAvaiable.value = currentPagination.shouldContinue(response);
-          });
-        })
-        .catch(notificationService.danger);
-    };
-
+    const infiniteLoading = useInfiniteLoading<secretHitlerMatch>(
+      matchesQuery,
+      {
+        onResponse: (response) =>
+          response.forEach((m) => m.players.sort(byRole)),
+      }
+    );
+    const { items, getMoreData, moreDataAvailable } = infiniteLoading;
     const deleteMatch = (match: secretHitlerMatch) =>
       overlayService.showOverlay() &&
       secretHitlerService
         .deleteExistingMatch(match)
         .then(() => notificationService.success("eliminazione eseguita"))
         .catch(notificationService.danger)
-        .finally(() => overlayService.hideOverlay() && loadMatched(true));
+        .finally(
+          () =>
+            overlayService.hideOverlay() && infiniteLoading.getMoreData(true)
+        );
 
     const borderColor = (role: secretHitlerRole) => {
       switch (role) {
@@ -175,15 +158,15 @@ export default defineComponent({
     // onMounted(() => loadMatched());
 
     return {
+      items,
       image,
-      matches,
-      bindSpace,
       copyMatch,
-      borderColor,
+      bindSpace,
       deleteMatch,
-      loadMatched,
-      moreDataAvaiable,
+      borderColor,
+      getMoreData,
       getCurrentPlayer,
+      moreDataAvailable,
     };
   },
 });

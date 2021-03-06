@@ -1,4 +1,5 @@
 import { player } from "@/types/sanity";
+import { notificationService } from "./notificationService";
 import { roleConstants, sanityTypes } from "@/constants/roleConstants";
 
 import {
@@ -23,7 +24,8 @@ const login = (name: string, pin: string) =>
       ).params({ name: name.toLowerCase(), pin: Number.parseInt(pin) })
     )
     .fetch<player | null>()
-    .then((p) => setPlayer(p));
+    .then((p) => setPlayer(p))
+    .catch(notificationService.danger);
 
 const isAuthorized = (
   roles: roleConstants[] = [],
