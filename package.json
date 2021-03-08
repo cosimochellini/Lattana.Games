@@ -1,6 +1,6 @@
 {
   "name": "lattana-games",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "private": true,
   "scripts": {
     "serve": "npm version patch && vue-cli-service serve",
