@@ -2,11 +2,14 @@ import toast, { PluginOptions, POSITION } from "vue-toastification";
 import "vue-toastification/dist/index.css";
 
 const toastOption: PluginOptions = {
-  position: POSITION.BOTTOM_RIGHT,
-  showCloseButtonOnHover: true,
-  hideProgressBar: true,
+  draggable: true,
+  newestOnTop: true,
   pauseOnHover: true,
-  transition: "Vue-Toastification__slideBlurred",
+  draggablePercent: 0.6,
+  hideProgressBar: true,
+  showCloseButtonOnHover: true,
+  position: POSITION.BOTTOM_RIGHT,
+  transition: "Vue-Toastification__fade",
 };
 
 export { toast, toastOption };
