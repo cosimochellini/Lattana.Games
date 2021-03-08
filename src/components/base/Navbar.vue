@@ -35,7 +35,7 @@
                 v-for="(route, index) in navbarRoutes"
                 :key="route.route"
                 :to="{ name: route.route, params: { locale } }"
-                class="px-3 py-2 rounded-md text-md font-medium leading-5 focus:outline-none transition duration-150 ease-in-out text-gray-900 hover:text-white"
+                class="capitalize px-3 py-2 rounded-md text-md font-medium leading-5 focus:outline-none transition duration-150 ease-in-out text-gray-900 hover:text-white"
                 :class="index ? 'ml-4' : ''"
               >
                 {{ $t(`navbar.route.${route.name}`) }}

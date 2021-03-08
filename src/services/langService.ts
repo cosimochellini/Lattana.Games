@@ -8,7 +8,7 @@ export const currentLanguage = ref(
 
 export const currentLocale = computed(
   () => `${currentLanguage.value}-${currentLanguage.value.toUpperCase()}`
-);
+); //it-IT
 
 watch(currentLanguage, (value) =>
   localStorage.setItem(LS_LANGUAGE_STORE, value)

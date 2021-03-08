@@ -18,7 +18,7 @@
     "sort-es": "^1.2.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
     "vue": "^3.0.0-0",
-    "vue-i18n": "^9.0.0-rc.2",
+    "vue-i18n": "^9.0.0",
     "vue-router": "^4.0.0-0",
     "vue-toastification": "^2.0.0-rc.1",
     "vuedraggable": "^4.0.1"
