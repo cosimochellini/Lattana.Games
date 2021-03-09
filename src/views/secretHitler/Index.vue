@@ -1,6 +1,10 @@
 <template>
-  <router-view />
-  <bottom-bar :game="'secretHitler'" />
+  <router-view v-slot="{ Component }">
+    <keep-alive>
+      <component :is="Component" />
+    </keep-alive>
+  </router-view>
+  <bottom-bar :game="'secretHitler'" v-once />
 </template>
 
 <script lang="ts">

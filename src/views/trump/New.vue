@@ -154,19 +154,21 @@ export default defineComponent({
       finalScore: 0,
     };
   },
-  mounted() {
-    if (this.$route.query.ref) {
-      playersQuery
-        .where(
-          new ConditionBuilder("match._ref== $match").params({
-            match: this.$route.query.ref as string,
-          })
-        )
-        .fetch<trumpMatchPlayer[]>()
-        .then(
-          (players) => (this.remainingPlayers = players.map((x) => x.player))
-        );
+  activated() {
+    if (!this.$route.query.ref) {
+      this.remainingPlayers = [];
+      return;
     }
+    playersQuery
+      .where(
+        new ConditionBuilder("match._ref == $match").params({
+          match: this.$route.query.ref as string,
+        })
+      )
+      .fetch<trumpMatchPlayer[]>()
+      .then(
+        (players) => (this.remainingPlayers = players.map((x) => x.player))
+      );
   },
   methods: {
     addPlayer(p: player) {

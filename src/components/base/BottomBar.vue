@@ -5,7 +5,7 @@
       <div class="flex justify-between">
         <router-link
           class="w-full focus:text-teal-500 hover:text-teal-500 justify-center inline-block text-center pt-2 pb-1"
-          :class="isActive(element.name) ? element.activeColor : ''"
+          :class="isActive(element.name) ?`${element.activeColor} font-bold tracking-widest ` : ''"
           v-for="element in currentButtonBar"
           :key="element.name"
           :to="{ name: element.route }"
@@ -68,21 +68,21 @@ const routes: { game: string; elements: BottonElement[] }[] = [
       {
         name: "history",
         icon: "fas fa-history",
-        iconActive: "fas fa-plus-circle",
+        iconActive: "fad fa-history",
         activeColor: "text-red-800",
         route: "secretHitlerHistory",
       },
       {
         name: "new",
         icon: "fas fa-plus-circle",
-        iconActive: "fas fa-plus-circle",
+        iconActive: "fad fa-plus-circle",
         route: "secretHitlerNew",
         activeColor: "text-red-800",
       },
       {
         name: "stats",
-        icon: "fas fa-chart-bar",
-        iconActive: "fas fa-plus-circle",
+        icon: "far fa-chart-bar",
+        iconActive: "fad fa-chart-bar",
         route: "secretHitlerStats",
         activeColor: "text-red-800",
       },

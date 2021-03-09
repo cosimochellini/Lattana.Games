@@ -147,7 +147,7 @@ const availableStates: Dictionary<State> = {
   secretHitler: {
     name: "secretHitler",
     color: "bg-red-400",
-    icon: "fas fa-skull-crossbones",
+    icon: "fad fa-snake",
   },
   default: { name: "lattanaGames", color: "bg-gray-600", icon: "" },
 };
