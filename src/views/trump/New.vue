@@ -128,6 +128,7 @@
 import draggable from "vuedraggable";
 import { range } from "@/utils/range";
 import { defineComponent } from "vue";
+import { groq } from "@/utils/GroqQueryBuilder";
 import { sanityTypes } from "@/constants/roleConstants";
 import { overlayService } from "@/services/overlayService";
 import { trumpService } from "@/services/games/trumpService";
@@ -135,9 +136,8 @@ import DraggableUser from "@/components/base/DraggableUser.vue";
 import { notificationService } from "@/services/notificationService";
 import { player, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
-import { ConditionBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
 
-const playersQuery = new QueryBuilder(sanityTypes.trumpMatchPlayer).select(
+const playersQuery = new groq.QueryBuilder(sanityTypes.trumpMatchPlayer).select(
   "player ->"
 );
 
@@ -155,14 +155,13 @@ export default defineComponent({
     };
   },
   activated() {
-    if (!this.$route.query.ref) {
-      this.remainingPlayers = [];
-      return;
-    }
+    this.remainingPlayers = [];
+    if (!this.$route.query.ref) return;
+
     playersQuery
       .where(
-        new ConditionBuilder("match._ref == $match").params({
-          match: this.$route.query.ref as string,
+        new groq.ConditionBuilder("match._ref == $match").params({
+          match: this.$route.query.ref,
         })
       )
       .fetch<trumpMatchPlayer[]>()

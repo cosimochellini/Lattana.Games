@@ -1,25 +1,20 @@
 import { player } from "@/types/sanity";
+import { groq } from "@/utils/GroqQueryBuilder";
 import { notificationService } from "./notificationService";
 import { roleConstants, sanityTypes } from "@/constants/roleConstants";
-
-import {
-  QueryBuilder,
-  ConditionBuilder,
-  PaginationBuilder,
-} from "@/utils/sanityQueryBuilder";
 
 const LS_PLAYER_KEY = "LG_STORED_USER";
 let cachedPlayer: player | null = null;
 
-const loginQuery = new QueryBuilder(sanityTypes.player)
+const loginQuery = new groq.QueryBuilder(sanityTypes.player)
   .select(`..., 'roles': roles[]->role->name`)
-  .get(new PaginationBuilder().first())
+  .get(new groq.PaginationBuilder().first())
   .freeze();
 
 const login = (name: string, pin: string) =>
   loginQuery
     .where(
-      new ConditionBuilder(
+      new groq.ConditionBuilder(
         "(nickname == $name && pin == $pin) || (email == $name && pin == $pin)"
       ).params({ name: name.toLowerCase(), pin: Number.parseInt(pin) })
     )

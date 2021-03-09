@@ -117,7 +117,7 @@ import { notificationService } from "@/services/notificationService";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
 import { secretHitlerService } from "@/services/games/secretHitlerService";
-import { ConditionBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
+import { groq } from "@/utils/GroqQueryBuilder";
 
 import {
   player,
@@ -125,7 +125,7 @@ import {
   secretHitlerMatchPlayer,
 } from "@/types/sanity";
 
-const playersQuery = new QueryBuilder(
+const playersQuery = new groq.QueryBuilder(
   sanityTypes.secretHitlerMatchPlayer
 ).select("player ->");
 
@@ -145,14 +145,13 @@ export default defineComponent({
     };
   },
   activated() {
-    if (!this.$route.query.ref) {
-      this.remainingPlayers = [];
-      return;
-    }
+    this.remainingPlayers = [];
+    if (!this.$route.query.ref) return;
+
     playersQuery
       .where(
-        new ConditionBuilder("match._ref== $match").params({
-          match: this.$route.query.ref as string,
+        new groq.ConditionBuilder("match._ref== $match").params({
+          match: this.$route.query.ref,
         })
       )
       .fetch<secretHitlerMatchPlayer[]>()

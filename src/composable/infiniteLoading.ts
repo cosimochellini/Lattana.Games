@@ -1,20 +1,23 @@
 import { nextTick, ref, UnwrapRef } from "vue";
+import { groq, GroqTypes } from "@/utils/GroqQueryBuilder";
 import { notificationService } from "@/services/notificationService";
-import { PaginationBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
 
 export const useInfiniteLoading = <T>(
-  query: QueryBuilder,
+  query: GroqTypes.QueryBuilderType,
   options: Partial<{
     page: number;
     pageSize: number;
-    onFetch: (qb: QueryBuilder) => void;
+    onFetch: (qb: GroqTypes.QueryBuilderType) => void;
     onResponse: (items: UnwrapRef<T[]>) => void;
     onReset: (items: UnwrapRef<T[]>) => void;
   }> | null = null
 ) => {
   const items = ref([] as T[]);
   const moreDataAvailable = ref(true);
-  const pagination = new PaginationBuilder(options?.page, options?.pageSize);
+  const pagination = new groq.PaginationBuilder(
+    options?.page,
+    options?.pageSize
+  );
   const resetMatches = () => {
     pagination.resetPage();
     options?.onReset?.(items.value);

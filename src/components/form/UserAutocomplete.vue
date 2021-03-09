@@ -17,13 +17,8 @@
 <script lang="ts">
 import { player } from "@/types/sanity";
 import { defineComponent, PropType } from "vue";
+import { groq } from "@/utils/GroqQueryBuilder";
 import { sanityTypes } from "@/constants/roleConstants";
-
-import {
-  QueryBuilder,
-  OrderBuilder,
-  ConditionBuilder,
-} from "@/utils/sanityQueryBuilder";
 
 // const playerQuery =
 
@@ -48,8 +43,8 @@ export default defineComponent({
     return {
       fetchedPlayers: [] as player[],
       selectedId: this.modelValue._id ?? "",
-      playerQuery: new QueryBuilder(sanityTypes.player)
-        .orderBy(new OrderBuilder("name"))
+      playerQuery: new groq.QueryBuilder(sanityTypes.player)
+        .orderBy(new groq.OrderBuilder("name"))
         .cached(),
     };
   },
@@ -67,7 +62,7 @@ export default defineComponent({
 
       this.playerQuery
         .where(
-          new ConditionBuilder("_id in $excluded")
+          new groq.ConditionBuilder("_id in $excluded")
             .params({ excluded })
             .optional()
             .reverse()

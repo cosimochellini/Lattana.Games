@@ -89,22 +89,18 @@ import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
 import { secretHitlerService } from "@/services/games/secretHitlerService";
 import SecretHitlerBadge from "@/components/secretHitler/secretHitlerBadge.vue";
 
-import {
-  OrderBuilder,
-  QueryBuilder,
-  ConditionBuilder,
-} from "@/utils/sanityQueryBuilder";
+import { groq } from "@/utils/GroqQueryBuilder";
 
 const currentPlayer = getPlayer() as player;
 
-const matchesQuery = new QueryBuilder(sanityTypes.secretHitlerMatch)
+const matchesQuery = new groq.QueryBuilder(sanityTypes.secretHitlerMatch)
   .select(`...,  players[] -> {..., player ->}`)
   .where(
-    new ConditionBuilder(`$userId in players[] -> player._ref`).params({
+    new groq.ConditionBuilder(`$userId in players[] -> player._ref`).params({
       userId: currentPlayer._id,
     })
   )
-  .orderBy(new OrderBuilder("matchDate", true));
+  .orderBy(new groq.OrderBuilder("matchDate", true));
 
 export default defineComponent({
   components: { CardSkeleton, SecretHitlerBadge, DateBadge, WinBadge },

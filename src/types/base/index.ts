@@ -5,6 +5,7 @@ export interface Dictionary<T> {
 }
 export type QueryableParam =
   | string
+  | null
   | Date
   | number
   | boolean

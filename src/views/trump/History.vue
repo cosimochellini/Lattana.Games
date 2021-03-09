@@ -100,6 +100,7 @@
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
+import { groq } from "@/utils/GroqQueryBuilder";
 import Badge from "@/components/base/Badge.vue";
 import { dayFormatter } from "@/utils/formatters";
 import { getPlayer } from "@/services/authService";
@@ -113,22 +114,16 @@ import CardSkeleton from "@/components/base/CardSkeleton.vue";
 import { useInfiniteLoading } from "@/composable/infiniteLoading";
 import { notificationService } from "@/services/notificationService";
 
-import {
-  OrderBuilder,
-  QueryBuilder,
-  ConditionBuilder,
-} from "@/utils/sanityQueryBuilder";
-
 const currentPlayer = getPlayer() as player;
 
-const matchesQuery = new QueryBuilder(sanityTypes.trumpMatch)
+const matchesQuery = new groq.QueryBuilder(sanityTypes.trumpMatch)
   .select(`...,  callingPlayer ->, players[] -> {player ->,...}`)
   .where(
-    new ConditionBuilder(`$userId in players[] -> player._ref`).params({
+    new groq.ConditionBuilder(`$userId in players[] -> player._ref`).params({
       userId: currentPlayer._id,
     })
   )
-  .orderBy(new OrderBuilder("matchDate", true));
+  .orderBy(new groq.OrderBuilder("matchDate", true));
 
 export default defineComponent({
   components: { CardSkeleton, DateBadge, Badge, WinBadge },

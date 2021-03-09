@@ -10,20 +10,15 @@
 
 <script lang="ts">
 import { useRoute } from "vue-router";
-import { defineComponent, onMounted, ref } from "vue";
+import { groq } from "@/utils/GroqQueryBuilder";
 import { trumpMatch } from "@/types/sanity";
+import { defineComponent, onMounted, ref } from "vue";
 import { sanityTypes } from "@/constants/roleConstants";
-
-import {
-  QueryBuilder,
-  ConditionBuilder,
-  PaginationBuilder,
-} from "@/utils/sanityQueryBuilder";
 import TrumpMatchPlayer from "@/components/form/TrumpMatchPlayer.vue";
 
-const matchQuery = new QueryBuilder(sanityTypes.trumpMatch)
+const matchQuery = new groq.QueryBuilder(sanityTypes.trumpMatch)
   .select("..., players[]-> {..., player ->}, createdBy ->, editedBy ->")
-  .get(new PaginationBuilder().first())
+  .get(new groq.PaginationBuilder().first())
   .freeze();
 
 export default defineComponent({
@@ -37,7 +32,9 @@ export default defineComponent({
     onMounted(() =>
       matchQuery
         .where(
-          new ConditionBuilder("_id == $id").params({ id: route.params.id })
+          new groq.ConditionBuilder("_id == $id").params({
+            id: route.params.id,
+          })
         )
         .fetch<trumpMatch>()
         .then((match) => (currentMatch.value = match))

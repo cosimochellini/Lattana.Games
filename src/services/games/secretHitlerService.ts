@@ -3,7 +3,7 @@ import { getPlayer } from "../authService";
 import { sanityDocument } from "@/types/base";
 import { sanityClient } from "@/instances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
-import { reference, referenceWithKey } from "@/utils/sanityQueryBuilder";
+import { reference, referenceWithKey } from "@/utils/GroqQueryBuilder";
 import {
   player,
   secretHitlerMatch,

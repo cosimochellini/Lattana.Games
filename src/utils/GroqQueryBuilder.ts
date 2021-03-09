@@ -25,7 +25,7 @@ type Condition = { condition: string; reverse: boolean };
 
 type Order = { prop: string; desc: boolean };
 
-export class QueryBuilder {
+class QueryBuilder {
   private _type: string = "";
   private _conditions: Freezable<Condition>[] = [];
   private _params: Freezable<Dictionary<QueryableParam>>[] = [];
@@ -141,18 +141,16 @@ export class QueryBuilder {
     return `${where} {${select}} ${orderBy} ${pagination}`.trim();
   }
 
+  private get freezedFields() {
+    return [this._conditions, this._params, this._select, this._orderBy];
+  }
+
   private cleanUnFreezed(): void {
-    QueryBuilder.filterFreezed(this._conditions);
-    QueryBuilder.filterFreezed(this._params);
-    QueryBuilder.filterFreezed(this._select);
-    QueryBuilder.filterFreezed(this._orderBy);
+    this.freezedFields.forEach(QueryBuilder.filterFreezed);
   }
 
   private setFreezedProps(): void {
-    QueryBuilder.setAsFreezed(this._conditions);
-    QueryBuilder.setAsFreezed(this._params);
-    QueryBuilder.setAsFreezed(this._select);
-    QueryBuilder.setAsFreezed(this._orderBy);
+    this.freezedFields.forEach(QueryBuilder.setAsFreezed);
   }
 
   static filterFreezed(props: Freezable<unknown>[]) {
@@ -164,7 +162,7 @@ export class QueryBuilder {
   }
 }
 
-export class ConditionBuilder {
+class ConditionBuilder {
   private _condition: string = "";
   private _params: Dictionary<QueryableParam> = {};
   private _optional: boolean = false;
@@ -226,7 +224,7 @@ export class ConditionBuilder {
   }
 }
 
-export class OrderBuilder {
+class OrderBuilder {
   private _orders: Order[] = [];
 
   constructor(prop: string, desc: boolean = false) {
@@ -244,7 +242,7 @@ export class OrderBuilder {
   }
 }
 
-export class PaginationBuilder {
+class PaginationBuilder {
   private _page: number;
   private _pageSize: number;
 
@@ -285,4 +283,15 @@ export class PaginationBuilder {
   public expose() {
     return { page: this._page, pageSize: this._pageSize };
   }
+}
+
+export const groq = {
+  QueryBuilder,
+  ConditionBuilder,
+  OrderBuilder,
+  PaginationBuilder,
+};
+
+export namespace GroqTypes {
+  export class QueryBuilderType extends QueryBuilder {}
 }

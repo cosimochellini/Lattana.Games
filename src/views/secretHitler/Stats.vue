@@ -88,16 +88,16 @@
 import { defineComponent } from "vue";
 import { image } from "@/instances/sanity";
 import { byNumber, byValue } from "sort-es";
+import { groq } from "@/utils/GroqQueryBuilder";
 import { getPlayer } from "@/services/authService";
 import { Mate } from "@/utils/classes/stats/baseStats";
 import { sanityTypes } from "@/constants/roleConstants";
 import { percentageFormatter } from "@/utils/formatters";
 import { player, secretHitlerMatchPlayer } from "@/types/sanity";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
-import { ConditionBuilder, QueryBuilder } from "@/utils/sanityQueryBuilder";
 import { SecretHitlerStats } from "@/utils/classes/stats/secretHitlerMatchStats";
 
-const matchesQuery = new QueryBuilder(sanityTypes.secretHitlerMatchPlayer)
+const matchesQuery = new groq.QueryBuilder(sanityTypes.secretHitlerMatchPlayer)
   .select("..., player ->, match -> {..., players[] -> {...,player -> } }")
   .cached()
   .freeze();
@@ -119,7 +119,7 @@ export default defineComponent({
     loadMatches() {
       matchesQuery
         .where(
-          new ConditionBuilder("player._ref == $playerId").params({
+          new groq.ConditionBuilder("player._ref == $playerId").params({
             playerId: this.currentPlayer._id,
           })
         )
