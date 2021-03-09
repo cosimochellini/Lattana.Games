@@ -10,6 +10,15 @@
 
     <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
     <title><%= htmlWebpackPlugin.options.title %></title>
+    <style>
+      #app {
+        overflow: scroll;
+      }
+      ::-webkit-scrollbar {
+        width: 0px;
+        background: transparent; /* make scrollbar transparent */
+      }
+    </style>
   </head>
   <body>
     <noscript>
