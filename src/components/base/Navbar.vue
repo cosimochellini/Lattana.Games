@@ -143,7 +143,7 @@ type State = {
 };
 
 const availableStates: Dictionary<State> = {
-  trump: { name: "trump", color: "bg-blue-500", icon: "far fa-heart" },
+  trump: { name: "trump", color: "bg-blue-500", icon: "fas fa-spade" },
   secretHitler: {
     name: "secretHitler",
     color: "bg-red-400",

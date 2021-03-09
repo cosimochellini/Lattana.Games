@@ -4,6 +4,7 @@ import { setupI18n } from "./plugins/i18n";
 import { setupRouter } from "./plugins/router";
 import { toast, toastOption } from "./plugins/vueToastification";
 
+import "./assets/fa";
 import "./assets/tailwind.css";
 
 const loader = async () => {

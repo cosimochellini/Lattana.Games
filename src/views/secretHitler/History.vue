@@ -53,7 +53,7 @@
         <button class="base-button danger" @click="deleteMatch(match)">
           {{ $t("buttons.base.delete") }}
 
-          <i class="fas fa-trash-alt"></i>
+          <i class="fad fa-trash-alt"></i>
         </button>
         <button class="base-button info">
           {{ $t("buttons.base.edit") }}
