@@ -1,9 +1,9 @@
 <template>
   <div class="container m-auto p-4">
-    <h2 class="base-title my-1 py-1 first-capitalize">
-      {{ $t("trump.titles.insertNewMatch") }}
-    </h2>
     <div class="flex flex-col items-center">
+      <h2 class="base-title first-capitalize">
+        {{ $t("trump.titles.insertNewMatch") }}
+      </h2>
       <draggable
         :list="remainingPlayers"
         group="people"

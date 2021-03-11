@@ -1,8 +1,8 @@
 <template>
   <div class="container m-auto p-4">
     <div class="flex flex-col items-center">
-      <h2 class="base-title my-1 py-1">
-        Aggiungi nuova partita
+      <h2 class="base-title first-capitalize">
+        {{ $t("secretHitler.titles.insertNewMatch") }}
       </h2>
       <draggable
         :list="remainingPlayers"

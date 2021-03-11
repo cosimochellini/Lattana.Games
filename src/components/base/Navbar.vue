@@ -1,13 +1,11 @@
 <template>
   <nav class="rounded-b-md" :class="currentState.color">
-    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-2">
       <div class="relative flex items-center justify-between h-16">
         <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
           <!-- Mobile menu button-->
           <button
             class="inline-flex items-center justify-center p-2 rounded-md text-gray-900 focus:bg-transparent transition duration-150 ease-in-out"
-            aria-label="Main menu"
-            aria-expanded="false"
             @click.stop="menuClick"
           >
             <i class="fas fa-bars" v-if="!state.menuOpen"></i>
@@ -38,7 +36,7 @@
                 v-for="(route, index) in navbarRoutes"
                 :key="route.route"
                 :to="{ name: route.route, params: { locale } }"
-                class="capitalize px-3 py-2 rounded-md text-md font-medium leading-5 focus:outline-none transition duration-150 ease-in-out text-gray-900 hover:text-white"
+                class="capitalize px-3 py-2 rounded-md text-md font-medium tracking-widest text-lg leading-5 focus:outline-none transition duration-150 ease-in-out text-gray-900 hover:text-white"
                 :class="bindRouterLink(route.name, index)"
               >
                 {{ $t(`navbar.route.${route.name}`) }}
@@ -54,9 +52,6 @@
             <div>
               <button
                 class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-white transition duration-150 ease-in-out"
-                id="user-menu"
-                aria-label="User menu"
-                aria-haspopup="true"
               >
                 <img
                   @click="profileClick"
@@ -73,12 +68,7 @@
                 hidden: !state.profileOpen,
               }"
             >
-              <div
-                class="py-1 rounded-md bg-white shadow-xs"
-                role="menu"
-                aria-orientation="vertical"
-                aria-labelledby="user-menu"
-              >
+              <div class="py-1 rounded-md bg-white shadow-xs" role="menu">
                 <router-link
                   v-for="route in profileRoutes"
                   :key="route.route"
