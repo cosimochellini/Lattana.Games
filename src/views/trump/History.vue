@@ -1,10 +1,11 @@
 <template>
-  <h2 class="base-title p-4 first-capitalize">
-    {{ $t("trump.titles.recentMatches") }}
+  <h2 class="history-container base-title">
+    <span class="first-capitalize">
+      {{ $t("trump.titles.recentMatches") }}
+    </span>
   </h2>
-  <div
-    class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:max-w-screen-2xl m-auto p-3"
-  >
+
+  <div class="history-container">
     <article v-for="match in matches" :key="match._id" class="base-card">
       <div class="grid grid-cols-2">
         <span class="first-capitalize">
@@ -111,6 +112,7 @@ import { sanityTypes } from "@/constants/roleConstants";
 import { overlayService } from "@/services/overlayService";
 import { trumpService } from "@/services/games/trumpService";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
+import { useRouterRefresh } from "@/composable/routerRefresh";
 import { useInfiniteLoading } from "@/composable/infiniteLoading";
 import { notificationService } from "@/services/notificationService";
 
@@ -156,6 +158,8 @@ export default defineComponent({
     const getCurrentPlayer = (match: trumpMatch) =>
       match.players.find((p) => p.player._id === currentPlayer._id);
 
+    useRouterRefresh(() => getMoreData(true));
+
     return {
       image,
       matches,
@@ -171,3 +175,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.history-container {
+  @apply grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:max-w-screen-2xl m-auto p-3;
+}
+</style>

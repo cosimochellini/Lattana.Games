@@ -128,8 +128,10 @@
 import draggable from "vuedraggable";
 import { range } from "@/utils/range";
 import { defineComponent } from "vue";
+import { mergeObjects } from "@/utils/merge";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { sanityTypes } from "@/constants/roleConstants";
+import { queryRefresh } from "@/composable/routerRefresh";
 import { overlayService } from "@/services/overlayService";
 import { trumpService } from "@/services/games/trumpService";
 import DraggableUser from "@/components/base/DraggableUser.vue";
@@ -141,21 +143,20 @@ const playersQuery = new groq.QueryBuilder(sanityTypes.trumpMatchPlayer).select(
   "player ->"
 );
 
+const initialData = () => ({
+  remainingPlayers: [] as player[],
+  callingPlayers: [] as player[],
+  opposingPlayers: [] as player[],
+  callingPlayer: {} as player,
+  startingScore: 0,
+  finalScore: 0,
+});
+
 export default defineComponent({
   components: { UserAutocomplete, DraggableUser, draggable },
   name: "trumpNew",
-  data() {
-    return {
-      remainingPlayers: [] as player[],
-      callingPlayers: [] as player[],
-      opposingPlayers: [] as player[],
-      callingPlayer: {} as player,
-      startingScore: 0,
-      finalScore: 0,
-    };
-  },
+  data: initialData,
   activated() {
-    this.remainingPlayers = [];
     if (!this.$route.query.ref) return;
 
     playersQuery
@@ -165,9 +166,12 @@ export default defineComponent({
         })
       )
       .fetch<trumpMatchPlayer[]>()
-      .then(
-        (players) => (this.remainingPlayers = players.map((x) => x.player))
-      );
+      .then((players) => {
+        this.remainingPlayers = players.map((x) => x.player);
+      });
+  },
+  deactivated() {
+    this.$nextTick(() => mergeObjects(this.$data, initialData()));
   },
   methods: {
     addPlayer(p: player) {
@@ -194,7 +198,9 @@ export default defineComponent({
           .saveNewMatch(match)
           .then(() => notificationService.success("salvataggio eseguito"))
           .catch(notificationService.danger)
-          .finally(() => this.$router.push({ name: "trumpHistory" }));
+          .finally(() =>
+            this.$router.push({ name: "trumpHistory", query: queryRefresh })
+          );
       } catch (error) {
         notificationService.danger(error);
       }
@@ -221,7 +227,7 @@ export default defineComponent({
       ].filter((p) => p?._id);
     },
     callingPlayersWin(): boolean {
-      return this.startingScore >= this.finalScore;
+      return this.startingScore <= this.finalScore;
     },
     contextValidated(): boolean {
       const difference =

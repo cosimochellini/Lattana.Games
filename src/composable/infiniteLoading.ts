@@ -23,6 +23,7 @@ export const useInfiniteLoading = <T>(
     options?.onReset?.(items.value);
     items.value = [];
     moreDataAvailable.value = true;
+    return true;
   };
 
   const getMoreData = (reset: boolean = false) => {

@@ -1,9 +1,9 @@
 <template>
   <div class="container m-auto p-4">
-    <h2 class="base-title my-1 py-1">
-      Aggiungi nuova partita di secret hitler ☠
-    </h2>
     <div class="flex flex-col items-center">
+      <h2 class="base-title my-1 py-1">
+        Aggiungi nuova partita
+      </h2>
       <draggable
         :list="remainingPlayers"
         group="people"
@@ -111,39 +111,40 @@
 import draggable from "vuedraggable";
 import { range } from "@/utils/range";
 import { defineComponent } from "vue";
+import { groq } from "@/utils/GroqQueryBuilder";
+import { queryRefresh } from "@/composable/routerRefresh";
 import { overlayService } from "@/services/overlayService";
 import DraggableUser from "@/components/base/DraggableUser.vue";
 import { notificationService } from "@/services/notificationService";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
 import { secretHitlerService } from "@/services/games/secretHitlerService";
-import { groq } from "@/utils/GroqQueryBuilder";
 
 import {
   player,
   secretHitlerMatch,
   secretHitlerMatchPlayer,
 } from "@/types/sanity";
+import { mergeObjects } from "@/utils/merge";
 
 const playersQuery = new groq.QueryBuilder(
   sanityTypes.secretHitlerMatchPlayer
 ).select("player ->");
 
+const initialData = () => ({
+  secretHitlerRole,
+  hitlerPlayer: {} as player,
+  allRoles: [secretHitlerRole.fascist, secretHitlerRole.liberal],
+  winningRole: "" as secretHitlerRole,
+  remainingPlayers: [] as player[],
+  liberalPlayers: [] as player[],
+  fascistPlayers: [] as player[],
+});
+
 export default defineComponent({
   components: { UserAutocomplete, draggable, DraggableUser },
   name: "secretHitlerNew",
-
-  data() {
-    return {
-      secretHitlerRole,
-      hitlerPlayer: {} as player,
-      allRoles: [secretHitlerRole.fascist, secretHitlerRole.liberal],
-      winningRole: "" as secretHitlerRole,
-      remainingPlayers: [] as player[],
-      liberalPlayers: [] as player[],
-      fascistPlayers: [] as player[],
-    };
-  },
+  data: initialData,
   activated() {
     this.remainingPlayers = [];
     if (!this.$route.query.ref) return;
@@ -158,6 +159,9 @@ export default defineComponent({
       .then((players) => {
         this.remainingPlayers = players.map((x) => x.player);
       });
+  },
+  deactivated() {
+    this.$nextTick(() => mergeObjects(this.$data, initialData()));
   },
   methods: {
     saveMatch() {
@@ -174,7 +178,12 @@ export default defineComponent({
           .saveNewMatch(matchToSave)
           .then(() => notificationService.success("salvataggio eseguito"))
           .catch(notificationService.danger)
-          .finally(() => this.$router.push({ name: "secretHitlerHistory" }));
+          .finally(() =>
+            this.$router.push({
+              name: "secretHitlerHistory",
+              query: queryRefresh,
+            })
+          );
       } catch (error) {
         notificationService.danger(error);
       }

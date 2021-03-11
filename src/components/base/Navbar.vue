@@ -18,9 +18,12 @@
           class="flex-1 flex items-center place-items-center content-center justify-center sm:items-stretch sm:justify-start justify-items-center text-gray-900"
         >
           <span
-            class="font-semibold leading-3 text-2xl tracking-widest capitalize md:mt-2"
+            class="font-semibold leading-3 text-2xl tracking-widest capitalize md:pt-1"
           >
-            {{ $t(`navbar.route.${currentState.name}`) }}
+            <span class="md:hidden">
+              {{ $t(`navbar.route.${currentState.name}`) }}
+            </span>
+            <span class="hidden md:block"> Lattana Games </span>
           </span>
           <div class="flex-shrink-0">
             <i
@@ -36,7 +39,7 @@
                 :key="route.route"
                 :to="{ name: route.route, params: { locale } }"
                 class="capitalize px-3 py-2 rounded-md text-md font-medium leading-5 focus:outline-none transition duration-150 ease-in-out text-gray-900 hover:text-white"
-                :class="index ? 'ml-4' : ''"
+                :class="bindRouterLink(route.name, index)"
               >
                 {{ $t(`navbar.route.${route.name}`) }}
               </router-link>
@@ -197,6 +200,14 @@ export default defineComponent({
     menuClick() {
       this.state.menuOpen = !this.state.menuOpen;
       setTimeout(() => (this.state.menuOpen = false), 2000);
+    },
+    bindRouterLink(route: string, index: number) {
+      const isActive = this.$route.matched.some((x) => x.path.includes(route));
+
+      return {
+        "ml-4": !!index,
+        "bg-opacity-20 bg-black": isActive,
+      };
     },
   },
   computed: {

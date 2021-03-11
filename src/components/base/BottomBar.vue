@@ -1,28 +1,28 @@
 <template>
-  <div class="w-full">
-    <div class="mt-14"></div>
-    <section class="fixed inset-x-0 bottom-0 z-50 bg-white border rounded-t-md">
-      <div class="flex justify-between">
-        <router-link
-          class="w-full focus:text-teal-500 hover:text-teal-500 justify-center inline-block text-center pt-2 pb-1"
-          :class="isActive(element.name) ?`${element.activeColor} font-bold tracking-widest ` : ''"
-          v-for="element in currentButtonBar"
-          :key="element.name"
-          :to="{ name: element.route }"
-        >
-          <i
-            v-if="isActive(element.name)"
-            :class="element.iconActive"
-            class="fa-lg"
-          ></i>
-          <i v-else :class="`fa-${element.icon}`" class="fas fa-lg"></i>
-          <span class="tab tab-home block text-sm capitalize tracking-wider">
-            {{ $t(`bottom.route.${element.name}`) }}
-          </span>
-        </router-link>
-      </div>
-    </section>
-  </div>
+  <div class="mt-14"></div>
+  <section class="bottom-bar">
+    <div class="flex justify-between">
+      <router-link
+        class="w-full focus:text-teal-500 hover:text-teal-500 justify-center inline-block text-center pt-2 pb-1"
+        :class="
+          isActive(element.name)
+            ? `${element.activeColor} font-bold tracking-widest `
+            : ''
+        "
+        v-for="element in currentButtonBar"
+        :key="element.name"
+        :to="{ name: element.route }"
+      >
+        <i
+          :class="isActive(element.name) ? element.iconActive : element.icon"
+          class="fa-lg"
+        ></i>
+        <span class="tab tab-home block text-sm capitalize tracking-wider">
+          {{ $t(`bottom.route.${element.name}`) }}
+        </span>
+      </router-link>
+    </div>
+  </section>
 </template>
 
 <script lang="ts">
@@ -112,5 +112,9 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
+.bottom-bar {
+  @apply fixed inset-x-0 bottom-0 z-50 bg-white border rounded-t-md m-auto;
+  @apply md:w-1/2 lg:w-1/4 md:rounded-xl md:shadow-2xl md:bottom-5 md:border-2 border-gray-300;
+}
 </style>

@@ -1,10 +1,10 @@
 <template>
-  <h2 class="base-title p-4 first-capitalize">
-    {{ $t("secretHitler.titles.recentMatches") }}
+  <h2 class="base-title history-container">
+    <span class="first-capitalize">
+      {{ $t("secretHitler.titles.recentMatches") }}
+    </span>
   </h2>
-  <div
-    class="grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:max-w-screen-2xl m-auto p-3"
-  >
+  <div class="history-container">
     <article v-for="match in items" :key="match._id" class="base-card">
       <div class="grid grid-cols-3">
         <span class="first-capitalize">
@@ -90,6 +90,7 @@ import { secretHitlerService } from "@/services/games/secretHitlerService";
 import SecretHitlerBadge from "@/components/secretHitler/secretHitlerBadge.vue";
 
 import { groq } from "@/utils/GroqQueryBuilder";
+import { useRouterRefresh } from "@/composable/routerRefresh";
 
 const currentPlayer = getPlayer() as player;
 
@@ -115,6 +116,7 @@ export default defineComponent({
       }
     );
     const { items, getMoreData, moreDataAvailable } = infiniteLoading;
+
     const deleteMatch = (match: secretHitlerMatch) =>
       overlayService.showOverlay() &&
       secretHitlerService
@@ -151,7 +153,7 @@ export default defineComponent({
       return "";
     };
 
-    // onMounted(() => loadMatched());
+    useRouterRefresh(() => getMoreData(true));
 
     return {
       items,
@@ -167,3 +169,10 @@ export default defineComponent({
   },
 });
 </script>
+
+
+<style scoped>
+.history-container {
+  @apply grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:max-w-screen-2xl m-auto p-3;
+}
+</style>
