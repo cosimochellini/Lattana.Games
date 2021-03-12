@@ -76,21 +76,20 @@ import { range } from "@/utils/range";
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
+import { groq } from "@/utils/GroqQueryBuilder";
 import { getPlayer } from "@/services/authService";
 import WinBadge from "@/components/base/WinBadge.vue";
 import DateBadge from "@/components/base/DateBadge.vue";
 import { overlayService } from "@/services/overlayService";
 import { player, secretHitlerMatch } from "@/types/sanity";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
+import { useRouterRefresh } from "@/composable/routerRefresh";
 import { byRole } from "@/utils/sortables/secratHitlerSortables";
 import { useInfiniteLoading } from "@/composable/infiniteLoading";
 import { notificationService } from "@/services/notificationService";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
 import { secretHitlerService } from "@/services/games/secretHitlerService";
 import SecretHitlerBadge from "@/components/secretHitler/secretHitlerBadge.vue";
-
-import { groq } from "@/utils/GroqQueryBuilder";
-import { useRouterRefresh } from "@/composable/routerRefresh";
 
 const currentPlayer = getPlayer() as player;
 
