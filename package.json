@@ -1,6 +1,6 @@
 {
   "name": "lattana-games",
-  "version": "0.5.14",
+  "version": "0.6.2",
   "private": true,
   "scripts": {
     "serve": "yarn increase && vue-cli-service serve",
@@ -36,7 +36,7 @@
     "@vue/compiler-sfc": "^3.0.6",
     "@vue/eslint-config-typescript": "^7.0.0",
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.18.0",
+    "eslint": "^7.22.0",
     "eslint-plugin-vue": "^7.6.0",
     "typescript": "~4.2.2",
     "vue-cli-plugin-tailwind": "~2.0.6"

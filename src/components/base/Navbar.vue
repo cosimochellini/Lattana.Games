@@ -6,9 +6,9 @@
           <!-- Mobile menu button-->
           <button
             class="inline-flex items-center justify-center p-2 rounded-md text-gray-900 focus:bg-transparent transition duration-150 ease-in-out"
-            @click.stop="menuClick"
+            @click.stop="toggleNavbar"
           >
-            <i class="fas fa-bars" v-if="!state.menuOpen"></i>
+            <i class="fas fa-bars" v-if="!state.navbarOpen"></i>
             <i class="fas fa-times" v-else></i>
           </button>
         </div>
@@ -54,7 +54,7 @@
                 class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-white transition duration-150 ease-in-out"
               >
                 <img
-                  @click="profileClick"
+                  @click="toggleProfile"
                   class="h-10 w-10 rounded-full border border-gray-900"
                   :src="profileSrc"
                   alt="User Profile"
@@ -104,7 +104,7 @@
     </div>
     <div
       :class="{
-        'hidden sm:hidden': !state.menuOpen,
+        'hidden sm:hidden': !state.navbarOpen,
       }"
     >
       <div class="px-2 pt-2 pb-3">
@@ -112,6 +112,7 @@
           v-for="route in navbarRoutes"
           :key="route.route"
           :to="{ name: route.route, params: { locale } }"
+          @click.passive="toggleNavbar"
           class="block px-3 py-2 capitalize rounded-md text-base font-semibold tracking-widest focus:outline-none transition duration-150 ease-in-out text-gray-900"
         >
           {{ $t(`navbar.route.${route.name}`) }}
@@ -125,8 +126,9 @@
 import { useRouter } from "vue-router";
 import { Dictionary } from "@/types/base";
 import { image } from "@/instances/sanity";
-import { defineComponent, watch } from "vue";
 import { getPlayer } from "@/services/authService";
+import { useTimedOpen } from "@/composable/timedOpen";
+import { defineComponent, reactive, watch } from "vue";
 import { currentLanguage } from "@/services/langService";
 
 type State = {
@@ -149,10 +151,6 @@ export default defineComponent({
   data() {
     return {
       publicPath: process.env.BASE_URL,
-      state: {
-        profileOpen: false,
-        menuOpen: false,
-      },
       player: getPlayer(),
       navbarRoutes: [
         { name: "trump", route: "trumpHistory" },
@@ -180,17 +178,13 @@ export default defineComponent({
       });
     });
 
-    return { currentLanguage };
+    const { isOpen: navbarOpen, toggle: toggleNavbar } = useTimedOpen();
+    const { isOpen: profileOpen, toggle: toggleProfile } = useTimedOpen();
+    const state = reactive({ navbarOpen, profileOpen });
+
+    return { currentLanguage, state, toggleNavbar, toggleProfile };
   },
   methods: {
-    profileClick() {
-      this.state.profileOpen = true;
-      setTimeout(() => (this.state.profileOpen = false), 2000);
-    },
-    menuClick() {
-      this.state.menuOpen = !this.state.menuOpen;
-      setTimeout(() => (this.state.menuOpen = false), 2000);
-    },
     bindRouterLink(route: string, index: number) {
       const isActive = this.$route.matched.some((x) => x.path.includes(route));
 

@@ -122,10 +122,9 @@ export default defineComponent({
         .deleteExistingMatch(match)
         .then(() => notificationService.success("eliminazione eseguita"))
         .catch(notificationService.danger)
-        .finally(
-          () =>
-            overlayService.hideOverlay() && infiniteLoading.getMoreData(true)
-        );
+        .finally(() => {
+          overlayService.hideOverlay() && infiniteLoading.getMoreData(true);
+        });
 
     const borderColor = (role: secretHitlerRole) => {
       switch (role) {
