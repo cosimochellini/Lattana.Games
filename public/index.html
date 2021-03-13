@@ -12,7 +12,13 @@
     <title><%= htmlWebpackPlugin.options.title %></title>
     <style>
       #app {
-        overflow: scroll;
+        overflow: auto;
+      }
+      @-moz-document url-prefix() {
+        /* Disable scrollbar Firefox */
+        html {
+          scrollbar-width: none;
+        }
       }
       ::-webkit-scrollbar {
         width: 0px;
