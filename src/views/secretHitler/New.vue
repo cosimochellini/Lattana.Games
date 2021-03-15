@@ -165,28 +165,24 @@ export default defineComponent({
   },
   methods: {
     saveMatch() {
-      try {
-        const matchToSave: Partial<secretHitlerMatch> = {
-          matchDate: new Date(),
-          winningRole: this.winningRole,
-          players: this.totalPlayers,
-        };
+      const matchToSave: Partial<secretHitlerMatch> = {
+        matchDate: new Date(),
+        winningRole: this.winningRole,
+        players: this.totalPlayers,
+      };
 
-        overlayService.showOverlay();
+      overlayService.showOverlay();
 
-        secretHitlerService
-          .saveNewMatch(matchToSave)
-          .then(() => notificationService.success("salvataggio eseguito"))
-          .catch(notificationService.danger)
-          .finally(() =>
-            this.$router.push({
-              name: "secretHitlerHistory",
-              query: queryRefresh,
-            })
-          );
-      } catch (error) {
-        notificationService.danger(error);
-      }
+      secretHitlerService
+        .saveNewMatch(matchToSave)
+        .then(() => notificationService.success("salvataggio eseguito"))
+        .catch(notificationService.danger)
+        .finally(() =>
+          this.$router.push({
+            name: "secretHitlerHistory",
+            query: queryRefresh,
+          })
+        );
     },
     addPlayer(player: player) {
       this.remainingPlayers.push(player);

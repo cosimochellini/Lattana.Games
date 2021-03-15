@@ -54,11 +54,11 @@
         </div>
       </div>
       <div>
-        <h3 class="base-subtitle">Accoppiamenti peggiori 👎</h3>
+        <h3 class="base-subtitle">Peggioni nemici 😱</h3>
 
         <div
           class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded m-2"
-          v-for="mate in worstMates"
+          v-for="mate in worstOpponents"
           :key="mate.player._id"
         >
           <div class="flex justify-around items-center">
@@ -73,7 +73,7 @@
             </span>
             <span
               class="ml-4 rounded-xl px-2 py-1 font-semibold"
-              :class="mate.ratio > 0.5 ? 'bg-green-300' : 'bg-red-300'"
+              :class="mate.ratio < 0.5 ? 'bg-green-300' : 'bg-red-300'"
             >
               {{ percentageFormatter(mate.ratio) }} %
             </span>
@@ -87,7 +87,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { image } from "@/instances/sanity";
-import { byNumber, byValue } from "sort-es";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { getPlayer } from "@/services/authService";
 import { Mate } from "@/utils/classes/stats/baseStats";
@@ -139,39 +138,36 @@ export default defineComponent({
     stats(): SecretHitlerStats {
       return new SecretHitlerStats(this.matches, this.currentPlayer);
     },
-    statistics(): { message: string; value: string }[] {
+    statistics(): { message: string; value: string | number }[] {
       const { matches, wonMatches, lostMatches, ratio } = this.stats;
       const { penaltyPoints, liberalMatches, hitlerMatches } = this.stats;
       const { fascistMatches } = this.stats;
 
       return [
-        { message: "totale partite", value: matches.length.toString() },
-        { message: "vittorie", value: wonMatches.length.toString() },
-        { message: "sconfitte", value: lostMatches.length.toString() },
+        { message: "totale partite", value: matches.length },
+        { message: "vittorie", value: wonMatches.length },
+        { message: "sconfitte", value: lostMatches.length },
         { message: "vittorie", value: `${percentageFormatter(ratio)} %` },
-        { message: "penalità", value: penaltyPoints.length.toString() },
+        { message: "penalità", value: penaltyPoints.length },
         {
           message: "partite liberali",
-          value: liberalMatches.length.toString(),
+          value: liberalMatches.length,
         },
         {
           message: "partite fasciste",
-          value: fascistMatches.length.toString(),
+          value: fascistMatches.length,
         },
         {
           message: "partite hitler",
-          value: hitlerMatches.length.toString(),
+          value: hitlerMatches.length,
         },
       ];
     },
     topMates(): Mate[] {
-      return this.stats.mates.slice(0, 3);
+      return this.stats.bestMates.slice(0, 5);
     },
-    worstMates(): Mate[] {
-      const { mates } = this.stats;
-      return mates
-        .slice(mates.length - 3, mates.length)
-        .sort(byValue("ratio", byNumber()));
+    worstOpponents(): Mate[] {
+      return this.stats.worstOpponents.slice(0, 5);
     },
   },
 });

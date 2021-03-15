@@ -19,7 +19,8 @@ export abstract class BaseStats<
   protected _wonMatches: TMatchPlayer[] = [];
   protected _lostMatches: TMatchPlayer[] = [];
   protected _penaltyPoints: TMatchPlayer[] = [];
-  protected _mates: Mate[] = [];
+  protected _bestMates: Mate[] = [];
+  protected _worstOpponents: Mate[] = [];
 
   constructor(matches: TMatchPlayer[], player: player) {
     this._matches = matches;
@@ -37,7 +38,7 @@ export abstract class BaseStats<
       if (match.penaltyPoint) this._penaltyPoints.push(match);
   }
 
-  protected loadMates() {
+  protected loadBestMates() {
     const mates: Dictionary<Mate> = {};
     const plays = this.matches.flatMap((m) =>
       m.match.players.filter(
@@ -51,8 +52,8 @@ export abstract class BaseStats<
         lose: 0,
         player: player.player,
       };
-      if (player.win) stat.win++;
-      else stat.lose++;
+
+      player.win ? stat.win++ : stat.lose++;
 
       mates[player.player.nickname] = stat;
     }
@@ -61,10 +62,42 @@ export abstract class BaseStats<
       const { win, lose, player } = mates[nickname];
       const ratio = win / (win + lose);
 
-      this._mates.push({ win, ratio, lose, nickname, player });
+      this._bestMates.push({ win, ratio, lose, nickname, player });
     }
 
-    return this._mates.sort(byValue("ratio", byNumber({ desc: true })));
+    return this._bestMates.sort(byValue("ratio", byNumber({ desc: true })));
+  }
+
+  protected loadWorstOpponents() {
+    const mates: Dictionary<Mate> = {};
+    const plays = this.matches.flatMap((m) =>
+      m.match.players.filter(
+        (p) => m.player._id !== p.player._id && m.win !== p.win
+      )
+    );
+
+    for (const player of plays) {
+      const stat = mates[player.player.nickname] ?? {
+        win: 0,
+        lose: 0,
+        player: player.player,
+      };
+
+      player.win ? stat.win++ : stat.lose++;
+
+      mates[player.player.nickname] = stat;
+    }
+
+    for (const nickname in mates) {
+      const { win, lose, player } = mates[nickname];
+      const ratio = win / (win + lose);
+
+      this._worstOpponents.push({ win, ratio, lose, nickname, player });
+    }
+    console.log(this);
+    return this._worstOpponents.sort(
+      byValue("ratio", byNumber({ desc: true }))
+    );
   }
 
   public get matches() {
@@ -94,10 +127,16 @@ export abstract class BaseStats<
     return this._penaltyPoints;
   }
 
-  public get mates() {
-    if (!this._mates.length) this.loadMates();
+  public get bestMates() {
+    if (!this._bestMates.length) this.loadBestMates();
 
-    return this._mates;
+    return this._bestMates;
+  }
+
+  public get worstOpponents() {
+    if (!this._worstOpponents.length) this.loadWorstOpponents();
+
+    return this._worstOpponents;
   }
 
   public static Ratio<T>(first: T[], second: T[]) {

@@ -66,7 +66,7 @@
         </h3>
         <div
           class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded m-2"
-          v-for="mate in worstMates"
+          v-for="mate in worstOpponents"
           :key="mate.player._id"
         >
           <div class="flex justify-around items-center">
@@ -81,7 +81,7 @@
             </span>
             <span
               class="ml-4 rounded-xl px-2 py-1 font-semibold"
-              :class="mate.ratio > 0.5 ? 'bg-green-300' : 'bg-red-300'"
+              :class="mate.ratio < 0.5 ? 'bg-green-300' : 'bg-red-300'"
             >
               {{ percentageFormatter(mate.ratio) }} %
             </span>
@@ -95,7 +95,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { image } from "@/instances/sanity";
-import { byNumber, byValue } from "sort-es";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { getPlayer } from "@/services/authService";
 import { Mate } from "@/utils/classes/stats/baseStats";
@@ -147,22 +146,22 @@ export default defineComponent({
     stats(): TrumpStats {
       return new TrumpStats(this.matches, this.currentPlayer);
     },
-    statistics(): { message: string; value: string }[] {
+    statistics(): { message: string; value: string | number }[] {
       const { matches, wonMatches, lostMatches, ratio } = this.stats;
       const { callingMatchesRatio } = this.stats;
       const { penaltyPoints, callingStats, fullScoreMatches } = this.stats;
       const { mediaScore } = callingStats;
 
       return [
-        { message: "totalMatches", value: matches.length.toString() },
-        { message: "totalWin", value: wonMatches.length.toString() },
-        { message: "totalLose", value: lostMatches.length.toString() },
+        { message: "totalMatches", value: matches.length },
+        { message: "totalWin", value: wonMatches.length },
+        { message: "totalLose", value: lostMatches.length },
         { message: "win", value: `${percentageFormatter(ratio)} %` },
-        { message: "penaltyPoints", value: penaltyPoints.length.toString() },
-        { message: "120Match", value: fullScoreMatches.length.toString() },
+        { message: "penaltyPoints", value: penaltyPoints.length },
+        { message: "120Match", value: fullScoreMatches.length },
         {
           message: "callingMatches",
-          value: callingStats.matches.length.toString(),
+          value: callingStats.matches.length,
         },
         {
           message: "callingMatches",
@@ -179,14 +178,10 @@ export default defineComponent({
       ];
     },
     topMates(): Mate[] {
-      return this.stats.mates.slice(0, 3);
+      return this.stats.bestMates.slice(0, 5);
     },
-    worstMates(): Mate[] {
-      const { mates } = this.stats;
-
-      return mates
-        .slice(mates.length - 3, mates.length)
-        .sort(byValue("ratio", byNumber()));
+    worstOpponents(): Mate[] {
+      return this.stats.worstOpponents.slice(0, 5);
     },
   },
 });
