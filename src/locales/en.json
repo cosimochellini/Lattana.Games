@@ -3,7 +3,8 @@
         "route": {
             "history": "history",
             "new": "create",
-            "stats": "statistics"
+            "stats": "statistics",
+            "rankings": "rankings"
         }
     },
     "navbar": {
