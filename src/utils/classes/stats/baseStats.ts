@@ -94,7 +94,7 @@ export abstract class BaseStats<
 
       this._worstOpponents.push({ win, ratio, lose, nickname, player });
     }
-    console.log(this);
+
     return this._worstOpponents.sort(
       byValue("ratio", byNumber({ desc: true }))
     );

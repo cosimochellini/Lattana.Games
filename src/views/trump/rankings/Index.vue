@@ -4,7 +4,13 @@
     <select v-model="selectedRanking" class="base-select">
       <option v-for="ranking in rankings" :key="ranking">{{ ranking }}</option>
     </select>
-    <component :is="selectedRanking" :matches="matches" />
+    <div class="container m-auto text-center">
+      <component
+        :is="selectedRanking"
+        :matches="matches"
+        class="container m-auto"
+      />
+    </div>
   </div>
 </template>
 
@@ -15,7 +21,7 @@ import { sanityTypes } from "@/constants/roleConstants";
 import { defineAsyncComponent, defineComponent } from "vue";
 import { notificationService } from "@/services/notificationService";
 
-const matchesQuery = new groq.QueryBuilder(sanityTypes.secretHitlerMatch)
+const matchesQuery = new groq.QueryBuilder(sanityTypes.trumpMatch)
   .select("..., players[] -> { player ->, ...}")
   .cached();
 

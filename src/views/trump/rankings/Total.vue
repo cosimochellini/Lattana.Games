@@ -1,8 +1,11 @@
 <script lang="ts">
+import { Ranking } from "@/utils/ranking";
+import { byNumber, byValue } from "sort-es";
 import { HorizontalBar } from "vue3-chart-v2";
 import { defineComponent, PropType } from "vue";
 import { trumpMatch, trumpMatchPlayer } from "@/types/sanity";
-type ranking = [string, number, number];
+
+type ranking = [string, number, number, number];
 
 export default defineComponent({
   name: "TrumpRankingTotal",
@@ -16,26 +19,22 @@ export default defineComponent({
   mounted() {},
   methods: {
     render() {
+      const r = new Ranking(this.allMatches)
+        .groupBy((x) => x.player.nickname)
+        .label((nickname) => nickname)
+        .dataset("Number of wins", (m) => m.filter((x) => x.win).length)
+        .dataset("Number of loose", (m) => m.filter((x) => !x.win).length)
+        .dataset("Total matches", (matches) => matches.length)
+        .orderBy(byValue(({ items: [win] }) => win, byNumber({ desc: false })));
+
       this.renderChart(
         {
-          labels: this.ranking.map(([name]) => name),
-          datasets: [
-            {
-              label: "Number of wins",
-              backgroundColor: "#f37959",
-              data: this.ranking.map(([, score]) => score),
-            },
-
-            {
-              label: "Total matches",
-              backgroundColor: "#d85959",
-              data: this.ranking.map(([, , total]) => total),
-            },
-          ],
+          labels: r.labels,
+          datasets: r.datasets,
         },
         {
           responsive: true,
-          aspectRatio: 0.6,
+          aspectRatio: (innerWidth * 0.8) / (innerHeight * 0.8),
         }
       );
     },
@@ -59,6 +58,7 @@ export default defineComponent({
           return [
             nickname,
             currentPlays.filter((x) => x.win).length,
+            currentPlays.filter((x) => !x.win).length,
             currentPlays.length,
           ];
         })
