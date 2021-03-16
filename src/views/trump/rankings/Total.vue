@@ -1,11 +1,10 @@
 <script lang="ts">
 import { Ranking } from "@/utils/ranking";
 import { byNumber, byValue } from "sort-es";
+import { trumpMatch } from "@/types/sanity";
 import { HorizontalBar } from "vue3-chart-v2";
 import { defineComponent, PropType } from "vue";
-import { trumpMatch, trumpMatchPlayer } from "@/types/sanity";
-
-type ranking = [string, number, number, number];
+import { getColor } from "@/services/color.service";
 
 export default defineComponent({
   name: "TrumpRankingTotal",
@@ -16,12 +15,15 @@ export default defineComponent({
       required: true,
     },
   },
-  mounted() {},
+  mounted() {
+    this.render();
+  },
   methods: {
     render() {
-      const r = new Ranking(this.allMatches)
+      const r = new Ranking(this.matches.flatMap((m) => m.players))
         .groupBy((x) => x.player.nickname)
         .label((nickname) => nickname)
+        .onMissingBackground(getColor)
         .dataset("Number of wins", (m) => m.filter((x) => x.win).length)
         .dataset("Number of loose", (m) => m.filter((x) => !x.win).length)
         .dataset("Total matches", (matches) => matches.length)
@@ -39,38 +41,13 @@ export default defineComponent({
       );
     },
   },
-  computed: {
-    allMatches(): trumpMatchPlayer[] {
-      return this.matches.flatMap((x) => x.players);
-    },
-    uniquePlayers(): string[] {
-      const allPlayers = this.allMatches.map((x) => x.player.nickname);
-
-      return [...new Set(allPlayers)];
-    },
-    ranking(): ranking[] {
-      return this.uniquePlayers
-        .map((nickname) => {
-          const currentPlays = this.allMatches.filter(
-            (m) => m.player.nickname === nickname
-          );
-
-          return [
-            nickname,
-            currentPlays.filter((x) => x.win).length,
-            currentPlays.filter((x) => !x.win).length,
-            currentPlays.length,
-          ];
-        })
-        .sort(
-          ([, score], [, scoreB]) => Number(score) - Number(scoreB)
-        ) as ranking[];
-    },
-  },
   watch: {
-    ranking() {
+    matches() {
       this.render();
     },
+  },
+  activated() {
+    this.render();
   },
 });
 </script>

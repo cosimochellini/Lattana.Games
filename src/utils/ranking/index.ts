@@ -33,7 +33,9 @@ export class GroupedRanking<T extends Object, TGroup extends Object> {
     item2: { key: TGroup; items: number[] }
   ) => number = () => 0;
 
-  private _labelBinder!: (TKey: TGroup) => string;
+  private _labelBinder: (TKey: TGroup) => string = (i) => i.toString();
+
+  private _backgroundBinder: (item: string) => string = () => "";
 
   private _datasetsBinder: DataSetBinder<T[]>[] = [];
 
@@ -63,6 +65,15 @@ export class GroupedRanking<T extends Object, TGroup extends Object> {
       dataBinder: binder,
       backgroundColor,
     });
+
+    return this;
+  }
+
+  public onMissingBackground(
+    parser: (item: string) => string
+  ): GroupedRanking<T, TGroup> {
+    this._backgroundBinder = parser;
+
     return this;
   }
 
@@ -82,7 +93,9 @@ export class GroupedRanking<T extends Object, TGroup extends Object> {
   }
 
   public get labels(): string[] {
-    return this._sortedItems.map((x) => x.key).map(this._labelBinder);
+    if (!this._dataset) this.loadDataset();
+
+    return this._sortedItems.map((x) => this._labelBinder(x.key));
   }
 
   public get datasets(): DataSet[] {
@@ -105,7 +118,7 @@ export class GroupedRanking<T extends Object, TGroup extends Object> {
       return {
         label: d.label,
         data: this._sortedItems.map(({ items }) => items[index]),
-        backgroundColor: d.backgroundColor,
+        backgroundColor: d.backgroundColor ?? this._backgroundBinder(d.label),
       } as DataSet;
     });
   }
