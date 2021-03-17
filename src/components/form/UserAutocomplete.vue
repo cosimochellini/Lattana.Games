@@ -1,5 +1,5 @@
 <template>
-  <select v-model="selectedId" class="base-select">
+  <!-- <select v-model="selectedId" class="base-select">
     <option disabled :value="''" class="base-option">
       {{ $t("form.userSelect.placeholder") }}
     </option>
@@ -11,19 +11,32 @@
     >
       {{ player.name }} {{ player.surname }}
     </option>
-  </select>
+  </select> -->
+  <Multiselect
+    v-model="selectedId"
+    :searchable="true"
+    :options="availableOptions"
+    :placeholer="$t('form.userSelect.placeholder')"
+  ></Multiselect>
 </template>
 
 <script lang="ts">
 import { player } from "@/types/sanity";
+import Multiselect from "@vueform/multiselect";
 import { defineComponent, PropType } from "vue";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { sanityTypes } from "@/constants/roleConstants";
+import { multiSelectOption } from "@/types/multiselect";
 
-// const playerQuery =
+const playerQuery = new groq.QueryBuilder(sanityTypes.player)
+  .orderBy(new groq.OrderBuilder("name"))
+  .cached();
 
 export default defineComponent({
   name: "UserAutocomplete",
+  components: {
+    Multiselect,
+  },
   props: {
     excludedPlayers: {
       type: Array as PropType<player[]>,
@@ -43,32 +56,18 @@ export default defineComponent({
     return {
       fetchedPlayers: [] as player[],
       selectedId: this.modelValue._id ?? "",
-      playerQuery: new groq.QueryBuilder(sanityTypes.player)
-        .orderBy(new groq.OrderBuilder("name"))
-        .cached(),
+      playerQuery,
     };
   },
   mounted() {
-    this.fetchPlayers();
+    this.getPlayers();
   },
   methods: {
-    fetchPlayers() {
+    getPlayers() {
       if (this.exactPlayers)
         return (this.fetchedPlayers = this.exactPlayers ?? []);
 
-      const excluded = this.excludedPlayers
-        .filter(({ _id }) => _id !== this.selectedId)
-        .map(({ _id }) => _id);
-
-      this.playerQuery
-        .where(
-          new groq.ConditionBuilder("_id in $excluded")
-            .params({ excluded })
-            .optional()
-            .reverse()
-        )
-        .fetch<player[]>()
-        .then((p) => (this.fetchedPlayers = p));
+      this.playerQuery.fetch<player[]>().then((p) => (this.fetchedPlayers = p));
     },
     emitChanges() {
       this.$emit(
@@ -78,14 +77,8 @@ export default defineComponent({
     },
   },
   watch: {
-    search() {
-      this.fetchPlayers();
-    },
-    excludedPlayers() {
-      this.fetchPlayers();
-    },
     exactPlayers() {
-      this.fetchPlayers();
+      this.getPlayers();
     },
     modelValue(player: player) {
       this.selectedId = player?._id;
@@ -94,5 +87,22 @@ export default defineComponent({
       this.emitChanges();
     },
   },
+  computed: {
+    availableOptions(): multiSelectOption<string>[] {
+      const expludedId = this.excludedPlayers
+        .filter(({ _id }) => _id !== this.selectedId)
+        .map(({ _id }) => _id);
+
+      return this.fetchedPlayers
+        .filter((p) => !expludedId.includes(p._id))
+        .map((p) => {
+          return {
+            label: p.name + " " + p.surname,
+            value: p._id,
+          } as multiSelectOption<string>;
+        });
+    },
+  },
 });
 </script>
+<style src="@vueform/multiselect/themes/default.css"></style>
