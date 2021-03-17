@@ -44,6 +44,7 @@ export class GroupedRanking<T extends Object, TGroup extends Object> {
   private _dataset!: DataSet[];
 
   private _sortedItems!: { items: number[]; key: TGroup }[];
+  private _i18nProvider: ((item: string) => string) | undefined;
 
   constructor(items: T[], func: (item: T) => TGroup) {
     this._items = items;
@@ -69,10 +70,18 @@ export class GroupedRanking<T extends Object, TGroup extends Object> {
     return this;
   }
 
-  public onMissingBackground(
+  public useBackgroundBinder(
     parser: (item: string) => string
   ): GroupedRanking<T, TGroup> {
     this._backgroundBinder = parser;
+
+    return this;
+  }
+
+  public useI18n(
+    i18nProvider: (item: string) => string
+  ): GroupedRanking<T, TGroup> {
+    this._i18nProvider = i18nProvider;
 
     return this;
   }
@@ -116,7 +125,7 @@ export class GroupedRanking<T extends Object, TGroup extends Object> {
 
     this._dataset = this._datasetsBinder.map((d, index) => {
       return {
-        label: d.label,
+        label: this._i18nProvider?.(d.label) ?? d.label,
         data: this._sortedItems.map(({ items }) => items[index]),
         backgroundColor: d.backgroundColor ?? this._backgroundBinder(d.label),
       } as DataSet;
