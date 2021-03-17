@@ -1106,13 +1106,6 @@
     "@types/connect" "*"
     "@types/node" "*"
 
-"@types/chart.js@^2.9.29":
-  version "2.9.31"
-  resolved "https://registry.yarnpkg.com/@types/chart.js/-/chart.js-2.9.31.tgz#e8ebc7ed18eb0e5114c69bd46ef8e0037c89d39d"
-  integrity sha512-hzS6phN/kx3jClk3iYqEHNnYIRSi4RZrIGJ8CDLjgatpHoftCezvC44uqB3o3OUm9ftU1m7sHG8+RLyPTlACrA==
-  dependencies:
-    moment "^2.10.2"
-
 "@types/connect-history-api-fallback@*":
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/@types/connect-history-api-fallback/-/connect-history-api-fallback-1.3.4.tgz#8c0f0e6e5d8252b699f5a662f51bdf82fd9d8bb8"
@@ -2800,29 +2793,6 @@ chardet@^0.7.0:
   resolved "https://registry.yarnpkg.com/chardet/-/chardet-0.7.0.tgz#90094849f0937f2eedc2425d0d28a9e5f0cbad9e"
   integrity sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==
 
-chart.js@^2.9.4:
-  version "2.9.4"
-  resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-2.9.4.tgz#0827f9563faffb2dc5c06562f8eb10337d5b9684"
-  integrity sha512-B07aAzxcrikjAPyV+01j7BmOpxtQETxTSlQ26BEYJ+3iUkbNKaOJ/nDbT6JjyqYxseM0ON12COHYdU2cTIjC7A==
-  dependencies:
-    chartjs-color "^2.1.0"
-    moment "^2.10.2"
-
-chartjs-color-string@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/chartjs-color-string/-/chartjs-color-string-0.6.0.tgz#1df096621c0e70720a64f4135ea171d051402f71"
-  integrity sha512-TIB5OKn1hPJvO7JcteW4WY/63v6KwEdt6udfnDE9iCAZgy+V4SrbSxoIbTw/xkUIapjEI4ExGtD0+6D3KyFd7A==
-  dependencies:
-    color-name "^1.0.0"
-
-chartjs-color@^2.1.0:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/chartjs-color/-/chartjs-color-2.4.1.tgz#6118bba202fe1ea79dd7f7c0f9da93467296c3b0"
-  integrity sha512-haqOg1+Yebys/Ts/9bLo/BqUcONQOdr/hoEr2LLTRl6C5LXctUdHxsCYfvQVg5JIxITrfCNUDr4ntqmQk9+/0w==
-  dependencies:
-    chartjs-color-string "^0.6.0"
-    color-convert "^1.9.3"
-
 check-types@^8.0.3:
   version "8.0.3"
   resolved "https://registry.yarnpkg.com/check-types/-/check-types-8.0.3.tgz#3356cca19c889544f2d7a95ed49ce508a0ecf552"
@@ -3003,7 +2973,7 @@ collection-visit@^1.0.0:
     map-visit "^1.0.0"
     object-visit "^1.0.0"
 
-color-convert@^1.9.0, color-convert@^1.9.1, color-convert@^1.9.3:
+color-convert@^1.9.0, color-convert@^1.9.1:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/color-convert/-/color-convert-1.9.3.tgz#bb71850690e1f136567de629d2d5471deda4c1e8"
   integrity sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==
@@ -6405,11 +6375,6 @@ modern-normalize@^1.0.0:
   resolved "https://registry.yarnpkg.com/modern-normalize/-/modern-normalize-1.0.0.tgz#539d84a1e141338b01b346f3e27396d0ed17601e"
   integrity sha512-1lM+BMLGuDfsdwf3rsgBSrxJwAZHFIrQ8YR61xIqdHo0uNKI9M52wNpHSrliZATJp51On6JD0AfRxd4YGSU0lw==
 
-moment@^2.10.2:
-  version "2.29.1"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
-  integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
-
 move-concurrently@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/move-concurrently/-/move-concurrently-1.0.1.tgz#be2c005fda32e0b29af1f05d7c4b33214c701f92"
@@ -7588,11 +7553,6 @@ prettier@^1.18.2:
   version "1.19.1"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.19.1.tgz#f7d7f5ff8a9cd872a7be4ca142095956a60797cb"
   integrity sha512-s7PoyDv/II1ObgQunCbB9PdLmUcBZcnWOcxDh7O0N/UwDEsHyqkW+Qh28jW+mVuCdx7gLB0BotYI1Y6uI9iyew==
-
-prettier@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.2.1.tgz#795a1a78dd52f073da0cd42b21f9c91381923ff5"
-  integrity sha512-PqyhM2yCjg/oKkFPtTGUojv7gnZAoG80ttl45O6x2Ug/rMJw4wcc9k6aaf2hibP7BGVCCM33gZoGjyvt9mm16Q==
 
 pretty-bytes@^5.1.0:
   version "5.6.0"
@@ -9455,18 +9415,7 @@ vue-toastification@^2.0.0-rc.1:
   resolved "https://registry.yarnpkg.com/vue-toastification/-/vue-toastification-2.0.0-rc.1.tgz#6a994c19635a493eec0ee290e84a966e07c709d2"
   integrity sha512-hjauv/FyesNZdwcr5m1SCyvu1JmlB+Ts5bTptDLDmsYYlj6Oqv8NYakiElpCF+Abwkn9J/AChh6FwkTL1HOb7Q==
 
-vue3-chart-v2@^0.8.1:
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/vue3-chart-v2/-/vue3-chart-v2-0.8.1.tgz#7371ab195f4bd97939ec696febfff3460d40c906"
-  integrity sha512-nZ6dl4AX5wDlYrcGIr8cnIRSJVNqfC5B0+6gbGCrH0dASfN5uLXkKront7TGj1VhUSW6RdP6Mc3GhdI0SpVpUA==
-  dependencies:
-    "@types/chart.js" "^2.9.29"
-    chart.js "^2.9.4"
-    core-js "^3.6.5"
-    prettier "^2.2.1"
-    vue "^3.0.0"
-
-vue@^3.0.0, vue@^3.0.0-0:
+vue@^3.0.0-0:
   version "3.0.7"
   resolved "https://registry.yarnpkg.com/vue/-/vue-3.0.7.tgz#8bcff51f8be570f9e4ce8cc5f52e2ab0fe3c74a1"
   integrity sha512-8h4TikD+JabbMK9aRlBO4laG0AtNHRPHynxYgWZ9sq1YUPfzynd9Jeeb27XNyZytC7aCQRX9xe1+TQJuc181Tw==
