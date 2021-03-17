@@ -14,9 +14,10 @@
   </select> -->
   <Multiselect
     v-model="selectedId"
+    class="base-multi-select"
     :searchable="true"
     :options="availableOptions"
-    :placeholer="$t('form.userSelect.placeholder')"
+    :placeholder="$t('form.userSelect.placeholder')"
   ></Multiselect>
 </template>
 
