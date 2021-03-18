@@ -132,11 +132,10 @@ export default defineComponent({
   setup() {
     const router = useRouter();
 
-    const {
-      getMoreData,
-      items: matches,
-      moreDataAvailable,
-    } = useInfiniteLoading<trumpMatch>(matchesQuery, { pageSize: 6 });
+    const infiniteLoading = useInfiniteLoading<trumpMatch>(matchesQuery, {
+      pageSize: 6,
+    });
+    const { getMoreData, items: matches, moreDataAvailable } = infiniteLoading;
 
     const deleteMatch = (match: trumpMatch) =>
       overlayService.showOverlay() &&

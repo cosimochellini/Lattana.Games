@@ -107,13 +107,11 @@ export default defineComponent({
   setup() {
     const router = useRouter();
 
-    const infiniteLoading = useInfiniteLoading<secretHitlerMatch>(
-      matchesQuery,
-      {
-        onResponse: (response) =>
-          response.forEach((m) => m.players.sort(byRole)),
-      }
-    );
+    const onResponse = (response: secretHitlerMatch[]) =>
+      response.forEach((m) => m.players.sort(byRole));
+
+    const infiniteLoading = useInfiniteLoading(matchesQuery, { onResponse });
+
     const { items, getMoreData, moreDataAvailable } = infiniteLoading;
 
     const deleteMatch = (match: secretHitlerMatch) =>
@@ -122,9 +120,7 @@ export default defineComponent({
         .deleteExistingMatch(match)
         .then(() => notificationService.success("eliminazione eseguita"))
         .catch(notificationService.danger)
-        .finally(() => {
-          overlayService.hideOverlay() && infiniteLoading.getMoreData(true);
-        });
+        .finally(() => overlayService.hideOverlay() && getMoreData(true));
 
     const borderColor = (role: secretHitlerRole) => {
       switch (role) {
