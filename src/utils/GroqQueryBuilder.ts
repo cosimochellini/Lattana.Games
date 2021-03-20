@@ -44,28 +44,26 @@ class QueryBuilder {
     return this;
   }
 
-  public where(...builders: ConditionBuilder[]): QueryBuilder {
-    for (const builder of builders) {
-      if (!builder.isValid()) continue;
+  public where(builder: ConditionBuilder): QueryBuilder {
+    if (!builder.isValid()) return this;
 
-      const { condition, params, reverse } = builder.expose();
+    const { condition, params, reverse } = builder.expose();
 
-      this._conditions.push({ value: { condition, reverse } });
+    this._conditions.push({ value: { condition, reverse } });
 
-      this._params.push({ value: params });
-    }
-    return this;
-  }
-
-  public select(select: string): QueryBuilder {
-    this._select.push({ value: select });
+    this._params.push({ value: params });
 
     return this;
   }
 
-  public orderBy(...orders: OrderBuilder[]): QueryBuilder {
-    for (const order of orders)
-      for (const value of order.expose()) this._orderBy.push({ value });
+  public select(value: string): QueryBuilder {
+    this._select.push({ value });
+
+    return this;
+  }
+
+  public orderBy(order: OrderBuilder): QueryBuilder {
+    for (const value of order.expose()) this._orderBy.push({ value });
 
     return this;
   }
