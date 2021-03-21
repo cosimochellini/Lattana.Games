@@ -3,7 +3,8 @@
         "route": {
             "history": "cronologia",
             "new": "aggiungi",
-            "stats": "statistiche"
+            "stats": "statistiche",
+            "rankings": "classifiche"
         }
     },
     "navbar": {
