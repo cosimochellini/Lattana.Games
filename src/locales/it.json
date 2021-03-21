@@ -97,6 +97,14 @@
         },
         "userSelect": {
             "placeholder": "seleziona giocatore"
+        },
+        "orderBy": {
+            "title": "ordina per",
+            "win": "numero vittorie",
+            "lost": "numer sconfitte",
+            "ratio": "percentuale vittorie",
+            "asc": "ascendenti",
+            "desc": "discendenti"
         }
     }
 }

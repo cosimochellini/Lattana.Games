@@ -97,6 +97,14 @@
         },
         "userSelect": {
             "placeholder": "choose player"
+        },
+        "orderBy": {
+            "title": "order by",
+            "win": "number of win",
+            "lost": "number of lost",
+            "ratio": "percentage of win",
+            "asc": "ascendent",
+            "desc": "descendant"
         }
     }
 }

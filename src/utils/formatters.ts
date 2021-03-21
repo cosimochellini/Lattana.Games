@@ -72,7 +72,7 @@ export const longNumberFormatter = (n: number) =>
     useGrouping: false,
   });
 
-  export const smallNumberFormatter = (n: number) =>
+export const smallNumberFormatter = (n: number) =>
   n.toLocaleString(currentLocale.value, {
     minimumIntegerDigits: 2,
     useGrouping: false,
