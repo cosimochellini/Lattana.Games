@@ -72,6 +72,12 @@ export const longNumberFormatter = (n: number) =>
     useGrouping: false,
   });
 
+  export const smallNumberFormatter = (n: number) =>
+  n.toLocaleString(currentLocale.value, {
+    minimumIntegerDigits: 2,
+    useGrouping: false,
+  });
+
 export const percentageFormatter = (n: number) => (n * 100).toFixed(0);
 
 const parseDate = (date: datable): [boolean, Date] => {

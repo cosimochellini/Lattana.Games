@@ -38,11 +38,15 @@ import { byNumber, byValue } from "sort-es";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { sanityTypes } from "@/constants/roleConstants";
 import { notificationService } from "@/services/notificationService";
-import { smallNumberFormatter, percentageFormatter } from "@/utils/formatters";
-import { player, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
+import { percentageFormatter, smallNumberFormatter } from "@/utils/formatters";
+import {
+  player,
+  secretHitlerMatch,
+  secretHitlerMatchPlayer,
+} from "@/types/sanity";
 import { sortable } from "node_modules/sort-es/lib/src/types/types";
 
-const matchesQuery = new groq.QueryBuilder(sanityTypes.trumpMatch)
+const matchesQuery = new groq.QueryBuilder(sanityTypes.secretHitlerMatch)
   .select("..., players[] -> { player ->, ...}")
   .cached();
 
@@ -66,7 +70,7 @@ export default defineComponent({
   name: "Ranking",
   data() {
     return {
-      matches: [] as trumpMatch[],
+      matches: [] as secretHitlerMatch[],
       selectedOrderby: orderby.win,
       orderby,
     };
@@ -78,7 +82,7 @@ export default defineComponent({
   },
   activated() {
     matchesQuery
-      .fetch<trumpMatch[]>()
+      .fetch<secretHitlerMatch[]>()
       .then((matches) => (this.matches = matches))
       .catch(notificationService.warning);
   },
@@ -87,7 +91,7 @@ export default defineComponent({
       const ranks = [] as information[];
 
       for (const nickname of this.allPlayers) {
-        const playerFn = (player: trumpMatchPlayer) =>
+        const playerFn = (player: secretHitlerMatchPlayer) =>
           player.player.nickname === nickname;
 
         const profile = this.matches

@@ -93,6 +93,13 @@ const routes: { game: string; elements: BottonElement[] }[] = [
         route: "secretHitlerStats",
         activeColor: "text-red-800",
       },
+      {
+        name: "rankings",
+        icon: "far fa-trophy-alt",
+        iconActive: "fad fa-trophy-alt",
+        route: "secretHitlerRankings",
+        activeColor: "text-red-800",
+      },
     ],
   },
 ];

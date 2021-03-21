@@ -79,6 +79,11 @@ const routes: RouteRecordRaw[] = [
             name: "secretHitlerStats",
             component: () => import("../views/secretHitler/Stats.vue"),
           },
+          {
+            path: "rankings",
+            name: "secretHitlerRankings",
+            component: () => import("../views/secretHitler/rankings/Index.vue"),
+          },
         ],
       },
       {
