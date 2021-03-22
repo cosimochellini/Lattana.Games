@@ -83,16 +83,19 @@
         />
       </div>
     </div>
+    <div class="first-capitalize text-center font-semibold tracking-wider">
+      version {{ settings.version }}
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { player } from "@/types/sanity";
-import { image as imageBuilder } from "@/instances/sanity";
 import { getPlayer } from "@/services/authService";
+import { settings } from "@/instances/package.json";
 import { PhotoTaker } from "@/services/photoTakerService";
+import { image as imageBuilder } from "@/instances/sanity";
 import { computed, defineComponent, onMounted, ref } from "vue";
-
 import {
   dayFormatter,
   dateFormatter,
@@ -124,6 +127,7 @@ export default defineComponent({
 
     return {
       load,
+      settings,
       dayFormatter,
       profileImage,
       dateFormatter,

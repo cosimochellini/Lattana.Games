@@ -5,7 +5,7 @@
         {{ $t("form.orderBy.title") }}
       </label>
       <select class="base-select" v-model="selectedOrderby">
-        <option v-for="option in orderby" :key="option" :value="option">
+        <option v-for="option in allOrderBy" :key="option" :value="option">
           {{ $t("form.orderBy." + option) }}
         </option>
       </select>
@@ -37,25 +37,31 @@
           </span>
         </span>
         <span class="col-span-1 m-auto">
-          <!-- <span class="rounded-xl px-2 py-1 font-semibold bg-blue-300"> -->
           <badge
-            v-if="selectedOrderby === orderby.win"
+            v-if="selectedOrderby === allOrderBy.win"
             :background="bindBadgeColor(index)"
             :textColor="bindBadgeTextColor(index)"
             :text="smallNumberFormatter(rank.win)"
           />
           <badge
-            v-else-if="selectedOrderby === orderby.ratio"
+            v-else-if="selectedOrderby === allOrderBy.ratio"
             :background="bindBadgeColor(index)"
             :textColor="bindBadgeTextColor(index)"
             :text="percentageFormatter(rank.ratio) + '%'"
           />
 
           <badge
-            v-else
-            :background="bindBadgeColor(index)"
+            v-else-if="selectedOrderby === allOrderBy.lost"
+            :background="bindBadgeColor(index, true)"
             :text="smallNumberFormatter(rank.lost)"
-            :textColor="bindBadgeTextColor(index)"
+            :textColor="bindBadgeTextColor(index, true)"
+          />
+
+          <badge
+            v-else-if="selectedOrderby === allOrderBy.hitlerMatches"
+            :background="bindBadgeColor(index, true)"
+            :text="smallNumberFormatter(rank.hitlerMatches)"
+            :textColor="bindBadgeTextColor(index, true)"
           />
         </span>
       </div>
@@ -70,12 +76,12 @@ import { image } from "@/instances/sanity";
 import { byNumber, byValue } from "sort-es";
 import Badge from "@/components/base/Badge.vue";
 import { groq } from "@/utils/GroqQueryBuilder";
+import { secretHitlerMatch } from "@/types/sanity";
 import { sortable } from "sort-es/lib/src/types/types";
-import { sanityTypes } from "@/constants/roleConstants";
 import { secretHitlerMatchPlayer } from "@/types/sanity";
-import { player, secretHitlerMatch } from "@/types/sanity";
 import { notificationService } from "@/services/notificationService";
 import { information, orderby, orderbyDirection } from "@/types/ranking";
+import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
 import { percentageFormatter, smallNumberFormatter } from "@/utils/formatters";
 
 const matchesQuery = new groq.QueryBuilder(sanityTypes.secretHitlerMatch)
@@ -84,14 +90,52 @@ const matchesQuery = new groq.QueryBuilder(sanityTypes.secretHitlerMatch)
 
 const background = ["ring-yellow-400", "ring-gray-300", "ring-yellow-700"];
 
+declare type secretHitlerInformation = {
+  rank: {
+    hitlerMatches: number;
+    fascistMatches: number;
+    liberalMatches: number;
+  };
+} & information;
+
+// eslint-disable-next-line no-unused-vars
+enum addionalOrderBy {
+  // eslint-disable-next-line no-unused-vars
+  hitlerMatches = "hitlerMatches",
+}
+
+const allOrderBy = { ...orderby, ...addionalOrderBy };
+
+const bindOrderBy = (
+  type: keyof typeof allOrderBy,
+  desc: boolean
+): sortable<secretHitlerInformation> => {
+  switch (type) {
+    case allOrderBy.win:
+      return byValue(({ rank }) => rank.win, byNumber({ desc }));
+
+    case allOrderBy.ratio:
+      return byValue(({ rank }) => rank.ratio, byNumber({ desc }));
+
+    case allOrderBy.lost:
+      return byValue(({ rank }) => rank.lost, byNumber({ desc }));
+
+    case addionalOrderBy.hitlerMatches:
+      return byValue(({ rank }) => rank.hitlerMatches, byNumber({ desc }));
+
+    default:
+      return byValue(({ rank }) => rank.win, byNumber({ desc }));
+  }
+};
+
 export default defineComponent({
   components: { Badge },
   name: "Ranking",
   data() {
     return {
-      orderby,
+      allOrderBy,
       orderbyDirection,
-      selectedOrderby: orderby.win,
+      selectedOrderby: allOrderBy.win,
       matches: [] as secretHitlerMatch[],
       selectedOrderbyDirection: orderbyDirection.desc,
     };
@@ -100,9 +144,12 @@ export default defineComponent({
     image,
     percentageFormatter,
     smallNumberFormatter,
-    bindImageRing(index: number): Dictionary<boolean> {
+    bindImageRing(
+      index: number,
+      reverse: boolean = false
+    ): Dictionary<boolean> {
       const realIndex =
-        this.selectedOrderbyDirection === orderbyDirection.desc
+        this.selectedOrderbyDirection === orderbyDirection.desc && !reverse
           ? index
           : this.sortedRanks.length - index - 1;
 
@@ -113,9 +160,9 @@ export default defineComponent({
         [background[realIndex]]: true,
       };
     },
-    bindBadgeColor(index: number): string {
+    bindBadgeColor(index: number, reverse: boolean = false): string {
       const realIndex =
-        this.selectedOrderbyDirection === orderbyDirection.desc
+        this.selectedOrderbyDirection === orderbyDirection.desc && !reverse
           ? index
           : this.sortedRanks.length - index - 1;
 
@@ -130,9 +177,9 @@ export default defineComponent({
 
       return "bg-red-400";
     },
-    bindBadgeTextColor(index: number): string {
+    bindBadgeTextColor(index: number, reverse: boolean = false): string {
       const realIndex =
-        this.selectedOrderbyDirection === orderbyDirection.desc
+        this.selectedOrderbyDirection === orderbyDirection.desc && !reverse
           ? index
           : this.sortedRanks.length - index - 1;
 
@@ -148,29 +195,50 @@ export default defineComponent({
       .catch(notificationService.warning);
   },
   computed: {
-    ranking(): information[] {
-      const ranks = [] as information[];
+    ranking(): secretHitlerInformation[] {
+      const ranks = [] as secretHitlerInformation[];
 
       for (const nickname of this.allPlayers) {
         const playerFn = (player: secretHitlerMatchPlayer) =>
           player.player.nickname === nickname;
 
-        const profile = this.matches
-          .find((m) => m.players.some(playerFn))
-          ?.players.find(playerFn)?.player;
+        const playerMatches = this.matches
+          .filter((m) => m.players.some(playerFn))
+          .map((match) => {
+            return match.players.find(playerFn) as secretHitlerMatchPlayer;
+          });
 
-        const playerMatches = this.matches.filter((m) =>
-          m.players.some(playerFn)
-        );
+        const profile = playerMatches[0].player;
 
-        const win = playerMatches.filter((match) =>
-          match.players.some((player) => playerFn(player) && player.win)
+        const win = playerMatches.filter((player) => player.win).length;
+
+        const hitlerMatches = playerMatches.filter(
+          (player) => player.role === secretHitlerRole.hitler
+        ).length;
+
+        const liberalMatches = playerMatches.filter(
+          (player) => player.role === secretHitlerRole.liberal
+        ).length;
+
+        const fascitRoles = [secretHitlerRole.fascist, secretHitlerRole.hitler];
+        const fascistMatches = playerMatches.filter((player) =>
+          fascitRoles.includes(player.role)
         ).length;
 
         const lost = playerMatches.length - win;
 
         const ratio = win / playerMatches.length;
-        ranks.push({ rank: { win, lost, ratio }, profile: profile as player });
+
+        const rank = {
+          win,
+          lost,
+          ratio,
+          hitlerMatches,
+          liberalMatches,
+          fascistMatches,
+        };
+
+        ranks.push({ rank, profile });
       }
       return ranks;
     },
@@ -181,16 +249,12 @@ export default defineComponent({
         ),
       ];
     },
-    sortedRanks(): information[] {
+    sortedRanks(): secretHitlerInformation[] {
       const desc = this.selectedOrderbyDirection === orderbyDirection.desc;
-      const sortable: sortable<information> =
-        this.selectedOrderby === orderby.win
-          ? byValue(({ rank }) => rank.win, byNumber({ desc }))
-          : this.selectedOrderby === orderby.ratio
-          ? byValue(({ rank }) => rank.ratio, byNumber({ desc }))
-          : byValue(({ rank }) => rank.lost, byNumber({ desc }));
 
-      return this.ranking.concat().sort(sortable);
+      return this.ranking
+        .concat()
+        .sort(bindOrderBy(this.selectedOrderby, desc));
     },
   },
 });

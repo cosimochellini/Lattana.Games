@@ -103,6 +103,7 @@
             "win": "numero vittorie",
             "lost": "numer sconfitte",
             "ratio": "percentuale vittorie",
+            "hitlerMatches": "partite hitler",
             "asc": "ascendenti",
             "desc": "discendenti"
         }
