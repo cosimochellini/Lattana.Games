@@ -1,6 +1,9 @@
 <template>
-  <div class="container">
-    <div class="px-2 pt-2 flex items-center place-content-around">
+  <div class="container text-center m-auto">
+    <span class="base-title">Rankings</span>
+    <div
+      class="px-2 pt-2 flex items-center place-content-around max-w-2xl m-auto mb-3"
+    >
       <label class="base-subtitle first-capitalize">
         {{ $t("form.orderBy.title") }}
       </label>
@@ -20,7 +23,7 @@
       </select>
     </div>
     <div
-      class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded-md m-2"
+      class="flex flex-col justify-center px-3 py-3 bg-white border border-gray-300 rounded-xl my-1 mx-2 max-w-2xl text-center lg:m-auto lg:mt-1"
       v-for="({ profile, rank }, index) in sortedRanks"
       :key="profile.nickname"
     >
@@ -29,6 +32,7 @@
           class="w-10 h-10 rounded-full col-span-1 m-auto"
           :src="image(profile.profileImage, 200)"
           :class="bindImageRing(index)"
+          :title="profile.name + ' ' + profile.surname"
         />
         <span class="col-span-2 m-auto">
           <span class="text-gray-700 font-semibold font-sans tracking-wide">
