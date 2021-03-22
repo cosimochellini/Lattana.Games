@@ -144,15 +144,19 @@ export default defineComponent({
     image,
     percentageFormatter,
     smallNumberFormatter,
+    bindRealIndex(index: number, reverse: boolean): number {
+      const desc = this.selectedOrderbyDirection === orderbyDirection.desc;
+
+      const realIndex =
+        desc !== reverse ? index : this.sortedRanks.length - index - 1;
+
+      return realIndex;
+    },
     bindImageRing(
       index: number,
       reverse: boolean = false
     ): Dictionary<boolean> {
-      const realIndex =
-        this.selectedOrderbyDirection === orderbyDirection.desc && !reverse
-          ? index
-          : this.sortedRanks.length - index - 1;
-
+      const realIndex = this.bindRealIndex(index, reverse);
       if (realIndex >= 3) return {};
 
       return {
@@ -161,10 +165,7 @@ export default defineComponent({
       };
     },
     bindBadgeColor(index: number, reverse: boolean = false): string {
-      const realIndex =
-        this.selectedOrderbyDirection === orderbyDirection.desc && !reverse
-          ? index
-          : this.sortedRanks.length - index - 1;
+      const realIndex = this.bindRealIndex(index, reverse);
 
       const rate = realIndex / this.sortedRanks.length;
 
@@ -178,10 +179,7 @@ export default defineComponent({
       return "bg-red-400";
     },
     bindBadgeTextColor(index: number, reverse: boolean = false): string {
-      const realIndex =
-        this.selectedOrderbyDirection === orderbyDirection.desc && !reverse
-          ? index
-          : this.sortedRanks.length - index - 1;
+      const realIndex = this.bindRealIndex(index, reverse);
 
       return realIndex / this.sortedRanks.length < 0.5
         ? "text-green-800"
