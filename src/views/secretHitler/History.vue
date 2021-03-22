@@ -40,7 +40,7 @@
           <img
             v-for="p in match.players"
             :key="p._id"
-            :src="image(p.player.profileImage, 250)"
+            :src="image(p.player.profileImage, 500)"
             :title="`${p.player.name} ${p.player.surname}`"
             :class="borderColor(p.role)"
             class="inline-block h-8 w-8 rounded-full ring-2 my-2"
