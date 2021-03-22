@@ -11,7 +11,7 @@
     <img
       class="w-10 h-10 rounded-full text-right mr-2"
       :class="avatarColor ? ' ring ' + avatarColor : ''"
-      :src="image(user.profileImage, 100)"
+      :src="image(user.profileImage, 250)"
     />
     <button
       class="base-button transparent w-12"

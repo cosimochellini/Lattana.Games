@@ -196,7 +196,7 @@ export default defineComponent({
   },
   computed: {
     profileSrc(): string {
-      return image(this.player?.profileImage ?? "", 300);
+      return image(this.player?.profileImage ?? "", 500);
     },
     locale(): string {
       return this.$i18n.locale;

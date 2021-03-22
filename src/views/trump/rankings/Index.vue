@@ -27,7 +27,7 @@
       <div class="grid grid-cols-4 items-center text-center">
         <img
           class="w-10 h-10 rounded-full col-span-1 m-auto"
-          :src="image(profile.profileImage, 200)"
+          :src="image(profile.profileImage, 500)"
           :class="bindImageRing(index)"
         />
         <span class="col-span-2 m-auto">
