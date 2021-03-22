@@ -50,7 +50,7 @@
 }
 
 .base-title {
-  @apply font-semibold leading-5 text-xl block py-1 my-1;
+  @apply font-semibold leading-5 text-xl block py-1 my-1 tracking-wider;
 }
 
 .base-subtitle {

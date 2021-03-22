@@ -16,9 +16,9 @@
     <button
       class="base-button transparent w-12"
       v-show="showDelete"
-      @click.prevent="emitDelete"
+      @click.capture="emitDelete"
     >
-      <i class="fas fa-trash-alt mr-1"></i>
+      <i class="fas fa-trash-alt mr-1" @click.capture="emitDelete"></i>
     </button>
   </div>
 </template>

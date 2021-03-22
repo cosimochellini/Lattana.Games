@@ -14,6 +14,12 @@ export enum orderby {
   ratio = "ratio",
   lost = "lost",
 }
+export enum secretHitlerOrderBy {
+  hitlerMatches = "hitlerMatches",
+  liberalMatches = "liberalMatches",
+  fascistMatches = "fascistMatches",
+  totalMatches = "totalMatches",
+}
 
 export enum orderbyDirection {
   asc = "asc",

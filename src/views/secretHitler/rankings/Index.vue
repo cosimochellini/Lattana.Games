@@ -42,30 +42,16 @@
         </span>
         <span class="col-span-1 m-auto">
           <badge
-            v-if="selectedOrderby === allOrderBy.win"
+            v-if="selectedOrderby !== allOrderBy.ratio"
             :background="bindBadgeColor(index)"
             :textColor="bindBadgeTextColor(index)"
-            :text="smallNumberFormatter(rank.win)"
+            :text="smallNumberFormatter(rank[selectedOrderby])"
           />
           <badge
-            v-else-if="selectedOrderby === allOrderBy.ratio"
+            v-else
             :background="bindBadgeColor(index)"
             :textColor="bindBadgeTextColor(index)"
-            :text="percentageFormatter(rank.ratio) + '%'"
-          />
-
-          <badge
-            v-else-if="selectedOrderby === allOrderBy.lost"
-            :background="bindBadgeColor(index, true)"
-            :text="smallNumberFormatter(rank.lost)"
-            :textColor="bindBadgeTextColor(index, true)"
-          />
-
-          <badge
-            v-else-if="selectedOrderby === allOrderBy.hitlerMatches"
-            :background="bindBadgeColor(index, true)"
-            :text="smallNumberFormatter(rank.hitlerMatches)"
-            :textColor="bindBadgeTextColor(index, true)"
+            :text="percentageFormatter(rank[selectedOrderby]) + '%'"
           />
         </span>
       </div>
@@ -81,10 +67,10 @@ import { byNumber, byValue } from "sort-es";
 import Badge from "@/components/base/Badge.vue";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { secretHitlerMatch } from "@/types/sanity";
-import { sortable } from "sort-es/lib/src/types/types";
+import { orderby, information } from "@/types/ranking";
 import { secretHitlerMatchPlayer } from "@/types/sanity";
 import { notificationService } from "@/services/notificationService";
-import { information, orderby, orderbyDirection } from "@/types/ranking";
+import { orderbyDirection, secretHitlerOrderBy } from "@/types/ranking";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
 import { percentageFormatter, smallNumberFormatter } from "@/utils/formatters";
 
@@ -99,38 +85,16 @@ declare type secretHitlerInformation = {
     hitlerMatches: number;
     fascistMatches: number;
     liberalMatches: number;
+    totalMatches: number;
   };
 } & information;
 
-// eslint-disable-next-line no-unused-vars
-enum addionalOrderBy {
-  // eslint-disable-next-line no-unused-vars
-  hitlerMatches = "hitlerMatches",
-}
-
-const allOrderBy = { ...orderby, ...addionalOrderBy };
-
-const bindOrderBy = (
-  type: keyof typeof allOrderBy,
-  desc: boolean
-): sortable<secretHitlerInformation> => {
-  switch (type) {
-    case allOrderBy.win:
-      return byValue(({ rank }) => rank.win, byNumber({ desc }));
-
-    case allOrderBy.ratio:
-      return byValue(({ rank }) => rank.ratio, byNumber({ desc }));
-
-    case allOrderBy.lost:
-      return byValue(({ rank }) => rank.lost, byNumber({ desc }));
-
-    case addionalOrderBy.hitlerMatches:
-      return byValue(({ rank }) => rank.hitlerMatches, byNumber({ desc }));
-
-    default:
-      return byValue(({ rank }) => rank.win, byNumber({ desc }));
-  }
-};
+const allOrderBy = { ...orderby, ...secretHitlerOrderBy };
+const reverseOrderBy = [
+  orderby.lost,
+  allOrderBy.hitlerMatches,
+  allOrderBy.fascistMatches,
+];
 
 export default defineComponent({
   components: { Badge },
@@ -148,19 +112,17 @@ export default defineComponent({
     image,
     percentageFormatter,
     smallNumberFormatter,
-    bindRealIndex(index: number, reverse: boolean): number {
+    bindRealIndex(index: number): number {
       const desc = this.selectedOrderbyDirection === orderbyDirection.desc;
+      const reverse = reverseOrderBy.includes(this.selectedOrderby);
 
       const realIndex =
         desc !== reverse ? index : this.sortedRanks.length - index - 1;
 
       return realIndex;
     },
-    bindImageRing(
-      index: number,
-      reverse: boolean = false
-    ): Dictionary<boolean> {
-      const realIndex = this.bindRealIndex(index, reverse);
+    bindImageRing(index: number): Dictionary<boolean> {
+      const realIndex = this.bindRealIndex(index);
       if (realIndex >= 3) return {};
 
       return {
@@ -168,8 +130,8 @@ export default defineComponent({
         [background[realIndex]]: true,
       };
     },
-    bindBadgeColor(index: number, reverse: boolean = false): string {
-      const realIndex = this.bindRealIndex(index, reverse);
+    bindBadgeColor(index: number): string {
+      const realIndex = this.bindRealIndex(index);
 
       const rate = realIndex / this.sortedRanks.length;
 
@@ -182,8 +144,8 @@ export default defineComponent({
 
       return "bg-red-400";
     },
-    bindBadgeTextColor(index: number, reverse: boolean = false): string {
-      const realIndex = this.bindRealIndex(index, reverse);
+    bindBadgeTextColor(index: number): string {
+      const realIndex = this.bindRealIndex(index);
 
       return realIndex / this.sortedRanks.length < 0.5
         ? "text-green-800"
@@ -238,6 +200,7 @@ export default defineComponent({
           hitlerMatches,
           liberalMatches,
           fascistMatches,
+          totalMatches: playerMatches.length,
         };
 
         ranks.push({ rank, profile });
@@ -253,10 +216,11 @@ export default defineComponent({
     },
     sortedRanks(): secretHitlerInformation[] {
       const desc = this.selectedOrderbyDirection === orderbyDirection.desc;
+      const type = this.selectedOrderby;
 
       return this.ranking
         .concat()
-        .sort(bindOrderBy(this.selectedOrderby, desc));
+        .sort(byValue(({ rank }) => rank[type], byNumber({ desc })));
     },
   },
 });

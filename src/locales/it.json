@@ -104,6 +104,9 @@
             "lost": "numer sconfitte",
             "ratio": "percentuale vittorie",
             "hitlerMatches": "partite hitler",
+            "liberalMatches": "partite liberali",
+            "fascistMatches": "partite naziste",
+            "totalMatches": "partite totali",
             "asc": "ascendenti",
             "desc": "discendenti"
         }
