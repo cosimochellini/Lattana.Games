@@ -71,7 +71,7 @@
         >
           <img
             :src="image(match.callingPlayer.profileImage, 500)"
-            class="rounded-full"
+            class="rounded-full h-12 w-12"
             :title="`${match.callingPlayer.name} ${match.callingPlayer.surname}`"
           />
         </div>
