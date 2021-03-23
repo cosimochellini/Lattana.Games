@@ -33,7 +33,7 @@
             "insertNewMatch": "insert new match",
             "stats": "statistics",
             "bestMatches": "best matches",
-            "worstMatches": "worst matches"
+            "worstEnemies": "worst enemies"
         },
         "form": {
             "matchDate": "match date",
@@ -63,7 +63,7 @@
             "insertNewMatch": "insert new match",
             "stats": "statistics",
             "bestMatches": "best matches",
-            "worstMatches": "worst matches"
+            "worstEnemies": "worst enemies"
         },
         "form": {
             "matchDate": "match date",

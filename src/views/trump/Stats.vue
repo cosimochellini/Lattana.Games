@@ -62,7 +62,7 @@
       </div>
       <div>
         <h3 class="base-subtitle first-capitalize">
-          {{ $t("trump.titles.worstMatches") }} 👎
+          {{ $t("trump.titles.worstEnemies") }} 😱
         </h3>
         <div
           class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded m-2"

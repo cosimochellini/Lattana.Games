@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-14"></div>
+  <div class="mt-16"></div>
   <section class="bottom-bar">
     <div class="flex justify-between">
       <router-link

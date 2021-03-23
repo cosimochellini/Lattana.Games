@@ -112,17 +112,17 @@ export default defineComponent({
     image,
     percentageFormatter,
     smallNumberFormatter,
-    bindRealIndex(index: number): number {
+    bindRealIndex(index: number, considerReverse: boolean): number {
       const desc = this.selectedOrderbyDirection === orderbyDirection.desc;
       const reverse = reverseOrderBy.includes(this.selectedOrderby);
+      const reversedIndex = this.sortedRanks.length - index - 1;
 
-      const realIndex =
-        desc !== reverse ? index : this.sortedRanks.length - index - 1;
-
-      return realIndex;
+      return (considerReverse ? desc !== reverse : desc)
+        ? index
+        : reversedIndex;
     },
     bindImageRing(index: number): Dictionary<boolean> {
-      const realIndex = this.bindRealIndex(index);
+      const realIndex = this.bindRealIndex(index, false);
       if (realIndex >= 3) return {};
 
       return {
@@ -131,7 +131,7 @@ export default defineComponent({
       };
     },
     bindBadgeColor(index: number): string {
-      const realIndex = this.bindRealIndex(index);
+      const realIndex = this.bindRealIndex(index, true);
 
       const rate = realIndex / this.sortedRanks.length;
 
@@ -145,7 +145,7 @@ export default defineComponent({
       return "bg-red-400";
     },
     bindBadgeTextColor(index: number): string {
-      const realIndex = this.bindRealIndex(index);
+      const realIndex = this.bindRealIndex(index, true);
 
       return realIndex / this.sortedRanks.length < 0.5
         ? "text-green-800"
