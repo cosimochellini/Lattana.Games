@@ -103,8 +103,15 @@
             "win": "number of win",
             "lost": "number of lost",
             "ratio": "percentage of win",
-            "asc": "ascendent",
-            "desc": "descendant"
+            "hitlerMatches": "hitler matches",
+            "liberalMatches": "liberal matches",
+            "fascistMatches": "nazi matches",
+            "totalMatches": "total matches",
+            "calledMatches": "called matches",
+            "calledMatches120": "called matches at 120",
+            "calculatedScore": "calculated score",
+            "asc": "ascendenti",
+            "desc": "discendenti"
         }
     }
 }

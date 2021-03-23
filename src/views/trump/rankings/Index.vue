@@ -1,11 +1,16 @@
 <template>
-  <div class="container">
-    <div class="px-2 pt-2 flex items-center place-content-around">
+  <div class="container text-center m-auto">
+    <span class="base-title">Rankings</span>
+    <div
+      class="px-2 pt-2 flex items-center place-content-around max-w-2xl m-auto mb-3"
+    >
       <label class="base-subtitle first-capitalize">
-        {{ $t("form.orderBy.title") }}
+        <span class="tracking-tighter md:tracking-wide lg:tracking-widest">
+          {{ $t("form.orderBy.title") }}
+        </span>
       </label>
       <select class="base-select" v-model="selectedOrderby">
-        <option v-for="option in orderby" :key="option" :value="option">
+        <option v-for="option in allOrderBy" :key="option" :value="option">
           {{ $t("form.orderBy." + option) }}
         </option>
       </select>
@@ -20,7 +25,7 @@
       </select>
     </div>
     <div
-      class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded-md m-2"
+      class="flex flex-col justify-center px-3 py-3 bg-white border border-gray-300 rounded-xl my-1 mx-2 max-w-2xl text-center lg:m-auto lg:mt-1"
       v-for="({ profile, rank }, index) in sortedRanks"
       :key="profile.nickname"
     >
@@ -29,6 +34,7 @@
           class="w-10 h-10 rounded-full col-span-1 m-auto"
           :src="image(profile.profileImage, 500)"
           :class="bindImageRing(index)"
+          :title="profile.name + ' ' + profile.surname"
         />
         <span class="col-span-2 m-auto">
           <span class="text-gray-700 font-semibold font-sans tracking-wide">
@@ -37,25 +43,17 @@
           </span>
         </span>
         <span class="col-span-1 m-auto">
-          <!-- <span class="rounded-xl px-2 py-1 font-semibold bg-blue-300"> -->
           <badge
-            v-if="selectedOrderby === orderby.win"
+            v-if="selectedOrderby !== allOrderBy.ratio"
             :background="bindBadgeColor(index)"
             :textColor="bindBadgeTextColor(index)"
-            :text="smallNumberFormatter(rank.win)"
+            :text="smallNumberFormatter(rank[selectedOrderby])"
           />
-          <badge
-            v-else-if="selectedOrderby === orderby.ratio"
-            :background="bindBadgeColor(index)"
-            :textColor="bindBadgeTextColor(index)"
-            :text="percentageFormatter(rank.ratio) + '%'"
-          />
-
           <badge
             v-else
             :background="bindBadgeColor(index)"
-            :text="smallNumberFormatter(rank.lost)"
             :textColor="bindBadgeTextColor(index)"
+            :text="percentageFormatter(rank[selectedOrderby]) + '%'"
           />
         </span>
       </div>
@@ -70,28 +68,40 @@ import { image } from "@/instances/sanity";
 import { byNumber, byValue } from "sort-es";
 import Badge from "@/components/base/Badge.vue";
 import { groq } from "@/utils/GroqQueryBuilder";
-import { sortable } from "sort-es/lib/src/types/types";
 import { sanityTypes } from "@/constants/roleConstants";
-import { player } from "@/types/sanity";
+import { orderby, information } from "@/types/ranking";
 import { trumpMatch, trumpMatchPlayer } from "@/types/sanity";
+import { orderbyDirection, trumpOrderBy } from "@/types/ranking";
 import { notificationService } from "@/services/notificationService";
-import { information, orderby, orderbyDirection } from "@/types/ranking";
 import { percentageFormatter, smallNumberFormatter } from "@/utils/formatters";
 
 const matchesQuery = new groq.QueryBuilder(sanityTypes.trumpMatch)
-  .select("..., players[] -> { player ->, ...}")
+  .select(
+    "..., players[] -> { player ->, match ->{callingPlayer ->, ...}, ...}"
+  )
   .cached();
 
 const background = ["ring-yellow-400", "ring-gray-300", "ring-yellow-700"];
+
+declare type trumpInformation = {
+  rank: {
+    calculatedScore: number;
+    calledMatches: number;
+    calledMatches120: number;
+  };
+} & information;
+
+const allOrderBy = { ...orderby, ...trumpOrderBy };
+const reverseOrderBy = [orderby.lost];
 
 export default defineComponent({
   components: { Badge },
   name: "Ranking",
   data() {
     return {
-      orderby,
+      allOrderBy,
       orderbyDirection,
-      selectedOrderby: orderby.win,
+      selectedOrderby: allOrderBy.win,
       matches: [] as trumpMatch[],
       selectedOrderbyDirection: orderbyDirection.desc,
     };
@@ -100,12 +110,17 @@ export default defineComponent({
     image,
     percentageFormatter,
     smallNumberFormatter,
-    bindImageRing(index: number): Dictionary<boolean> {
-      const realIndex =
-        this.selectedOrderbyDirection === orderbyDirection.desc
-          ? index
-          : this.sortedRanks.length - index - 1;
+    bindRealIndex(index: number): number {
+      const desc = this.selectedOrderbyDirection === orderbyDirection.desc;
+      const reverse = reverseOrderBy.includes(this.selectedOrderby);
 
+      const realIndex =
+        desc !== reverse ? index : this.sortedRanks.length - index - 1;
+
+      return realIndex;
+    },
+    bindImageRing(index: number): Dictionary<boolean> {
+      const realIndex = this.bindRealIndex(index);
       if (realIndex >= 3) return {};
 
       return {
@@ -114,10 +129,7 @@ export default defineComponent({
       };
     },
     bindBadgeColor(index: number): string {
-      const realIndex =
-        this.selectedOrderbyDirection === orderbyDirection.desc
-          ? index
-          : this.sortedRanks.length - index - 1;
+      const realIndex = this.bindRealIndex(index);
 
       const rate = realIndex / this.sortedRanks.length;
 
@@ -131,10 +143,7 @@ export default defineComponent({
       return "bg-red-400";
     },
     bindBadgeTextColor(index: number): string {
-      const realIndex =
-        this.selectedOrderbyDirection === orderbyDirection.desc
-          ? index
-          : this.sortedRanks.length - index - 1;
+      const realIndex = this.bindRealIndex(index);
 
       return realIndex / this.sortedRanks.length < 0.5
         ? "text-green-800"
@@ -148,29 +157,49 @@ export default defineComponent({
       .catch(notificationService.warning);
   },
   computed: {
-    ranking(): information[] {
-      const ranks = [] as information[];
+    ranking(): trumpInformation[] {
+      const ranks = [] as trumpInformation[];
 
       for (const nickname of this.allPlayers) {
         const playerFn = (player: trumpMatchPlayer) =>
           player.player.nickname === nickname;
 
-        const profile = this.matches
-          .find((m) => m.players.some(playerFn))
-          ?.players.find(playerFn)?.player;
+        const playerMatches = this.matches
+          .map((match) => match.players.find(playerFn))
+          .filter(Boolean) as trumpMatchPlayer[];
 
-        const playerMatches = this.matches.filter((m) =>
-          m.players.some(playerFn)
-        );
+        const profile = playerMatches[0].player;
 
-        const win = playerMatches.filter((match) =>
-          match.players.some((player) => playerFn(player) && player.win)
-        ).length;
+        const winMatches = playerMatches.filter((player) => player.win);
+        const win = winMatches.length;
+
+        const calculatedScore = winMatches.reduce((value, match) => {
+          return match.match.startingScore === 120 ? value + 2 : value + 1;
+        }, 0);
 
         const lost = playerMatches.length - win;
 
         const ratio = win / playerMatches.length;
-        ranks.push({ rank: { win, lost, ratio }, profile: profile as player });
+
+        const calledMatches = playerMatches.filter((match) => {
+          return match.match.callingPlayer._id === profile._id;
+        });
+
+        const match120 = calledMatches.filter(
+          (match) => match.match.startingScore === 120
+        );
+
+        const rank = {
+          win,
+          lost,
+          ratio,
+          calculatedScore,
+          calledMatches120: match120.length,
+          totalMatches: playerMatches.length,
+          calledMatches: calledMatches.length,
+        };
+
+        ranks.push({ rank, profile });
       }
       return ranks;
     },
@@ -181,16 +210,13 @@ export default defineComponent({
         ),
       ];
     },
-    sortedRanks(): information[] {
+    sortedRanks(): trumpInformation[] {
       const desc = this.selectedOrderbyDirection === orderbyDirection.desc;
-      const sortable: sortable<information> =
-        this.selectedOrderby === orderby.win
-          ? byValue(({ rank }) => rank.win, byNumber({ desc }))
-          : this.selectedOrderby === orderby.ratio
-          ? byValue(({ rank }) => rank.ratio, byNumber({ desc }))
-          : byValue(({ rank }) => rank.lost, byNumber({ desc }));
+      const type = this.selectedOrderby;
 
-      return this.ranking.concat().sort(sortable);
+      return this.ranking
+        .concat()
+        .sort(byValue(({ rank }) => rank[type], byNumber({ desc })));
     },
   },
 });

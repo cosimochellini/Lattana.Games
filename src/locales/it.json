@@ -107,6 +107,9 @@
             "liberalMatches": "partite liberali",
             "fascistMatches": "partite naziste",
             "totalMatches": "partite totali",
+            "calledMatches": "partite chiamate",
+            "calledMatches120": "partite chiamate 120",
+            "calculatedScore": "punteggio calcolato",
             "asc": "ascendenti",
             "desc": "discendenti"
         }

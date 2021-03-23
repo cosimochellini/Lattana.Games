@@ -85,11 +85,11 @@ declare type secretHitlerInformation = {
     hitlerMatches: number;
     fascistMatches: number;
     liberalMatches: number;
-    totalMatches: number;
   };
 } & information;
 
 const allOrderBy = { ...orderby, ...secretHitlerOrderBy };
+
 const reverseOrderBy = [
   orderby.lost,
   allOrderBy.hitlerMatches,
@@ -167,10 +167,8 @@ export default defineComponent({
           player.player.nickname === nickname;
 
         const playerMatches = this.matches
-          .filter((m) => m.players.some(playerFn))
-          .map((match) => {
-            return match.players.find(playerFn) as secretHitlerMatchPlayer;
-          });
+          .map((match) => match.players.find(playerFn))
+          .filter(Boolean) as secretHitlerMatchPlayer[];
 
         const profile = playerMatches[0].player;
 
