@@ -111,11 +111,12 @@
 import draggable from "vuedraggable";
 import { range } from "@/utils/range";
 import { defineComponent } from "vue";
+import { mergeObjects } from "@/utils/merge";
 import { groq } from "@/utils/GroqQueryBuilder";
+import { overlay } from "@/services/overlay.service";
 import { queryRefresh } from "@/composable/routerRefresh";
-import { overlayService } from "@/services/overlayService";
+import { notification } from "@/services/notification.service";
 import DraggableUser from "@/components/base/DraggableUser.vue";
-import { notificationService } from "@/services/notificationService";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
 import { secretHitlerService } from "@/services/games/secretHitlerService";
@@ -125,7 +126,6 @@ import {
   secretHitlerMatch,
   secretHitlerMatchPlayer,
 } from "@/types/sanity";
-import { mergeObjects } from "@/utils/merge";
 
 const playersQuery = new groq.QueryBuilder(
   sanityTypes.secretHitlerMatchPlayer
@@ -171,18 +171,19 @@ export default defineComponent({
         players: this.totalPlayers,
       };
 
-      overlayService.showOverlay();
-
-      secretHitlerService
-        .saveNewMatch(matchToSave)
-        .then(() => notificationService.success("salvataggio eseguito"))
-        .catch(notificationService.danger)
-        .finally(() =>
-          this.$router.push({
-            name: "secretHitlerHistory",
-            query: queryRefresh,
-          })
-        );
+      return (
+        overlay.show() &&
+        secretHitlerService
+          .saveNewMatch(matchToSave)
+          .then(() => notification.success("salvataggio eseguito"))
+          .catch(notification.danger)
+          .finally(() =>
+            this.$router.push({
+              name: "secretHitlerHistory",
+              query: queryRefresh,
+            })
+          )
+      );
     },
     addPlayer(player: player) {
       this.remainingPlayers.push(player);
@@ -214,13 +215,13 @@ export default defineComponent({
   computed: {
     totalPlayers(): secretHitlerMatchPlayer[] {
       return [
-        ...this.liberalPlayers.map((p) =>
+        this.liberalPlayers.map((p) =>
           this.bindPlayer(p, secretHitlerRole.liberal)
         ),
-        ...this.fascistPlayers.map((p) =>
+        this.fascistPlayers.map((p) =>
           this.bindPlayer(p, secretHitlerRole.fascist, this.hitlerPlayer)
         ),
-      ];
+      ].flatMap((x) => [...x]);
     },
     excludedPlayers(): player[] {
       return this.totalPlayers

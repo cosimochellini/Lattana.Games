@@ -126,7 +126,7 @@
 import { useRouter } from "vue-router";
 import { Dictionary } from "@/types/base";
 import { image } from "@/instances/sanity";
-import { getPlayer } from "@/services/authService";
+import { auth } from "@/services/auth.service";
 import { useTimedOpen } from "@/composable/timedOpen";
 import { defineComponent, reactive, watch } from "vue";
 import { currentLanguage } from "@/services/language.service";
@@ -151,7 +151,7 @@ export default defineComponent({
   data() {
     return {
       publicPath: process.env.BASE_URL,
-      player: getPlayer(),
+      player: auth.currentPlayer,
       navbarRoutes: [
         { name: "trump", route: "trumpHistory" },
         { name: "secretHitler", route: "secretHitlerHistory" },
@@ -196,7 +196,7 @@ export default defineComponent({
   },
   computed: {
     profileSrc(): string {
-      return image(this.player?.profileImage ?? "", 500);
+      return image(this.player.profileImage, 500);
     },
     locale(): string {
       return this.$i18n.locale;

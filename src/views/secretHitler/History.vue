@@ -77,21 +77,21 @@ import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
 import { groq } from "@/utils/GroqQueryBuilder";
-import { getPlayer } from "@/services/authService";
+import { auth } from "@/services/auth.service";
+import { secretHitlerMatch } from "@/types/sanity";
+import { overlay } from "@/services/overlay.service";
 import WinBadge from "@/components/base/WinBadge.vue";
 import DateBadge from "@/components/base/DateBadge.vue";
-import { overlayService } from "@/services/overlayService";
-import { player, secretHitlerMatch } from "@/types/sanity";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
 import { useRouterRefresh } from "@/composable/routerRefresh";
+import { notification } from "@/services/notification.service";
 import { byRole } from "@/utils/sortables/secratHitlerSortables";
 import { useInfiniteLoading } from "@/composable/infiniteLoading";
-import { notificationService } from "@/services/notificationService";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
 import { secretHitlerService } from "@/services/games/secretHitlerService";
 import SecretHitlerBadge from "@/components/secretHitler/secretHitlerBadge.vue";
 
-const currentPlayer = getPlayer() as player;
+const currentPlayer = auth.currentPlayer;
 
 const matchesQuery = new groq.QueryBuilder(sanityTypes.secretHitlerMatch)
   .select(`...,  players[] -> {..., player ->}`)
@@ -115,12 +115,12 @@ export default defineComponent({
     const { items, getMoreData, moreDataAvailable } = infiniteLoading;
 
     const deleteMatch = (match: secretHitlerMatch) =>
-      overlayService.showOverlay() &&
+      overlay.show() &&
       secretHitlerService
         .deleteExistingMatch(match)
-        .then(() => notificationService.success("eliminazione eseguita"))
-        .catch(notificationService.danger)
-        .finally(() => overlayService.hideOverlay() && getMoreData(true));
+        .then(() => notification.success("eliminazione eseguita"))
+        .catch(notification.danger)
+        .finally(() => overlay.hide() && getMoreData(true));
 
     const borderColor = (role: secretHitlerRole) => {
       switch (role) {

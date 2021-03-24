@@ -9,18 +9,19 @@
 
 <script lang="ts">
 import Overlay from "./components/base/Overlay.vue";
+import { overlay } from "./services/overlay.service";
 import { defineComponent, onMounted, ref } from "vue";
-import { overlayService } from "./services/overlayService";
 
 export default defineComponent({
   components: { Overlay },
   setup() {
     const showOverlay = ref(false);
 
-    onMounted(() => {
-      overlayService.onShow(() => (showOverlay.value = true));
-      overlayService.onHide(() => (showOverlay.value = false));
-    });
+    onMounted(() =>
+      overlay
+        .onShow(() => (showOverlay.value = true))
+        .onHide(() => (showOverlay.value = false))
+    );
 
     return {
       showOverlay,

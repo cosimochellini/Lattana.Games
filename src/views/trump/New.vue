@@ -130,12 +130,12 @@ import { range } from "@/utils/range";
 import { defineComponent } from "vue";
 import { mergeObjects } from "@/utils/merge";
 import { groq } from "@/utils/GroqQueryBuilder";
+import { overlay } from "@/services/overlay.service";
 import { sanityTypes } from "@/constants/roleConstants";
 import { queryRefresh } from "@/composable/routerRefresh";
-import { overlayService } from "@/services/overlayService";
 import { trumpService } from "@/services/games/trumpService";
 import DraggableUser from "@/components/base/DraggableUser.vue";
-import { notificationService } from "@/services/notificationService";
+import { notification } from "@/services/notification.service";
 import { player, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 
@@ -192,17 +192,17 @@ export default defineComponent({
           players: this.allMatchPlayers,
         } as trumpMatch;
 
-        overlayService.showOverlay();
+        overlay.show();
 
         trumpService
           .saveNewMatch(match)
-          .then(() => notificationService.success("salvataggio eseguito"))
-          .catch(notificationService.danger)
+          .then(() => notification.success("salvataggio eseguito"))
+          .catch(notification.danger)
           .finally(() =>
             this.$router.push({ name: "trumpHistory", query: queryRefresh })
           );
       } catch (error) {
-        notificationService.danger(error);
+        notification.danger(error);
       }
     },
   },

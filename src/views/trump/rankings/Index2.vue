@@ -19,7 +19,7 @@ import { trumpMatch } from "@/types/sanity";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { sanityTypes } from "@/constants/roleConstants";
 import { defineAsyncComponent, defineComponent } from "vue";
-import { notificationService } from "@/services/notificationService";
+import { notification } from "@/services/notification.service";
 
 const matchesQuery = new groq.QueryBuilder(sanityTypes.trumpMatch)
   .select("..., players[] -> { player ->, ...}")
@@ -43,7 +43,7 @@ export default defineComponent({
     matchesQuery
       .fetch<trumpMatch[]>()
       .then((matches) => (this.matches = matches))
-      .catch(notificationService.warning);
+      .catch(notification.warning);
   },
 });
 </script>

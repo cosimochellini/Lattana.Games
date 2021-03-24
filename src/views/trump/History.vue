@@ -101,23 +101,22 @@
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
+import { trumpMatch } from "@/types/sanity";
+import { auth } from "@/services/auth.service";
 import { groq } from "@/utils/GroqQueryBuilder";
 import Badge from "@/components/base/Badge.vue";
 import { dayFormatter } from "@/utils/formatters";
-import { getPlayer } from "@/services/authService";
-import { player, trumpMatch } from "@/types/sanity";
+import { overlay } from "@/services/overlay.service";
 import WinBadge from "@/components/base/WinBadge.vue";
 import DateBadge from "@/components/base/DateBadge.vue";
 import { sanityTypes } from "@/constants/roleConstants";
-import { overlayService } from "@/services/overlayService";
 import { trumpService } from "@/services/games/trumpService";
-import CardSkeleton from "@/components/base/CardSkeleton.vue";
 import { useRouterRefresh } from "@/composable/routerRefresh";
+import CardSkeleton from "@/components/base/CardSkeleton.vue";
+import { notification } from "@/services/notification.service";
 import { useInfiniteLoading } from "@/composable/infiniteLoading";
-import { notificationService } from "@/services/notificationService";
 
-const currentPlayer = getPlayer() as player;
-
+const currentPlayer = auth.currentPlayer;
 const matchesQuery = new groq.QueryBuilder(sanityTypes.trumpMatch)
   .select(`...,  callingPlayer ->, players[] -> {player ->,...}`)
   .where(
@@ -138,12 +137,12 @@ export default defineComponent({
     const { getMoreData, items: matches, moreDataAvailable } = infiniteLoading;
 
     const deleteMatch = (match: trumpMatch) =>
-      overlayService.showOverlay() &&
+      overlay.show() &&
       trumpService
         .deleteExistingMatch(match)
-        .then(() => notificationService.success("eliminazione eseguita"))
-        .catch(notificationService.danger)
-        .finally(() => overlayService.hideOverlay() && getMoreData(true));
+        .then(() => notification.success("eliminazione eseguita"))
+        .catch(notification.danger)
+        .finally(() => overlay.hide() && getMoreData(true));
 
     const borderColor = (win: boolean) =>
       win ? "ring-blue-500" : "ring-red-500";

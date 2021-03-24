@@ -87,12 +87,12 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { image } from "@/instances/sanity";
+import { auth } from "@/services/auth.service";
 import { groq } from "@/utils/GroqQueryBuilder";
-import { getPlayer } from "@/services/authService";
 import { Mate } from "@/utils/classes/stats/baseStats";
 import { sanityTypes } from "@/constants/roleConstants";
+import { secretHitlerMatchPlayer } from "@/types/sanity";
 import { percentageFormatter } from "@/utils/formatters";
-import { player, secretHitlerMatchPlayer } from "@/types/sanity";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { SecretHitlerStats } from "@/utils/classes/stats/secretHitlerMatchStats";
 
@@ -106,7 +106,7 @@ export default defineComponent({
   data() {
     return {
       matches: [] as secretHitlerMatchPlayer[],
-      currentPlayer: getPlayer() as player,
+      currentPlayer: auth.currentPlayer,
     };
   },
   mounted() {

@@ -1,9 +1,9 @@
 import { uuid } from "@/utils/uuid";
-import { getPlayer } from "../authService";
+import { auth } from "../auth.service";
 import { sanityDocument } from "@/types/base";
 import { sanityClient } from "@/instances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
-import { player, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
+import { trumpMatch, trumpMatchPlayer } from "@/types/sanity";
 import { reference, referenceWithKey } from "@/utils/GroqQueryBuilder";
 
 export const trumpService = {
@@ -19,7 +19,7 @@ export const trumpService = {
       finalScore: match.finalScore,
       callingPlayer: reference(match.callingPlayer),
       players: [],
-      createdBy: reference(getPlayer() as player),
+      createdBy: reference(auth.currentPlayer),
       updatedBy: undefined,
     } as sanityDocument<trumpMatch>;
 
@@ -50,10 +50,7 @@ export const trumpService = {
   },
 
   async deleteExistingMatch(match: trumpMatch) {
-    await sanityClient
-      .patch(match._id)
-      .set({ players: [] })
-      .commit();
+    await sanityClient.patch(match._id).set({ players: [] }).commit();
 
     const playersPromises =
       match.players?.map((p) => sanityClient.delete(p._id)) ?? [];

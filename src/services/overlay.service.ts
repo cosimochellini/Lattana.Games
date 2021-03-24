@@ -7,20 +7,23 @@ enum overlayEnum {
   "hide" = "hide",
 }
 
-export const overlayService = {
-  showOverlay() {
+export const overlay = {
+  show() {
     overlayEmitter.emit(overlayEnum.show);
     return true;
   },
-  hideOverlay() {
+
+  hide() {
     overlayEmitter.emit(overlayEnum.hide);
     return true;
   },
 
   onShow(func: () => void) {
     overlayEmitter.on(overlayEnum.show, func);
+    return this;
   },
   onHide(func: () => void) {
     overlayEmitter.on(overlayEnum.hide, func);
+    return this;
   },
 };

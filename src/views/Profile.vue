@@ -91,11 +91,11 @@
 
 <script lang="ts">
 import { player } from "@/types/sanity";
-import { getPlayer } from "@/services/authService";
+import { auth } from "@/services/auth.service";
 import { settings } from "@/instances/package.json";
 import { PhotoTaker } from "@/services/photoTaker.service";
 import { image as imageBuilder } from "@/instances/sanity";
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, ref, unref } from "vue";
 import {
   dayFormatter,
   dateFormatter,
@@ -107,13 +107,13 @@ export default defineComponent({
 
   setup() {
     const imageService = ref({} as PhotoTaker);
-    const currentPlayer = ref(getPlayer() as player);
+    const currentPlayer = unref(auth.currentPlayer) as player;
     const input = ref(null as HTMLInputElement | null);
     const image = ref(null as HTMLImageElement | null);
     const load = () => imageService.value.load();
 
     const profileImage = computed(() =>
-      imageBuilder(currentPlayer.value.profileImage, 500)
+      imageBuilder(currentPlayer.profileImage, 500)
     );
 
     onMounted(() => {

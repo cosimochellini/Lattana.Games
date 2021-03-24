@@ -95,12 +95,12 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { image } from "@/instances/sanity";
+import { auth } from "@/services/auth.service";
 import { groq } from "@/utils/GroqQueryBuilder";
-import { getPlayer } from "@/services/authService";
+import { trumpMatchPlayer } from "@/types/sanity";
 import { Mate } from "@/utils/classes/stats/baseStats";
 import { sanityTypes } from "@/constants/roleConstants";
 import { percentageFormatter } from "@/utils/formatters";
-import { player, trumpMatchPlayer } from "@/types/sanity";
 import { TrumpStats } from "@/utils/classes/stats/trumpMatchStats";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 
@@ -114,7 +114,7 @@ export default defineComponent({
   data() {
     return {
       matches: [] as trumpMatchPlayer[],
-      currentPlayer: getPlayer() as player,
+      currentPlayer: auth.currentPlayer,
     };
   },
   mounted() {

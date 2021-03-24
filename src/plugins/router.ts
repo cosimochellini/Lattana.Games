@@ -1,6 +1,6 @@
-import { isAuthorized } from "@/services/authService";
+import { auth } from "@/services/auth.service";
+import { overlay } from "@/services/overlay.service";
 import { currentLanguage } from "@/services/language.service";
-import { overlayService } from "@/services/overlayService";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import { SUPPORT_LOCALES, setI18nLanguage, loadLocaleMessages } from "./i18n";
 
@@ -119,7 +119,8 @@ export function setupRouter(i18n: any) {
   router.beforeEach(async (to, from, next) => {
     const paramsLocale = to.params.locale as string;
 
-    if (to.meta.requiresAuth && !isAuthorized()) next({ path: "/it/login" });
+    if (to.meta.requiresAuth && !auth.isAuthorized())
+      next({ path: "/it/login" });
 
     // use locale if paramsLocale is not in SUPPORT_LOCALES
     if (!SUPPORT_LOCALES.includes(paramsLocale)) {
@@ -133,7 +134,7 @@ export function setupRouter(i18n: any) {
     // set i18n language
     setI18nLanguage(i18n, paramsLocale);
 
-    overlayService.hideOverlay();
+    overlay.hide();
 
     return next();
   });

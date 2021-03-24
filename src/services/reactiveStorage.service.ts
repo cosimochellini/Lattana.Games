@@ -5,11 +5,11 @@ export const reactiveStorage = <T>(
   defaultValue: T
 ) => {
   const initialValue = getLsRawValue(localStoragePath, defaultValue);
-  const lsValue = ref<T>(initialValue);
+  const lsValue = ref(initialValue);
 
-  watch(lsValue, (newValue) =>
-    localStorage.setItem(localStoragePath, JSON.stringify(newValue))
-  );
+  watch(lsValue, (newValue) => {
+    localStorage.setItem(localStoragePath, JSON.stringify(newValue));
+  });
 
   return lsValue;
 };

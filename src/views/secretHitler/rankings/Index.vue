@@ -69,7 +69,7 @@ import { groq } from "@/utils/GroqQueryBuilder";
 import { secretHitlerMatch } from "@/types/sanity";
 import { orderby, information } from "@/types/ranking";
 import { secretHitlerMatchPlayer } from "@/types/sanity";
-import { notificationService } from "@/services/notificationService";
+import { notification } from "@/services/notification.service";
 import { orderbyDirection, secretHitlerOrderBy } from "@/types/ranking";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
 import { percentageFormatter, smallNumberFormatter } from "@/utils/formatters";
@@ -156,7 +156,7 @@ export default defineComponent({
     matchesQuery
       .fetch<secretHitlerMatch[]>()
       .then((matches) => (this.matches = matches))
-      .catch(notificationService.warning);
+      .catch(notification.warning);
   },
   computed: {
     ranking(): secretHitlerInformation[] {

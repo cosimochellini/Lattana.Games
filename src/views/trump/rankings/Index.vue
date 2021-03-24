@@ -72,7 +72,7 @@ import { sanityTypes } from "@/constants/roleConstants";
 import { orderby, information } from "@/types/ranking";
 import { trumpMatch, trumpMatchPlayer } from "@/types/sanity";
 import { orderbyDirection, trumpOrderBy } from "@/types/ranking";
-import { notificationService } from "@/services/notificationService";
+import { notification } from "@/services/notification.service";
 import { percentageFormatter, smallNumberFormatter } from "@/utils/formatters";
 
 const matchesQuery = new groq.QueryBuilder(sanityTypes.trumpMatch)
@@ -154,7 +154,7 @@ export default defineComponent({
     matchesQuery
       .fetch<trumpMatch[]>()
       .then((matches) => (this.matches = matches))
-      .catch(notificationService.warning);
+      .catch(notification.warning);
   },
   computed: {
     ranking(): trumpInformation[] {

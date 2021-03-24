@@ -1,14 +1,10 @@
 import { uuid } from "@/utils/uuid";
-import { getPlayer } from "../authService";
+import { auth } from "../auth.service";
 import { sanityDocument } from "@/types/base";
 import { sanityClient } from "@/instances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
 import { reference, referenceWithKey } from "@/utils/GroqQueryBuilder";
-import {
-  player,
-  secretHitlerMatch,
-  secretHitlerMatchPlayer,
-} from "@/types/sanity";
+import { secretHitlerMatch, secretHitlerMatchPlayer } from "@/types/sanity";
 
 export const secretHitlerService = {
   async saveNewMatch(match: Partial<secretHitlerMatch>) {
@@ -18,7 +14,7 @@ export const secretHitlerService = {
       matchDate: match.matchDate,
       players: [],
       winningRole: match.winningRole,
-      createdBy: reference(getPlayer() as player),
+      createdBy: reference(auth.currentPlayer),
       updatedBy: null,
     } as sanityDocument<secretHitlerMatch>;
 
@@ -48,10 +44,7 @@ export const secretHitlerService = {
   },
 
   async deleteExistingMatch(match: secretHitlerMatch) {
-    await sanityClient
-      .patch(match._id)
-      .set({ players: [] })
-      .commit();
+    await sanityClient.patch(match._id).set({ players: [] }).commit();
 
     const playersPromises =
       match.players?.map((p) => sanityClient.delete(p._id)) ?? [];

@@ -129,6 +129,6 @@ export default defineComponent({
 <style scoped>
 .bottom-bar {
   @apply fixed inset-x-0 bottom-0 z-50 bg-white border rounded-t-md m-auto;
-  @apply md:w-3/4 lg:w-2/5 xl:w-1/4 md:rounded-xl md:shadow-2xl md:bottom-5 md:border-2 border-gray-300;
+  @apply sm:w-11/12 md:w-1/2 lg:w-2/6 xl:w-1/5 sm:rounded-xl sm:shadow-2xl sm:bottom-5 md:border-2 border-gray-300;
 }
 </style>
