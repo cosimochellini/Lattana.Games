@@ -93,7 +93,7 @@
 import { player } from "@/types/sanity";
 import { getPlayer } from "@/services/authService";
 import { settings } from "@/instances/package.json";
-import { PhotoTaker } from "@/services/photoTakerService";
+import { PhotoTaker } from "@/services/photoTaker.service";
 import { image as imageBuilder } from "@/instances/sanity";
 import { computed, defineComponent, onMounted, ref } from "vue";
 import {

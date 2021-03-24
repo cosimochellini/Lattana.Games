@@ -1,17 +1,22 @@
 import { player } from "@/types/sanity";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { notificationService } from "./notificationService";
+import { reactiveStorage } from "./reactiveStorage.service";
 import { roleConstants, sanityTypes } from "@/constants/roleConstants";
 
 const LS_PLAYER_KEY = "LG_STORED_USER";
-let cachedPlayer: player | null = null;
+
+export const currentPlayer = reactiveStorage<player | null>(
+  LS_PLAYER_KEY,
+  null
+);
 
 const loginQuery = new groq.QueryBuilder(sanityTypes.player)
   .select(`..., 'roles': roles[]->role->name`)
   .get(new groq.PaginationBuilder().first())
   .freeze();
 
-const login = (name: string, pin: string) =>
+export const login = (name: string, pin: string) =>
   loginQuery
     .where(
       new groq.ConditionBuilder(
@@ -19,12 +24,12 @@ const login = (name: string, pin: string) =>
       ).params({ name: name.toLowerCase(), pin: Number.parseInt(pin) })
     )
     .fetch<player | null>()
-    .then((p) => setPlayer(p))
+    .then((p) => (currentPlayer.value = p))
     .catch(notificationService.danger);
 
-const isAuthorized = (
+export const isAuthorized = (
   roles: roleConstants[] = [],
-  player: player | null = getPlayer()
+  player: player | null = currentPlayer.value
 ): boolean => {
   try {
     if (player === null) return false;
@@ -33,33 +38,11 @@ const isAuthorized = (
 
     if (player.roles.includes(roleConstants.Admin)) return true;
 
-    for (const role of player.roles) if (roles.includes(role)) return true;
+    return player.roles.some((r) => roles.includes(r));
   } catch (error) {
     return false;
   }
-
-  return false;
 };
 
-const isLogged = (player: player | null = getPlayer()) => player !== null;
-
-const setPlayer = (player: player | null) => {
-  cachedPlayer = player;
-  localStorage.setItem(LS_PLAYER_KEY, JSON.stringify(player));
-
-  return player;
-};
-
-const getPlayer = () => {
-  try {
-    if (cachedPlayer !== null) return cachedPlayer;
-
-    return setPlayer(
-      JSON.parse(localStorage.getItem(LS_PLAYER_KEY) ?? "") as player
-    );
-  } catch (error) {
-    return setPlayer(null);
-  }
-};
-
-export { login, isAuthorized, getPlayer, setPlayer };
+const isLogged = (player: player | null = currentPlayer.value) =>
+  player !== null;

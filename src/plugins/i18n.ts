@@ -1,6 +1,6 @@
 import { nextTick, unref } from "vue";
 import { createI18n } from "vue-i18n";
-import { currentLanguage } from "@/services/langService";
+import { currentLanguage } from "@/services/language.service";
 
 export const SUPPORT_LOCALES = ["en", "it"];
 

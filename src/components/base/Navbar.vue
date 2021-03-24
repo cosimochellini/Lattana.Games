@@ -129,7 +129,7 @@ import { image } from "@/instances/sanity";
 import { getPlayer } from "@/services/authService";
 import { useTimedOpen } from "@/composable/timedOpen";
 import { defineComponent, reactive, watch } from "vue";
-import { currentLanguage } from "@/services/langService";
+import { currentLanguage } from "@/services/language.service";
 
 type State = {
   name: string;

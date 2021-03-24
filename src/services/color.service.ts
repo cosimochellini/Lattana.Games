@@ -1,30 +1,17 @@
+import { Dictionary } from "@/types/base";
+import { reactiveStorage } from "./reactiveStorage.service";
+
 const localStorageName = "LS_COLOR";
+declare type color = string;
 
-const exportColors = (map: Map<string, string>) => {
-  try {
-    localStorage.setItem(localStorageName, JSON.stringify(Array.from(map)));
-  } catch (error) {
-    localStorage.setItem(localStorageName, JSON.stringify([]));
-  }
-};
-
-const importColors = (): Map<string, string> => {
-  try {
-    return new Map(JSON.parse(localStorage.getItem(localStorageName) ?? ""));
-  } catch (error) {
-    return new Map();
-  }
-};
-
-const cachedElements = importColors();
+const currentColors = reactiveStorage<Dictionary<color>>(localStorageName, {});
 
 const getColor = (value: string) => {
-  if (!cachedElements.has(value)) {
-    cachedElements.set(value, "#" + intToRGB(hashCode(value)));
-    exportColors(cachedElements);
+  if (!currentColors.value[value]) {
+    currentColors.value[value] = "#" + intToRGB(hashCode(value));
   }
 
-  return cachedElements.get(value) as string;
+  return currentColors.value[value];
 };
 
 const hashCode = (str: string) => {

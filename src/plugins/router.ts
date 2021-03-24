@@ -1,5 +1,5 @@
 import { isAuthorized } from "@/services/authService";
-import { currentLanguage } from "@/services/langService";
+import { currentLanguage } from "@/services/language.service";
 import { overlayService } from "@/services/overlayService";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import { SUPPORT_LOCALES, setI18nLanguage, loadLocaleMessages } from "./i18n";
