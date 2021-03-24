@@ -49,7 +49,7 @@
             :color="
               element._id === callingPlayer._id ? 'bg-blue-300' : 'bg-blue-100'
             "
-            :avatarColor="callingPlayersWin ? 'ring-green-600' : 'ring-red-600'"
+            :avatarColor="tailwind.winRingColor(callingPlayersWin)"
           />
         </template>
       </draggable>
@@ -69,7 +69,7 @@
           <draggable-user
             :user="element"
             color="bg-red-100"
-            :avatarColor="callingPlayersWin ? 'ring-red-600' : 'ring-green-600'"
+            :avatarColor="tailwind.winRingColor(!callingPlayersWin)"
           />
         </template>
       </draggable>
@@ -87,11 +87,11 @@
         />
 
         <div class="m-2 flex justify-between">
-          <label class="base-subtitle first-capitalize" for="initial points">
+          <label class="base-subtitle first-capitalize" for="starting score">
             {{ $t("trump.form.startingScore") }}
           </label>
           <input
-            name="initial points"
+            name="starting score"
             type="number"
             min="60"
             max="120"
@@ -100,13 +100,13 @@
           />
         </div>
         <div class="m-2 flex justify-between">
-          <label class="base-subtitle first-capitalize" for="initial points">
+          <label class="base-subtitle first-capitalize" for="final score">
             {{ $t("trump.form.finalScore") }}
           </label>
           <input
-            name="initial points"
+            name="final score"
             type="number"
-            min="60"
+            min="40"
             max="120"
             class="pa-2 border rounded-md text-center"
             v-model.number="finalScore"
@@ -133,6 +133,7 @@ import { mergeObjects } from "@/utils/merge";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { overlay } from "@/services/overlay.service";
 import { trump } from "@/services/games/trump.service";
+import { tailwind } from "@/services/tailwind.service";
 import { sanityTypes } from "@/constants/roleConstants";
 import { queryRefresh } from "@/composable/routerRefresh";
 import { notification } from "@/services/notification.service";
@@ -151,8 +152,8 @@ const initialData = () => ({
   callingPlayer: {} as player,
   startingScore: 0,
   finalScore: 0,
+  tailwind,
 });
-
 export default defineComponent({
   components: { UserAutocomplete, DraggableUser, draggable },
   name: "trumpNew",

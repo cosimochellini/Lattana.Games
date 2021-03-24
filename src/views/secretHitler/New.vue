@@ -46,9 +46,7 @@
             color="bg-blue-100"
             :user="element"
             :avatarColor="
-              winningRole === secretHitlerRole.liberal
-                ? 'ring-green-600'
-                : 'ring-red-600'
+              tailwind.winRingColor(winningRole === secretHitlerRole.liberal)
             "
           />
         </template>
@@ -70,9 +68,7 @@
               element._id === hitlerPlayer._id ? 'bg-gray-300' : 'bg-red-100'
             "
             :avatarColor="
-              winningRole === secretHitlerRole.fascist
-                ? 'ring-green-600'
-                : 'ring-red-600'
+              tailwind.winRingColor(winningRole === secretHitlerRole.liberal)
             "
           />
         </template>
@@ -117,6 +113,7 @@ import { defineComponent } from "vue";
 import { mergeObjects } from "@/utils/merge";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { overlay } from "@/services/overlay.service";
+import { tailwind } from "@/services/tailwind.service";
 import { queryRefresh } from "@/composable/routerRefresh";
 import { notification } from "@/services/notification.service";
 import DraggableUser from "@/components/base/DraggableUser.vue";
@@ -142,8 +139,8 @@ const initialData = () => ({
   remainingPlayers: [] as player[],
   liberalPlayers: [] as player[],
   fascistPlayers: [] as player[],
+  tailwind,
 });
-
 export default defineComponent({
   components: { UserAutocomplete, draggable, DraggableUser },
   name: "secretHitlerNew",

@@ -23,16 +23,8 @@
           <badge :text="match.startingScore.toString()" />
           <badge
             :text="match.finalScore.toString()"
-            :background="
-              match.finalScore >= match.startingScore
-                ? 'bg-green-200'
-                : 'bg-red-200'
-            "
-            :textColor="
-              match.finalScore >= match.startingScore
-                ? 'text-green-900'
-                : 'text-red-900'
-            "
+            :background="tailwind.trump.background(match)"
+            :textColor="tailwind.trump.text(match)"
           />
         </span>
       </div>
@@ -56,7 +48,7 @@
             :key="p._id"
             :src="image(p.player.profileImage, 500)"
             :title="`${p.player.name} ${p.player.surname}`"
-            :class="borderColor(p.win)"
+            :class="tailwind.winRingColor(p.win)"
             class="inline-block h-10 w-10 rounded-full ring-2 my-2"
           />
         </div>
@@ -109,6 +101,7 @@ import { dayFormatter } from "@/utils/formatters";
 import { overlay } from "@/services/overlay.service";
 import WinBadge from "@/components/base/WinBadge.vue";
 import { trump } from "@/services/games/trump.service";
+import { tailwind } from "@/services/tailwind.service";
 import DateBadge from "@/components/base/DateBadge.vue";
 import { sanityTypes } from "@/constants/roleConstants";
 import { useRouterRefresh } from "@/composable/routerRefresh";
@@ -144,9 +137,6 @@ export default defineComponent({
         .catch(notification.danger)
         .finally(() => overlay.hide() && getMoreData(true));
 
-    const borderColor = (win: boolean) =>
-      win ? "ring-blue-500" : "ring-red-500";
-
     const copyMatch = (match: trumpMatch) =>
       router.push({ name: "trumpNew", query: { ref: match._id } });
 
@@ -157,15 +147,14 @@ export default defineComponent({
       match.players.find((p) => p.player._id === currentPlayer._id);
 
     useRouterRefresh(() => getMoreData(true));
-
     return {
       image,
       matches,
+      tailwind,
       copyMatch,
       editMatch,
       getMoreData,
       deleteMatch,
-      borderColor,
       dayFormatter,
       getCurrentPlayer,
       moreDataAvailable,

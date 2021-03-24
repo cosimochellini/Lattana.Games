@@ -42,7 +42,7 @@
             :key="p._id"
             :src="image(p.player.profileImage, 500)"
             :title="`${p.player.name} ${p.player.surname}`"
-            :class="borderColor(p.role)"
+            :class="tailwind.secretHitler.borderColor(p.role)"
             class="inline-block h-8 w-8 rounded-full ring-2 my-2"
           />
         </div>
@@ -81,13 +81,14 @@ import { auth } from "@/services/auth.service";
 import { secretHitlerMatch } from "@/types/sanity";
 import { overlay } from "@/services/overlay.service";
 import WinBadge from "@/components/base/WinBadge.vue";
+import { tailwind } from "@/services/tailwind.service";
 import DateBadge from "@/components/base/DateBadge.vue";
+import { sanityTypes } from "@/constants/roleConstants";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
 import { useRouterRefresh } from "@/composable/routerRefresh";
 import { notification } from "@/services/notification.service";
 import { byRole } from "@/utils/sortables/secratHitlerSortables";
 import { useInfiniteLoading } from "@/composable/infiniteLoading";
-import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
 import { secretHitlerService } from "@/services/games/secretHitler.service";
 import SecretHitlerBadge from "@/components/secretHitler/secretHitlerBadge.vue";
 
@@ -122,17 +123,6 @@ export default defineComponent({
         .catch(notification.danger)
         .finally(() => overlay.hide() && getMoreData(true));
 
-    const borderColor = (role: secretHitlerRole) => {
-      switch (role) {
-        case secretHitlerRole.fascist:
-          return "ring-red-500";
-        case secretHitlerRole.liberal:
-          return "ring-blue-500";
-        case secretHitlerRole.hitler:
-          return "ring-black";
-      }
-    };
-
     const getCurrentPlayer = (match: secretHitlerMatch) =>
       match.players.find((p) => p.player._id === currentPlayer._id);
 
@@ -148,14 +138,13 @@ export default defineComponent({
     };
 
     useRouterRefresh(() => getMoreData(true));
-
     return {
       items,
       image,
+      tailwind,
       copyMatch,
       bindSpace,
       deleteMatch,
-      borderColor,
       getMoreData,
       getCurrentPlayer,
       moreDataAvailable,

@@ -41,21 +41,26 @@
           v-for="mate in topMates"
           :key="mate.player._id"
         >
-          <div class="flex justify-evenly items-center">
-            <img
-              class="w-10 h-10 rounded-full"
-              :src="image(mate.player.profileImage, 500)"
-            />
-            <span
-              class="ml-2 text-gray-700 font-semibold font-sans tracking-wide"
-            >
-              {{ mate.nickname }}
+          <div class="grid grid-cols-4 items-center">
+            <span class="col-span-1 text-center m-auto">
+              <img
+                class="w-10 h-10 rounded-full"
+                :src="image(mate.player.profileImage, 500)"
+              />
             </span>
             <span
-              class="ml-4 rounded-xl px-2 py-1 font-semibold"
-              :class="mate.ratio > 0.5 ? 'bg-green-300' : 'bg-red-300'"
+              class="col-span-2 text-gray-700 font-semibold font-sans tracking-wide text-center"
             >
-              {{ percentageFormatter(mate.ratio) }} %
+              {{ mate.player.name }}
+              {{ mate.player.surname }}
+            </span>
+            <span class="col-span-1 text-center">
+              <span
+                class="rounded-xl px-2 py-1 font-semibold"
+                :class="tailwind.backgroundRatio(mate.ratio)"
+              >
+                {{ percentageFormatter(mate.ratio) }} %
+              </span>
             </span>
           </div>
         </div>
@@ -69,21 +74,26 @@
           v-for="mate in worstOpponents"
           :key="mate.player._id"
         >
-          <div class="flex justify-around items-center">
-            <img
-              class="w-10 h-10 rounded-full"
-              :src="image(mate.player.profileImage, 500)"
-            />
-            <span
-              class="ml-2 text-gray-700 font-semibold font-sans tracking-wide"
-            >
-              {{ mate.nickname }}
+          <div class="grid grid-cols-4 items-center">
+            <span class="col-span-1 text-center m-auto">
+              <img
+                class="w-10 h-10 rounded-full"
+                :src="image(mate.player.profileImage, 500)"
+              />
             </span>
             <span
-              class="ml-4 rounded-xl px-2 py-1 font-semibold"
-              :class="mate.ratio < 0.5 ? 'bg-green-300' : 'bg-red-300'"
+              class="col-span-2 text-gray-700 font-semibold font-sans tracking-wide text-center"
             >
-              {{ percentageFormatter(mate.ratio) }} %
+              {{ mate.player.name }}
+              {{ mate.player.surname }}
+            </span>
+            <span class="col-span-1 text-center">
+              <span
+                class="rounded-xl px-2 py-1 font-semibold"
+                :class="tailwind.backgroundRatio(mate.ratio, true)"
+              >
+                {{ percentageFormatter(mate.ratio) }} %
+              </span>
             </span>
           </div>
         </div>
@@ -98,6 +108,7 @@ import { image } from "@/instances/sanity";
 import { auth } from "@/services/auth.service";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { trumpMatchPlayer } from "@/types/sanity";
+import { tailwind } from "@/services/tailwind.service";
 import { Mate } from "@/utils/classes/stats/baseStats";
 import { sanityTypes } from "@/constants/roleConstants";
 import { percentageFormatter } from "@/utils/formatters";
@@ -113,6 +124,7 @@ export default defineComponent({
   components: { UserAutocomplete },
   data() {
     return {
+      tailwind,
       matches: [] as trumpMatchPlayer[],
       currentPlayer: auth.currentPlayer,
     };
