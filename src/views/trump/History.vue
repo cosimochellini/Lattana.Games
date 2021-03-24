@@ -108,9 +108,9 @@ import Badge from "@/components/base/Badge.vue";
 import { dayFormatter } from "@/utils/formatters";
 import { overlay } from "@/services/overlay.service";
 import WinBadge from "@/components/base/WinBadge.vue";
+import { trump } from "@/services/games/trump.service";
 import DateBadge from "@/components/base/DateBadge.vue";
 import { sanityTypes } from "@/constants/roleConstants";
-import { trumpService } from "@/services/games/trumpService";
 import { useRouterRefresh } from "@/composable/routerRefresh";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
 import { notification } from "@/services/notification.service";
@@ -138,7 +138,7 @@ export default defineComponent({
 
     const deleteMatch = (match: trumpMatch) =>
       overlay.show() &&
-      trumpService
+      trump
         .deleteExistingMatch(match)
         .then(() => notification.success("eliminazione eseguita"))
         .catch(notification.danger)

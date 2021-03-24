@@ -9,9 +9,12 @@
         group="people"
         itemKey="_id"
         class="base-card card-width"
+        v-if="!(!remainingPlayers.length && totalPlayers.length === 10)"
       >
         <template #header>
-          <h2 class="base-subtitle">Giocatori da smistare</h2>
+          <h2 class="base-subtitle">
+            {{ $t("secretHitler.form.remainingPlayers") }}
+          </h2>
 
           <user-autocomplete
             class="w-full"
@@ -119,7 +122,7 @@ import { notification } from "@/services/notification.service";
 import DraggableUser from "@/components/base/DraggableUser.vue";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
-import { secretHitlerService } from "@/services/games/secretHitlerService";
+import { secretHitlerService } from "@/services/games/secretHitler.service";
 
 import {
   player,
@@ -252,6 +255,6 @@ export default defineComponent({
 
 <style>
 .card-width {
-  @apply w-full md:w-10/12 lg:w-4/5 xl:w-3/5;
+  @apply w-full md:w-10/12 lg:w-4/5 xl:w-3/5 2xl:w-2/5;
 }
 </style>

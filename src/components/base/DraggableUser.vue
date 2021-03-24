@@ -1,20 +1,21 @@
 <template>
   <div
-    class="border list-none rounded-md px-3 py-3 my-1 flex justify-around items-center"
+    class="border list-none rounded-lg p-3 my-2 justify-around items-center grid grid-cols-5"
     :class="color"
   >
     <span
-      class="ml-2 text-gray-700 font-semibold font-sans tracking-wide text-left flex-1"
+      class="text-gray-700 font-semibold font-sans tracking-wide text-center"
+      :class="showDelete ? 'col-span-3' : 'col-span-4'"
     >
       {{ user.name }} {{ user.surname }}
     </span>
     <img
-      class="w-10 h-10 rounded-full text-right mr-2"
+      class="w-10 h-10 rounded-full text-center col-span-1"
       :class="avatarColor ? ' ring ' + avatarColor : ''"
       :src="image(user.profileImage, 500)"
     />
     <button
-      class="base-button transparent w-12"
+      class="base-button transparent w-12 col-span-1 text-center"
       v-show="showDelete"
       @click.capture="emitDelete"
     >

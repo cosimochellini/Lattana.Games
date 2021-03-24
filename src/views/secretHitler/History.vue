@@ -88,7 +88,7 @@ import { notification } from "@/services/notification.service";
 import { byRole } from "@/utils/sortables/secratHitlerSortables";
 import { useInfiniteLoading } from "@/composable/infiniteLoading";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
-import { secretHitlerService } from "@/services/games/secretHitlerService";
+import { secretHitlerService } from "@/services/games/secretHitler.service";
 import SecretHitlerBadge from "@/components/secretHitler/secretHitlerBadge.vue";
 
 const currentPlayer = auth.currentPlayer;

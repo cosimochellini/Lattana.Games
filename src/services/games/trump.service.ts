@@ -6,7 +6,7 @@ import { sanityTypes } from "@/constants/roleConstants";
 import { trumpMatch, trumpMatchPlayer } from "@/types/sanity";
 import { reference, referenceWithKey } from "@/utils/GroqQueryBuilder";
 
-export const trumpService = {
+export const trump = {
   async saveNewMatch(match: trumpMatch) {
     if (match.players.length !== 5)
       throw new Error("incorrect number of players");

@@ -9,6 +9,7 @@
         group="people"
         itemKey="_id"
         class="base-card card-width"
+        v-if="!(!remainingPlayers.length && allPlayers.length === 5)"
       >
         <template #header>
           <h2 class="base-subtitle first-capitalize">
@@ -131,11 +132,11 @@ import { defineComponent } from "vue";
 import { mergeObjects } from "@/utils/merge";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { overlay } from "@/services/overlay.service";
+import { trump } from "@/services/games/trump.service";
 import { sanityTypes } from "@/constants/roleConstants";
 import { queryRefresh } from "@/composable/routerRefresh";
-import { trumpService } from "@/services/games/trumpService";
-import DraggableUser from "@/components/base/DraggableUser.vue";
 import { notification } from "@/services/notification.service";
+import DraggableUser from "@/components/base/DraggableUser.vue";
 import { player, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 
@@ -194,7 +195,7 @@ export default defineComponent({
 
         overlay.show();
 
-        trumpService
+        trump
           .saveNewMatch(match)
           .then(() => notification.success("salvataggio eseguito"))
           .catch(notification.danger)
@@ -258,6 +259,6 @@ export default defineComponent({
 
 <style>
 .card-width {
-  @apply w-full md:w-10/12 lg:w-4/5 xl:w-3/5;
+  @apply w-full md:w-10/12 lg:w-4/5 xl:w-3/5 2xl:w-2/5;
 }
 </style>
