@@ -113,5 +113,9 @@
             "asc": "ascendenti",
             "desc": "discendenti"
         }
+    },
+    "system": {
+        "wait": "attendere....",
+        "fewSeconds": "questa operazione può impiegare qualche secondo"
     }
 }

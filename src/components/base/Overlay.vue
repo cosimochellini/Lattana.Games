@@ -1,13 +1,16 @@
 <template>
   <div
-    class="fixed top-0 left-0 right-0 bottom-0 w-full h-screen z-50 overflow-hidden bg-gray-700 opacity-75 flex flex-col items-center justify-center"
+    class="fixed top-0 left-0 right-0 bottom-0 w-full h-screen z-50 overflow-hidden bg-gray-800 opacity-80 flex flex-col items-center justify-center p-4 text-white"
   >
-    <div
-      class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"
-    ></div>
-    <h2 class="text-center text-white text-xl font-semibold">Attendere...</h2>
-    <p class="w-full text-center text-white">
-      Questa operazione può impiegare qualche secondo
+    <div class="ease-linear text-center h-12 w-12 mb-4">
+      <i class="fa-3x fa-spin fad fa-spinner-third"></i>
+    </div>
+
+    <h2 class="text-center text-xl font-semibold tracking-wider first-capitalize">
+      {{ $t("system.wait") }}
+    </h2>
+    <p class="w-full text-center tracking-wide font-medium first-capitalize">
+      {{ $t("system.fewSeconds") }}
     </p>
   </div>
 </template>
@@ -15,29 +18,3 @@
 <script>
 export default {};
 </script>
-
-<style>
-.loader {
-  border-top-color: #3498db;
-  -webkit-animation: spinner 1.5s linear infinite;
-  animation: spinner 1.5s linear infinite;
-}
-
-@-webkit-keyframes spinner {
-  0% {
-    -webkit-transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-  }
-}
-
-@keyframes spinner {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-</style>
