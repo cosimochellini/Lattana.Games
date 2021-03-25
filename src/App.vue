@@ -4,24 +4,26 @@
       <component :is="Component" />
     </keep-alive>
   </router-view>
+  <Dialog />
   <overlay v-if="showOverlay" />
 </template>
 
 <script lang="ts">
+import Dialog from "./components/base/Dialog.vue";
 import Overlay from "./components/base/Overlay.vue";
 import { overlay } from "./services/overlay.service";
 import { defineComponent, onMounted, ref } from "vue";
 
 export default defineComponent({
-  components: { Overlay },
+  components: { Overlay, Dialog },
   setup() {
     const showOverlay = ref(false);
 
-    onMounted(() =>
+    onMounted(() => {
       overlay
         .onShow(() => (showOverlay.value = true))
-        .onHide(() => (showOverlay.value = false))
-    );
+        .onHide(() => (showOverlay.value = false));
+    });
 
     return {
       showOverlay,

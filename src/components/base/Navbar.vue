@@ -8,8 +8,8 @@
             class="inline-flex items-center justify-center p-2 rounded-md text-gray-900 focus:bg-transparent transition duration-150 ease-in-out"
             @click.stop="toggleNavbar"
           >
-            <i class="fas fa-bars" v-if="!state.navbarOpen"></i>
-            <i class="fas fa-times" v-else></i>
+            <i class="far fa-bars" v-if="!state.navbarOpen"></i>
+            <i class="far fa-times" v-else></i>
           </button>
         </div>
         <div

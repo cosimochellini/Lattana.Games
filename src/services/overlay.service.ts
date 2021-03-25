@@ -10,12 +10,12 @@ enum overlayEnum {
 export const overlay = {
   show() {
     overlayEmitter.emit(overlayEnum.show);
-    return true;
+    return this;
   },
 
   hide() {
     overlayEmitter.emit(overlayEnum.hide);
-    return true;
+    return this;
   },
 
   onShow(func: () => void) {

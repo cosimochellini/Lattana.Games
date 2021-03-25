@@ -106,6 +106,7 @@ import DateBadge from "@/components/base/DateBadge.vue";
 import { sanityTypes } from "@/constants/roleConstants";
 import { useRouterRefresh } from "@/composable/routerRefresh";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
+import { dialog, dialogType } from "@/services/dialog.service";
 import { notification } from "@/services/notification.service";
 import { useInfiniteLoading } from "@/composable/infiniteLoading";
 
@@ -129,13 +130,22 @@ export default defineComponent({
     });
     const { getMoreData, items: matches, moreDataAvailable } = infiniteLoading;
 
-    const deleteMatch = (match: trumpMatch) =>
-      overlay.show() &&
-      trump
-        .deleteExistingMatch(match)
-        .then(() => notification.success("eliminazione eseguita"))
-        .catch(notification.danger)
-        .finally(() => overlay.hide() && getMoreData(true));
+    const deleteMatch = async (match: trumpMatch) => {
+      const sholdDelete = await dialog.confirm({
+        title: "deleteMatch",
+        description: "deleteMatch",
+        type: dialogType.danger,
+        buttons: { cancel: "cancel", confirm: "confirm" },
+      });
+
+      sholdDelete &&
+        overlay.show() &&
+        trump
+          .deleteExistingMatch(match)
+          .then(() => notification.success("eliminazione eseguita"))
+          .catch(notification.danger)
+          .finally(() => overlay.hide() && getMoreData(true));
+    };
 
     const copyMatch = (match: trumpMatch) =>
       router.push({ name: "trumpNew", query: { ref: match._id } });

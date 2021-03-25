@@ -158,7 +158,7 @@ export default defineComponent({
   components: { UserAutocomplete, DraggableUser, draggable },
   name: "trumpNew",
   data: initialData,
-  activated() {
+  async activated() {
     if (!this.$route.query.ref) return;
 
     playersQuery

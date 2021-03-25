@@ -117,5 +117,17 @@
     "system": {
         "wait": "attendere....",
         "fewSeconds": "questa operazione può impiegare qualche secondo"
+    },
+    "dialog": {
+        "title": {
+            "deleteMatch": "sicuro di voler cancellare la partita?"
+        },
+        "description": {
+            "deleteMatch": "attenzione, questa operazione è irreversibile, fai a modino."
+        },
+        "buttons": {
+            "confirm": "conferma",
+            "cancel": "cancel"
+        }
     }
 }

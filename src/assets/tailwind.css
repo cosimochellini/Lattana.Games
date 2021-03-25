@@ -17,8 +17,9 @@
 }
 
 .base-button {
-  @apply text-sm font-medium p-3 items-center content-center place-items-center py-2 px-3 text-gray-900 rounded-lg shadow-sm focus:outline-none tracking-wider font-sans capitalize;
+  @apply inline-flex justify-center text-sm font-medium p-3 items-center content-center place-items-center py-2 px-3 text-gray-900 rounded-lg shadow-sm focus:outline-none tracking-wider font-sans capitalize;
   @apply disabled:opacity-70 text-center;
+  @apply focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm;
 }
 
 .base-button.large {
@@ -26,19 +27,19 @@
 }
 
 .base-button.primary {
-  @apply bg-blue-300 focus:bg-blue-400 hover:bg-blue-400;
+  @apply bg-blue-300 focus:bg-blue-400 hover:bg-blue-400 focus:ring-blue-500;
 }
 
 .base-button.danger {
-  @apply bg-red-300 focus:bg-red-400 hover:bg-red-400;
+  @apply bg-red-300 focus:bg-red-400 hover:bg-red-400 focus:ring-red-500;
 }
 
 .base-button.warning {
-  @apply bg-yellow-300 focus:bg-yellow-400  hover:bg-yellow-400;
+  @apply bg-yellow-300 focus:bg-yellow-400  hover:bg-yellow-400  focus:ring-yellow-500;
 }
 
 .base-button.info {
-  @apply bg-gray-300 focus:bg-gray-400  hover:bg-gray-400;
+  @apply bg-gray-300 focus:bg-gray-400  hover:bg-gray-400  focus:ring-gray-500;
 }
 
 .base-button.transparent {
