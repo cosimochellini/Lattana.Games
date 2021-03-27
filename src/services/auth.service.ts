@@ -1,4 +1,4 @@
-import { player } from "@/types/sanity";
+import { player } from "@/types";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { notification } from "./notification.service";
 import { reactiveStorage } from "./reactiveStorage.service";

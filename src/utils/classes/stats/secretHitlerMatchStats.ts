@@ -1,6 +1,6 @@
 import { BaseStats } from "./baseStats";
 import { secretHitlerRole } from "@/constants/roleConstants";
-import { secretHitlerMatch, secretHitlerMatchPlayer } from "@/types/sanity";
+import { secretHitlerMatch, secretHitlerMatchPlayer } from "@/types";
 
 /**
  * SecretHitler statistics class

@@ -1,4 +1,4 @@
-import { player } from "./sanity";
+import { player } from ".";
 
 export type information = {
   profile: player;

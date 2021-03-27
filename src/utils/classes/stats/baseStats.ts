@@ -1,6 +1,5 @@
-import { Dictionary } from "@/types/base";
 import { byNumber, byValue } from "sort-es";
-import { IMatch, IMatchPlayer, player } from "@/types/sanity";
+import { IMatch, IMatchPlayer, player, Dictionary } from "@/types";
 
 export type Mate = {
   win: number;

@@ -124,8 +124,8 @@
 
 <script lang="ts">
 import { useRouter } from "vue-router";
-import { Dictionary } from "@/types/base";
 import { image } from "@/instances/sanity";
+import { Dictionary } from "@/types";
 import { auth } from "@/services/auth.service";
 import { useTimedOpen } from "@/composable/timedOpen";
 import { defineComponent, reactive, watch } from "vue";

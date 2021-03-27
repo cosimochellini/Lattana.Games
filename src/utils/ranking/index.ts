@@ -1,4 +1,4 @@
-import { trumpMatchPlayer } from "@/types/sanity";
+import { trumpMatchPlayer } from "@/types";
 
 type DataSet = {
   label: string;

@@ -61,14 +61,14 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { Dictionary } from "@/types/base";
+import { Dictionary } from "@/types";
 import { image } from "@/instances/sanity";
 import { byNumber, byValue } from "sort-es";
 import Badge from "@/components/base/Badge.vue";
 import { groq } from "@/utils/GroqQueryBuilder";
-import { secretHitlerMatch } from "@/types/sanity";
+import { secretHitlerMatch } from "@/types";
 import { orderby, information } from "@/types/ranking";
-import { secretHitlerMatchPlayer } from "@/types/sanity";
+import { secretHitlerMatchPlayer } from "@/types";
 import { notification } from "@/services/notification.service";
 import { orderbyDirection, secretHitlerOrderBy } from "@/types/ranking";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";

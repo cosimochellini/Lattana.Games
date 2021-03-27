@@ -1,8 +1,8 @@
 import { uuid } from "./uuid";
-import { Dictionary } from "@/types/base";
+import { Dictionary } from "@/types";
 import { readOnlySanityClient, sanityClient } from "@/instances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
-import { QueryableParam, sanityEntity, sanityReference } from "@/types/base";
+import { QueryableParam, sanityEntity, sanityReference } from "@/types";
 
 export const contains = (param: string) => `*${param}*`;
 

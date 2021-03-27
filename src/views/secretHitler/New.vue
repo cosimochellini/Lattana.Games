@@ -112,20 +112,14 @@ import { range } from "@/utils/range";
 import { defineComponent } from "vue";
 import { mergeObjects } from "@/utils/merge";
 import { groq } from "@/utils/GroqQueryBuilder";
-import { overlay } from "@/services/overlay.service";
 import { tailwind } from "@/services/tailwind.service";
 import { queryRefresh } from "@/composable/routerRefresh";
 import { notification } from "@/services/notification.service";
 import DraggableUser from "@/components/base/DraggableUser.vue";
+import { secretHitler } from "@/services/games/secretHitler.service";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
-import { secretHitlerService } from "@/services/games/secretHitler.service";
-
-import {
-  player,
-  secretHitlerMatch,
-  secretHitlerMatchPlayer,
-} from "@/types/sanity";
+import { player, secretHitlerMatch, secretHitlerMatchPlayer } from "@/types";
 
 const playersQuery = new groq.QueryBuilder(
   sanityTypes.secretHitlerMatchPlayer
@@ -171,19 +165,16 @@ export default defineComponent({
         players: this.totalPlayers,
       };
 
-      return (
-        overlay.show() &&
-        secretHitlerService
-          .saveNewMatch(matchToSave)
-          .then(() => notification.success("salvataggio eseguito"))
-          .catch(notification.danger)
-          .finally(() =>
-            this.$router.push({
-              name: "secretHitlerHistory",
-              query: queryRefresh,
-            })
-          )
-      );
+      return secretHitler
+        .saveNewMatch(matchToSave)
+        .then(() => notification.success("salvataggio eseguito"))
+        .catch(notification.danger)
+        .finally(() =>
+          this.$router.push({
+            name: "secretHitlerHistory",
+            query: queryRefresh,
+          })
+        );
     },
     addPlayer(player: player) {
       this.remainingPlayers.push(player);
@@ -215,13 +206,14 @@ export default defineComponent({
   computed: {
     totalPlayers(): secretHitlerMatchPlayer[] {
       return [
-        this.liberalPlayers.map((p) =>
-          this.bindPlayer(p, secretHitlerRole.liberal)
-        ),
-        this.fascistPlayers.map((p) =>
-          this.bindPlayer(p, secretHitlerRole.fascist, this.hitlerPlayer)
-        ),
-      ].flatMap((x) => [...x]);
+        ...this.liberalPlayers
+          .map((p) => this.bindPlayer(p, secretHitlerRole.liberal))
+          .concat(
+            this.fascistPlayers.map((p) =>
+              this.bindPlayer(p, secretHitlerRole.fascist, this.hitlerPlayer)
+            )
+          ),
+      ];
     },
     excludedPlayers(): player[] {
       return this.totalPlayers

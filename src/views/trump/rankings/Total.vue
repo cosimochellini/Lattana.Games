@@ -1,7 +1,7 @@
 <script lang="ts">
 import { Ranking } from "@/utils/ranking";
 import { byNumber, byValue } from "sort-es";
-import { trumpMatch } from "@/types/sanity";
+import { trumpMatch } from "@/types";
 import { HorizontalBar } from "vue3-chart-v2";
 import { defineComponent, PropType } from "vue";
 import { getColor } from "@/services/color.service";

@@ -1,13 +1,36 @@
 import { uuid } from "@/utils/uuid";
 import { auth } from "../auth.service";
-import { sanityDocument } from "@/types/base";
+import { overlay } from "../overlay.service";
 import { sanityClient } from "@/instances/sanity";
+import { secretHitlerMatchPlayer } from "@/types";
 import { sanityTypes } from "@/constants/roleConstants";
-import { reference, referenceWithKey } from "@/utils/GroqQueryBuilder";
-import { secretHitlerMatch, secretHitlerMatchPlayer } from "@/types/sanity";
+import { sanityDocument, secretHitlerMatch } from "@/types";
+import { byRole } from "@/utils/sortables/secretHitlerSortables";
+import { useInfiniteLoading } from "@/composable/infiniteLoading";
+import { groq, reference, referenceWithKey } from "@/utils/GroqQueryBuilder";
 
-export const secretHitlerService = {
+const currentPlayer = auth.currentPlayer;
+
+const matchesQuery = new groq.QueryBuilder(sanityTypes.secretHitlerMatch)
+  .select(`...,  players[] -> {..., player ->}`)
+  .where(
+    new groq.ConditionBuilder(`$userId in players[] -> player._ref`).params({
+      userId: currentPlayer._id,
+    })
+  )
+  .orderBy(new groq.OrderBuilder("matchDate", true));
+
+export const secretHitler = {
+  getMatches() {
+    const onResponse = (response: secretHitlerMatch[]) =>
+      response.forEach((m) => m.players.sort(byRole));
+
+    return useInfiniteLoading(matchesQuery, { onResponse });
+  },
+
   async saveNewMatch(match: Partial<secretHitlerMatch>) {
+    overlay.show();
+
     const matchToCreate = {
       _id: uuid(),
       _type: sanityTypes.secretHitlerMatch,

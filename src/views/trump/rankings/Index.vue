@@ -62,15 +62,15 @@
 </template>
 
 <script lang="ts">
+import { Dictionary } from "@/types";
 import { defineComponent } from "vue";
-import { Dictionary } from "@/types/base";
 import { image } from "@/instances/sanity";
 import { byNumber, byValue } from "sort-es";
 import Badge from "@/components/base/Badge.vue";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { sanityTypes } from "@/constants/roleConstants";
 import { orderby, information } from "@/types/ranking";
-import { trumpMatch, trumpMatchPlayer } from "@/types/sanity";
+import { trumpMatch, trumpMatchPlayer } from "@/types";
 import { orderbyDirection, trumpOrderBy } from "@/types/ranking";
 import { notification } from "@/services/notification.service";
 import { percentageFormatter, smallNumberFormatter } from "@/utils/formatters";

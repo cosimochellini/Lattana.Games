@@ -107,7 +107,7 @@ import { defineComponent } from "vue";
 import { image } from "@/instances/sanity";
 import { auth } from "@/services/auth.service";
 import { groq } from "@/utils/GroqQueryBuilder";
-import { trumpMatchPlayer } from "@/types/sanity";
+import { trumpMatchPlayer } from "@/types";
 import { tailwind } from "@/services/tailwind.service";
 import { Mate } from "@/utils/classes/stats/baseStats";
 import { sanityTypes } from "@/constants/roleConstants";

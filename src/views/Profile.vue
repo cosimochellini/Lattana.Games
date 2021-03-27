@@ -90,7 +90,7 @@
 </template>
 
 <script lang="ts">
-import { player } from "@/types/sanity";
+import { player } from "@/types";
 import { auth } from "@/services/auth.service";
 import { settings } from "@/instances/package.json";
 import { PhotoTaker } from "@/services/photoTaker.service";

@@ -1,4 +1,5 @@
-import { trumpMatch } from "@/types/sanity";
+import { range } from "@/utils/range";
+import { secretHitlerMatch, trumpMatch } from "@/types";
 import { secretHitlerRole } from "@/constants/roleConstants";
 
 export const tailwind = {
@@ -32,6 +33,13 @@ export const tailwind = {
         case secretHitlerRole.hitler:
           return "ring-black";
       }
+    },
+    bindSpace(match: secretHitlerMatch) {
+      const players = match.players.length;
+
+      if (range([9, 10], players)) return "-space-x-2";
+      if (range([8, 9], players)) return "-space-x-1";
+      return "";
     },
   },
 };

@@ -1,6 +1,6 @@
 import { computed } from "vue";
 import { differenceInDays } from "./date";
-import { datable, Dictionary } from "@/types/base";
+import { datable, Dictionary } from "@/types";
 import { currentLocale } from "@/services/language.service";
 
 const dayFormat = computed(

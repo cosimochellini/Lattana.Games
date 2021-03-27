@@ -1,12 +1,36 @@
 import { uuid } from "@/utils/uuid";
 import { auth } from "../auth.service";
-import { sanityDocument } from "@/types/base";
 import { sanityClient } from "@/instances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
-import { trumpMatch, trumpMatchPlayer } from "@/types/sanity";
-import { reference, referenceWithKey } from "@/utils/GroqQueryBuilder";
+import { useInfiniteLoading } from "@/composable/infiniteLoading";
+import { sanityDocument, trumpMatch, trumpMatchPlayer } from "@/types";
+import { groq, reference, referenceWithKey } from "@/utils/GroqQueryBuilder";
+import { overlay } from "../overlay.service";
+import { dialog, dialogType } from "../dialog.service";
+import { notification } from "../notification.service";
+
+const currentPlayer = auth.currentPlayer;
+
+const matchesQuery = new groq.QueryBuilder(sanityTypes.trumpMatch)
+  .select(`...,  callingPlayer ->, players[] -> {player ->,...}`)
+  .where(
+    new groq.ConditionBuilder(`$userId in players[] -> player._ref`).params({
+      userId: currentPlayer._id,
+    })
+  )
+  .orderBy(new groq.OrderBuilder("matchDate", true));
 
 export const trump = {
+  getMatches() {
+    const infiniteLoading = useInfiniteLoading<trumpMatch>(matchesQuery, {
+      pageSize: 6,
+    });
+
+    const { getMoreData, items: matches, moreDataAvailable } = infiniteLoading;
+
+    return { getMoreData, matches, moreDataAvailable };
+  },
+
   async saveNewMatch(match: trumpMatch) {
     if (match.players.length !== 5)
       throw new Error("incorrect number of players");
@@ -19,7 +43,7 @@ export const trump = {
       finalScore: match.finalScore,
       callingPlayer: reference(match.callingPlayer),
       players: [],
-      createdBy: reference(auth.currentPlayer),
+      createdBy: reference(currentPlayer),
       updatedBy: undefined,
     } as sanityDocument<trumpMatch>;
 
@@ -50,15 +74,36 @@ export const trump = {
   },
 
   async deleteExistingMatch(match: trumpMatch) {
-    await sanityClient.patch(match._id).set({ players: [] }).commit();
+    try {
+      const shouldDelete = await dialog.confirm({
+        title: "deleteMatch",
+        description: "deleteMatch",
+        type: dialogType.danger,
+        buttons: { cancel: "cancel", confirm: "confirm" },
+      });
 
-    const playersPromises =
-      match.players?.map((p) => sanityClient.delete(p._id)) ?? [];
+      if (!shouldDelete) return false;
 
-    await Promise.all(playersPromises);
+      overlay.show();
 
-    await sanityClient.delete(match._id);
+      await sanityClient.patch(match._id).set({ players: [] }).commit();
 
-    return true;
+      const playersPromises =
+        match.players?.map((p) => sanityClient.delete(p._id)) ?? [];
+
+      await Promise.all(playersPromises);
+
+      await sanityClient.delete(match._id);
+
+      notification.success("eliminazione eseguita");
+
+      return true;
+    } catch (error) {
+      notification.danger(error);
+
+      return false;
+    } finally {
+      overlay.hide();
+    }
   },
 };

@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { player } from "@/types/sanity";
+import { player } from "@/types";
 import { image } from "@/instances/sanity";
 import { defineComponent, PropType } from "vue";
 

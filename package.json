@@ -1,6 +1,6 @@
 {
   "name": "lattana-games",
-  "version": "0.7.10",
+  "version": "0.7.11",
   "private": true,
   "scripts": {
     "serve": "yarn increase && vue-cli-service serve",
@@ -11,7 +11,7 @@
   "dependencies": {
     "@sanity/client": "^2.1.0",
     "@sanity/image-url": "^0.140.19",
-    "@tailwindcss/postcss7-compat": "^2.0.2",
+    "@tailwindcss/postcss7-compat": "npm:@tailwindcss/postcss7-compat@^2.0.2",
     "@vueuse/core": "^4.4.1",
     "autoprefixer": "^9",
     "mitt": "^2.1.0",

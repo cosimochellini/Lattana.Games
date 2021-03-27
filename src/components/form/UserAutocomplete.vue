@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { player } from "@/types/sanity";
+import { player } from "@/types";
 import { defineComponent, PropType } from "vue";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { sanityTypes } from "@/constants/roleConstants";

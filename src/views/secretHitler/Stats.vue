@@ -104,7 +104,7 @@ import { groq } from "@/utils/GroqQueryBuilder";
 import { tailwind } from "@/services/tailwind.service";
 import { Mate } from "@/utils/classes/stats/baseStats";
 import { sanityTypes } from "@/constants/roleConstants";
-import { secretHitlerMatchPlayer } from "@/types/sanity";
+import { secretHitlerMatchPlayer } from "@/types";
 import { percentageFormatter } from "@/utils/formatters";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { SecretHitlerStats } from "@/utils/classes/stats/secretHitlerMatchStats";

@@ -90,62 +90,31 @@
 </template>
 
 <script lang="ts">
+import { trumpMatch } from "@/types";
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
-import { trumpMatch } from "@/types/sanity";
-import { auth } from "@/services/auth.service";
-import { groq } from "@/utils/GroqQueryBuilder";
 import Badge from "@/components/base/Badge.vue";
 import { dayFormatter } from "@/utils/formatters";
-import { overlay } from "@/services/overlay.service";
 import WinBadge from "@/components/base/WinBadge.vue";
 import { trump } from "@/services/games/trump.service";
 import { tailwind } from "@/services/tailwind.service";
 import DateBadge from "@/components/base/DateBadge.vue";
-import { sanityTypes } from "@/constants/roleConstants";
+import { getCurrentPlayer } from "@/utils/sharedFunctions";
 import { useRouterRefresh } from "@/composable/routerRefresh";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
-import { dialog, dialogType } from "@/services/dialog.service";
-import { notification } from "@/services/notification.service";
-import { useInfiniteLoading } from "@/composable/infiniteLoading";
-
-const currentPlayer = auth.currentPlayer;
-const matchesQuery = new groq.QueryBuilder(sanityTypes.trumpMatch)
-  .select(`...,  callingPlayer ->, players[] -> {player ->,...}`)
-  .where(
-    new groq.ConditionBuilder(`$userId in players[] -> player._ref`).params({
-      userId: currentPlayer._id,
-    })
-  )
-  .orderBy(new groq.OrderBuilder("matchDate", true));
 
 export default defineComponent({
   components: { CardSkeleton, DateBadge, Badge, WinBadge },
   setup() {
     const router = useRouter();
 
-    const infiniteLoading = useInfiniteLoading<trumpMatch>(matchesQuery, {
-      pageSize: 6,
-    });
-    const { getMoreData, items: matches, moreDataAvailable } = infiniteLoading;
+    const { getMoreData, matches, moreDataAvailable } = trump.getMatches();
 
-    const deleteMatch = async (match: trumpMatch) => {
-      const sholdDelete = await dialog.confirm({
-        title: "deleteMatch",
-        description: "deleteMatch",
-        type: dialogType.danger,
-        buttons: { cancel: "cancel", confirm: "confirm" },
-      });
-
-      sholdDelete &&
-        overlay.show() &&
-        trump
-          .deleteExistingMatch(match)
-          .then(() => notification.success("eliminazione eseguita"))
-          .catch(notification.danger)
-          .finally(() => overlay.hide() && getMoreData(true));
-    };
+    const deleteMatch = (match: trumpMatch) =>
+      trump
+        .deleteExistingMatch(match)
+        .then((success) => success && getMoreData(true));
 
     const copyMatch = (match: trumpMatch) =>
       router.push({ name: "trumpNew", query: { ref: match._id } });
@@ -153,10 +122,8 @@ export default defineComponent({
     const editMatch = (match: trumpMatch) =>
       router.push({ name: "trumpEdit", params: { id: match._id } });
 
-    const getCurrentPlayer = (match: trumpMatch) =>
-      match.players.find((p) => p.player._id === currentPlayer._id);
-
     useRouterRefresh(() => getMoreData(true));
+
     return {
       image,
       matches,

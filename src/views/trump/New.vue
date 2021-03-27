@@ -138,7 +138,7 @@ import { sanityTypes } from "@/constants/roleConstants";
 import { queryRefresh } from "@/composable/routerRefresh";
 import { notification } from "@/services/notification.service";
 import DraggableUser from "@/components/base/DraggableUser.vue";
-import { player, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
+import { player, trumpMatch, trumpMatchPlayer } from "@/types";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 
 const playersQuery = new groq.QueryBuilder(sanityTypes.trumpMatchPlayer).select(

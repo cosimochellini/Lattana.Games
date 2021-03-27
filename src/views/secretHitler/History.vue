@@ -36,7 +36,10 @@
         <span class="first-capitalize">
           {{ $t("secretHitler.form.players") }}
         </span>
-        <div class="flex overflow-hidden px-1" :class="bindSpace(match)">
+        <div
+          class="flex overflow-hidden px-1"
+          :class="tailwind.secretHitler.bindSpace(match)"
+        >
           <img
             v-for="p in match.players"
             :key="p._id"
@@ -72,70 +75,48 @@
 </template>
 
 <script lang="ts">
-import { range } from "@/utils/range";
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
-import { groq } from "@/utils/GroqQueryBuilder";
-import { auth } from "@/services/auth.service";
-import { secretHitlerMatch } from "@/types/sanity";
+import { secretHitlerMatch } from "@/types";
 import { overlay } from "@/services/overlay.service";
 import WinBadge from "@/components/base/WinBadge.vue";
 import { tailwind } from "@/services/tailwind.service";
 import DateBadge from "@/components/base/DateBadge.vue";
-import { sanityTypes } from "@/constants/roleConstants";
+import { getCurrentPlayer } from "@/utils/sharedFunctions";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
 import { useRouterRefresh } from "@/composable/routerRefresh";
+import { dialog, dialogType } from "@/services/dialog.service";
 import { notification } from "@/services/notification.service";
-import { byRole } from "@/utils/sortables/secratHitlerSortables";
-import { useInfiniteLoading } from "@/composable/infiniteLoading";
-import { secretHitlerService } from "@/services/games/secretHitler.service";
+import { secretHitler } from "@/services/games/secretHitler.service";
 import SecretHitlerBadge from "@/components/secretHitler/secretHitlerBadge.vue";
-
-const currentPlayer = auth.currentPlayer;
-
-const matchesQuery = new groq.QueryBuilder(sanityTypes.secretHitlerMatch)
-  .select(`...,  players[] -> {..., player ->}`)
-  .where(
-    new groq.ConditionBuilder(`$userId in players[] -> player._ref`).params({
-      userId: currentPlayer._id,
-    })
-  )
-  .orderBy(new groq.OrderBuilder("matchDate", true));
 
 export default defineComponent({
   components: { CardSkeleton, SecretHitlerBadge, DateBadge, WinBadge },
   setup() {
     const router = useRouter();
 
-    const onResponse = (response: secretHitlerMatch[]) =>
-      response.forEach((m) => m.players.sort(byRole));
+    const { items, getMoreData, moreDataAvailable } = secretHitler.getMatches();
 
-    const infiniteLoading = useInfiniteLoading(matchesQuery, { onResponse });
+    const deleteMatch = async (match: secretHitlerMatch) => {
+      const shouldDelete = await dialog.confirm({
+        title: "deleteMatch",
+        description: "deleteMatch",
+        type: dialogType.danger,
+        buttons: { cancel: "cancel", confirm: "confirm" },
+      });
 
-    const { items, getMoreData, moreDataAvailable } = infiniteLoading;
-
-    const deleteMatch = (match: secretHitlerMatch) =>
-      overlay.show() &&
-      secretHitlerService
-        .deleteExistingMatch(match)
-        .then(() => notification.success("eliminazione eseguita"))
-        .catch(notification.danger)
-        .finally(() => overlay.hide() && getMoreData(true));
-
-    const getCurrentPlayer = (match: secretHitlerMatch) =>
-      match.players.find((p) => p.player._id === currentPlayer._id);
+      shouldDelete &&
+        overlay.show() &&
+        secretHitler
+          .deleteExistingMatch(match)
+          .then(() => notification.success("eliminazione eseguita"))
+          .catch(notification.danger)
+          .finally(() => overlay.hide() && getMoreData(true));
+    };
 
     const copyMatch = (match: secretHitlerMatch) =>
       router.push({ name: "secretHitlerNew", query: { ref: match._id } });
-
-    const bindSpace = (match: secretHitlerMatch) => {
-      const players = match.players.length;
-
-      if (range([9, 10], players)) return "-space-x-2";
-      if (range([8, 9], players)) return "-space-x-1";
-      return "";
-    };
 
     useRouterRefresh(() => getMoreData(true));
     return {
@@ -143,7 +124,6 @@ export default defineComponent({
       image,
       tailwind,
       copyMatch,
-      bindSpace,
       deleteMatch,
       getMoreData,
       getCurrentPlayer,

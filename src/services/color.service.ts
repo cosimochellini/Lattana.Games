@@ -1,4 +1,4 @@
-import { Dictionary } from "@/types/base";
+import { Dictionary } from "@/types";
 import { reactiveStorage } from "./reactiveStorage.service";
 
 const localStorageName = "LS_COLOR";
