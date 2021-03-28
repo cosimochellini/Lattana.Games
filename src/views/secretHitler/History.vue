@@ -79,15 +79,12 @@ import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
 import { secretHitlerMatch } from "@/types";
-import { overlay } from "@/services/overlay.service";
 import WinBadge from "@/components/base/WinBadge.vue";
 import { tailwind } from "@/services/tailwind.service";
 import DateBadge from "@/components/base/DateBadge.vue";
 import { getCurrentPlayer } from "@/utils/sharedFunctions";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
 import { useRouterRefresh } from "@/composable/routerRefresh";
-import { dialog, dialogType } from "@/services/dialog.service";
-import { notification } from "@/services/notification.service";
 import { secretHitler } from "@/services/games/secretHitler.service";
 import SecretHitlerBadge from "@/components/secretHitler/secretHitlerBadge.vue";
 
@@ -98,22 +95,10 @@ export default defineComponent({
 
     const { items, getMoreData, moreDataAvailable } = secretHitler.getMatches();
 
-    const deleteMatch = async (match: secretHitlerMatch) => {
-      const shouldDelete = await dialog.confirm({
-        title: "deleteMatch",
-        description: "deleteMatch",
-        type: dialogType.danger,
-        buttons: { cancel: "cancel", confirm: "confirm" },
-      });
-
-      shouldDelete &&
-        overlay.show() &&
-        secretHitler
-          .deleteExistingMatch(match)
-          .then(() => notification.success("eliminazione eseguita"))
-          .catch(notification.danger)
-          .finally(() => overlay.hide() && getMoreData(true));
-    };
+    const deleteMatch = async (match: secretHitlerMatch) =>
+      secretHitler
+        .deleteExistingMatch(match)
+        .then((success) => success && getMoreData(true));
 
     const copyMatch = (match: secretHitlerMatch) =>
       router.push({ name: "secretHitlerNew", query: { ref: match._id } });

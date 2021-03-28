@@ -64,11 +64,11 @@ import { defineComponent } from "vue";
 import { Dictionary } from "@/types";
 import { image } from "@/instances/sanity";
 import { byNumber, byValue } from "sort-es";
+import { secretHitlerMatch } from "@/types";
 import Badge from "@/components/base/Badge.vue";
 import { groq } from "@/utils/GroqQueryBuilder";
-import { secretHitlerMatch } from "@/types";
-import { orderby, information } from "@/types/ranking";
 import { secretHitlerMatchPlayer } from "@/types";
+import { orderby, information } from "@/types/ranking";
 import { notification } from "@/services/notification.service";
 import { orderbyDirection, secretHitlerOrderBy } from "@/types/ranking";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
@@ -85,6 +85,7 @@ declare type secretHitlerInformation = {
     hitlerMatches: number;
     fascistMatches: number;
     liberalMatches: number;
+    weightedAverage: number;
   };
 } & information;
 
@@ -95,6 +96,17 @@ const reverseOrderBy = [
   allOrderBy.hitlerMatches,
   allOrderBy.fascistMatches,
 ];
+
+const bindMedia = (...filteredMatches: secretHitlerMatchPlayer[][]) =>
+  (filteredMatches
+    .map((matches) => {
+      const wins = matches.filter((x) => x.win).length;
+
+      return wins ? wins / matches.length || 0 : 0;
+    })
+    .reduce((initial, current) => initial + (current || 0), 0) /
+    filteredMatches.length) *
+  100;
 
 export default defineComponent({
   components: { Badge },
@@ -176,16 +188,15 @@ export default defineComponent({
 
         const hitlerMatches = playerMatches.filter(
           (player) => player.role === secretHitlerRole.hitler
-        ).length;
+        );
 
         const liberalMatches = playerMatches.filter(
           (player) => player.role === secretHitlerRole.liberal
-        ).length;
+        );
 
-        const fascitRoles = [secretHitlerRole.fascist, secretHitlerRole.hitler];
-        const fascistMatches = playerMatches.filter((player) =>
-          fascitRoles.includes(player.role)
-        ).length;
+        const fascistMatches = playerMatches.filter(
+          (player) => player.role === secretHitlerRole.fascist
+        );
 
         const lost = playerMatches.length - win;
 
@@ -195,10 +206,15 @@ export default defineComponent({
           win,
           lost,
           ratio,
-          hitlerMatches,
-          liberalMatches,
-          fascistMatches,
+          hitlerMatches: hitlerMatches.length,
+          liberalMatches: liberalMatches.length,
+          fascistMatches: fascistMatches.length,
           totalMatches: playerMatches.length,
+          totalMatchesYo: playerMatches,
+          weightedAverage: bindMedia(liberalMatches, [
+            ...fascistMatches,
+            ...hitlerMatches,
+          ]),
         };
 
         ranks.push({ rank, profile });

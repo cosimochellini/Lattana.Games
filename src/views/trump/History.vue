@@ -94,6 +94,7 @@ import { trumpMatch } from "@/types";
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
+import { auth } from "@/services/auth.service";
 import Badge from "@/components/base/Badge.vue";
 import { dayFormatter } from "@/utils/formatters";
 import WinBadge from "@/components/base/WinBadge.vue";
@@ -104,12 +105,16 @@ import { getCurrentPlayer } from "@/utils/sharedFunctions";
 import { useRouterRefresh } from "@/composable/routerRefresh";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
 
+const currentPlayer = auth.currentPlayer;
+
 export default defineComponent({
   components: { CardSkeleton, DateBadge, Badge, WinBadge },
   setup() {
     const router = useRouter();
 
-    const { getMoreData, matches, moreDataAvailable } = trump.getMatches();
+    const { getMoreData, matches, moreDataAvailable } = trump.getMatches(
+      currentPlayer
+    );
 
     const deleteMatch = (match: trumpMatch) =>
       trump

@@ -1,27 +1,27 @@
 import { uuid } from "@/utils/uuid";
 import { auth } from "../auth.service";
+import { overlay } from "../overlay.service";
 import { sanityClient } from "@/instances/sanity";
+import { notification } from "../notification.service";
+import { dialog, dialogType } from "../dialog.service";
 import { sanityTypes } from "@/constants/roleConstants";
 import { useInfiniteLoading } from "@/composable/infiniteLoading";
-import { sanityDocument, trumpMatch, trumpMatchPlayer } from "@/types";
 import { groq, reference, referenceWithKey } from "@/utils/GroqQueryBuilder";
-import { overlay } from "../overlay.service";
-import { dialog, dialogType } from "../dialog.service";
-import { notification } from "../notification.service";
+import { player, sanityDocument, trumpMatch, trumpMatchPlayer } from "@/types";
 
 const currentPlayer = auth.currentPlayer;
 
-const matchesQuery = new groq.QueryBuilder(sanityTypes.trumpMatch)
-  .select(`...,  callingPlayer ->, players[] -> {player ->,...}`)
-  .where(
-    new groq.ConditionBuilder(`$userId in players[] -> player._ref`).params({
-      userId: currentPlayer._id,
-    })
-  )
-  .orderBy(new groq.OrderBuilder("matchDate", true));
-
 export const trump = {
-  getMatches() {
+  getMatches(player: player | null) {
+    const matchesQuery = new groq.QueryBuilder(sanityTypes.trumpMatch)
+      .select(`...,  callingPlayer ->, players[] -> {player ->,...}`)
+      .where(
+        new groq.ConditionBuilder(`$userId in players[] -> player._ref`)
+          .params({ userId: player?._id })
+          .optional()
+      )
+      .orderBy(new groq.OrderBuilder("matchDate", true));
+
     const infiniteLoading = useInfiniteLoading<trumpMatch>(matchesQuery, {
       pageSize: 6,
     });
@@ -63,7 +63,7 @@ export const trump = {
 
     const savedPlayers = await Promise.all(playersPromises);
 
-    return sanityClient
+    return await sanityClient
       .patch(matchToCreate._id)
       .append("players", savedPlayers.map(referenceWithKey))
       .commit();

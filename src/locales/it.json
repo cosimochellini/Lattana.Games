@@ -110,6 +110,7 @@
             "calledMatches": "partite chiamate",
             "calledMatches120": "partite chiamate 120",
             "calculatedScore": "punteggio calcolato",
+            "weightedAverage": "media ponderata",
             "asc": "ascendenti",
             "desc": "discendenti"
         }

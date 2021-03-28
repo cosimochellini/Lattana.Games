@@ -3,6 +3,8 @@ import { auth } from "../auth.service";
 import { overlay } from "../overlay.service";
 import { sanityClient } from "@/instances/sanity";
 import { secretHitlerMatchPlayer } from "@/types";
+import { notification } from "../notification.service";
+import { dialog, dialogType } from "../dialog.service";
 import { sanityTypes } from "@/constants/roleConstants";
 import { sanityDocument, secretHitlerMatch } from "@/types";
 import { byRole } from "@/utils/sortables/secretHitlerSortables";
@@ -11,17 +13,17 @@ import { groq, reference, referenceWithKey } from "@/utils/GroqQueryBuilder";
 
 const currentPlayer = auth.currentPlayer;
 
-const matchesQuery = new groq.QueryBuilder(sanityTypes.secretHitlerMatch)
-  .select(`...,  players[] -> {..., player ->}`)
-  .where(
-    new groq.ConditionBuilder(`$userId in players[] -> player._ref`).params({
-      userId: currentPlayer._id,
-    })
-  )
-  .orderBy(new groq.OrderBuilder("matchDate", true));
-
 export const secretHitler = {
   getMatches() {
+    const matchesQuery = new groq.QueryBuilder(sanityTypes.secretHitlerMatch)
+      .select(`...,  players[] -> {..., player ->}`)
+      .where(
+        new groq.ConditionBuilder(`$userId in players[] -> player._ref`)
+          .params({ userId: currentPlayer._id })
+          .optional()
+      )
+      .orderBy(new groq.OrderBuilder("matchDate", true));
+
     const onResponse = (response: secretHitlerMatch[]) =>
       response.forEach((m) => m.players.sort(byRole));
 
@@ -67,15 +69,33 @@ export const secretHitler = {
   },
 
   async deleteExistingMatch(match: secretHitlerMatch) {
-    await sanityClient.patch(match._id).set({ players: [] }).commit();
+    try {
+      const shouldDelete = await dialog.confirm({
+        title: "deleteMatch",
+        description: "deleteMatch",
+        type: dialogType.danger,
+        buttons: { cancel: "cancel", confirm: "confirm" },
+      });
 
-    const playersPromises =
-      match.players?.map((p) => sanityClient.delete(p._id)) ?? [];
+      if (!shouldDelete) return false;
 
-    await Promise.all(playersPromises);
+      await sanityClient.patch(match._id).set({ players: [] }).commit();
 
-    await sanityClient.delete(match._id);
+      const playersPromises =
+        match.players?.map((p) => sanityClient.delete(p._id)) ?? [];
 
-    return true;
+      await Promise.all(playersPromises);
+
+      await sanityClient.delete(match._id);
+
+      notification.success("eliminazione eseguita");
+
+      return true;
+    } catch (error) {
+      notification.danger(error);
+      return false;
+    } finally {
+      overlay.hide();
+    }
   },
 };

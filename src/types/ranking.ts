@@ -20,6 +20,7 @@ export enum secretHitlerOrderBy {
   hitlerMatches = "hitlerMatches",
   liberalMatches = "liberalMatches",
   fascistMatches = "fascistMatches",
+  weightedAverage = "weightedAverage",
 }
 
 export enum trumpOrderBy {

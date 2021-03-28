@@ -74,6 +74,7 @@ export interface Dictionary<T> {
 export type QueryableParam =
   | string
   | null
+  | undefined
   | Date
   | number
   | boolean
