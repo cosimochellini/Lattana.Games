@@ -53,7 +53,7 @@
                 class="rounded-xl px-2 py-1 font-semibold"
                 :class="tailwind.backgroundRatio(mate.ratio)"
               >
-                {{ percentageFormatter(mate.ratio) }} %
+                {{ formatter.percentageFormatter(mate.ratio) }} %
               </span>
             </span>
           </div>
@@ -86,7 +86,7 @@
                 class="rounded-xl px-2 py-1 font-semibold"
                 :class="tailwind.backgroundRatio(mate.ratio, true)"
               >
-                {{ percentageFormatter(mate.ratio) }} %
+                {{ formatter.percentageFormatter(mate.ratio) }} %
               </span>
             </span>
           </div>
@@ -105,7 +105,7 @@ import { tailwind } from "@/services/tailwind.service";
 import { Mate } from "@/utils/classes/stats/baseStats";
 import { sanityTypes } from "@/constants/roleConstants";
 import { secretHitlerMatchPlayer } from "@/types";
-import { percentageFormatter } from "@/utils/formatters";
+import { formatter } from "@/utils/formatters";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { SecretHitlerStats } from "@/utils/classes/stats/secretHitlerMatchStats";
 
@@ -119,6 +119,7 @@ export default defineComponent({
   data() {
     return {
       tailwind,
+      formatter,
       currentPlayer: auth.currentPlayer,
       matches: [] as secretHitlerMatchPlayer[],
     };
@@ -128,7 +129,6 @@ export default defineComponent({
   },
   methods: {
     image,
-    percentageFormatter,
     loadMatches() {
       matchesQuery
         .where(
@@ -161,7 +161,7 @@ export default defineComponent({
         { message: "totale partite", value: matches.length },
         { message: "vittorie", value: wonMatches.length },
         { message: "sconfitte", value: lostMatches.length },
-        { message: "vittorie", value: `${percentageFormatter(ratio)} %` },
+        { message: "vittorie", value: `${formatter.percentageFormatter(ratio)} %` },
         { message: "penalità", value: penaltyPoints.length },
         {
           message: "partite liberali",

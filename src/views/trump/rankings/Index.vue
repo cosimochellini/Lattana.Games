@@ -47,13 +47,13 @@
             v-if="selectedOrderby !== allOrderBy.ratio"
             :background="bindBadgeColor(index)"
             :textColor="bindBadgeTextColor(index)"
-            :text="smallNumberFormatter(rank[selectedOrderby])"
+            :text="formatter.smallNumberFormatter(rank[selectedOrderby])"
           />
           <badge
             v-else
             :background="bindBadgeColor(index)"
             :textColor="bindBadgeTextColor(index)"
-            :text="percentageFormatter(rank[selectedOrderby]) + '%'"
+            :text="formatter.percentageFormatter(rank[selectedOrderby]) + '%'"
           />
         </span>
       </div>
@@ -66,22 +66,21 @@ import { Dictionary } from "@/types";
 import { defineComponent } from "vue";
 import { image } from "@/instances/sanity";
 import { byNumber, byValue } from "sort-es";
+import { formatter } from "@/utils/formatters";
 import Badge from "@/components/base/Badge.vue";
 import { groq } from "@/utils/GroqQueryBuilder";
-import { sanityTypes } from "@/constants/roleConstants";
+import { tailwind } from "@/services/tailwind.service";
 import { orderby, information } from "@/types/ranking";
 import { trumpMatch, trumpMatchPlayer } from "@/types";
+import { sanityTypes } from "@/constants/roleConstants";
 import { orderbyDirection, trumpOrderBy } from "@/types/ranking";
 import { notification } from "@/services/notification.service";
-import { percentageFormatter, smallNumberFormatter } from "@/utils/formatters";
 
 const matchesQuery = new groq.QueryBuilder(sanityTypes.trumpMatch)
   .select(
     "..., players[] -> { player ->, match ->{callingPlayer ->, ...}, ...}"
   )
   .cached();
-
-const background = ["ring-yellow-400", "ring-gray-300", "ring-yellow-700"];
 
 declare type trumpInformation = {
   rank: {
@@ -99,6 +98,7 @@ export default defineComponent({
   name: "Ranking",
   data() {
     return {
+      formatter,
       allOrderBy,
       orderbyDirection,
       selectedOrderby: allOrderBy.win,
@@ -108,8 +108,6 @@ export default defineComponent({
   },
   methods: {
     image,
-    percentageFormatter,
-    smallNumberFormatter,
     bindRealIndex(index: number, considerReverse: boolean): number {
       const desc = this.selectedOrderbyDirection === orderbyDirection.desc;
       const reverse = reverseOrderBy.includes(this.selectedOrderby);
@@ -125,7 +123,7 @@ export default defineComponent({
 
       return {
         ring: true,
-        [background[realIndex]]: true,
+        [tailwind.rankingBackground[realIndex]]: true,
       };
     },
     bindBadgeColor(index: number): string {
@@ -133,21 +131,12 @@ export default defineComponent({
 
       const rate = realIndex / this.sortedRanks.length;
 
-      if (rate < 0.16) return "bg-green-400";
-      if (rate < 0.33) return "bg-green-300";
-      if (rate < 0.5) return "bg-green-200";
-
-      if (rate < 0.66) return "bg-red-200";
-      if (rate < 0.83) return "bg-red-300";
-
-      return "bg-red-400";
+      return tailwind.bindRate(rate);
     },
     bindBadgeTextColor(index: number): string {
       const realIndex = this.bindRealIndex(index, true);
 
-      return realIndex / this.sortedRanks.length < 0.5
-        ? "text-green-800"
-        : "text-red-800";
+      return tailwind.text(realIndex / this.sortedRanks.length < 0.5);
     },
   },
   activated() {

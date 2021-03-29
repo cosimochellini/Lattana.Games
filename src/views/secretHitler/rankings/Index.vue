@@ -45,13 +45,13 @@
             v-if="selectedOrderby !== allOrderBy.ratio"
             :background="bindBadgeColor(index)"
             :textColor="bindBadgeTextColor(index)"
-            :text="smallNumberFormatter(rank[selectedOrderby])"
+            :text="formatter.smallNumberFormatter(rank[selectedOrderby])"
           />
           <badge
             v-else
             :background="bindBadgeColor(index)"
             :textColor="bindBadgeTextColor(index)"
-            :text="percentageFormatter(rank[selectedOrderby]) + '%'"
+            :text="formatter.percentageFormatter(rank[selectedOrderby]) + '%'"
           />
         </span>
       </div>
@@ -66,6 +66,7 @@ import { orderby } from "@/types/ranking";
 import { image } from "@/instances/sanity";
 import { byNumber, byValue } from "sort-es";
 import { secretHitlerMatch } from "@/types";
+import { formatter } from "@/utils/formatters";
 import Badge from "@/components/base/Badge.vue";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { tailwind } from "@/services/tailwind.service";
@@ -73,7 +74,6 @@ import { sanityTypes } from "@/constants/roleConstants";
 import { notification } from "@/services/notification.service";
 import { RankingList } from "@/utils/classes/stats/ranks/baseRank";
 import { orderbyDirection, secretHitlerOrderBy } from "@/types/ranking";
-import { percentageFormatter, smallNumberFormatter } from "@/utils/formatters";
 import { secretHitlerRank } from "@/utils/classes/stats/ranks/secretHitlerRank";
 
 const matchesQuery = new groq.QueryBuilder(sanityTypes.secretHitlerMatch)
@@ -93,6 +93,7 @@ export default defineComponent({
   name: "Ranking",
   data() {
     return {
+      formatter,
       allOrderBy,
       orderbyDirection,
       selectedOrderby: allOrderBy.win,
@@ -102,8 +103,6 @@ export default defineComponent({
   },
   methods: {
     image,
-    percentageFormatter,
-    smallNumberFormatter,
     bindRealIndex(index: number, considerReverse: boolean): number {
       const desc = this.selectedOrderbyDirection === orderbyDirection.desc;
       const reverse = reverseOrderBy.includes(this.selectedOrderby);

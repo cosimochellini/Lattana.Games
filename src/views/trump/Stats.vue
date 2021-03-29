@@ -59,7 +59,7 @@
                 class="rounded-xl px-2 py-1 font-semibold"
                 :class="tailwind.backgroundRatio(mate.ratio)"
               >
-                {{ percentageFormatter(mate.ratio) }} %
+                {{ formatter.percentageFormatter(mate.ratio) }} %
               </span>
             </span>
           </div>
@@ -92,7 +92,7 @@
                 class="rounded-xl px-2 py-1 font-semibold"
                 :class="tailwind.backgroundRatio(mate.ratio, true)"
               >
-                {{ percentageFormatter(mate.ratio) }} %
+                {{ formatter.percentageFormatter(mate.ratio) }} %
               </span>
             </span>
           </div>
@@ -104,14 +104,14 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { trumpMatchPlayer } from "@/types";
 import { image } from "@/instances/sanity";
+import { formatter } from "@/utils/formatters";
 import { auth } from "@/services/auth.service";
 import { groq } from "@/utils/GroqQueryBuilder";
-import { trumpMatchPlayer } from "@/types";
 import { tailwind } from "@/services/tailwind.service";
 import { Mate } from "@/utils/classes/stats/baseStats";
 import { sanityTypes } from "@/constants/roleConstants";
-import { percentageFormatter } from "@/utils/formatters";
 import { TrumpStats } from "@/utils/classes/stats/trumpMatchStats";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 
@@ -125,6 +125,7 @@ export default defineComponent({
   data() {
     return {
       tailwind,
+      formatter,
       matches: [] as trumpMatchPlayer[],
       currentPlayer: auth.currentPlayer,
     };
@@ -134,7 +135,6 @@ export default defineComponent({
   },
   methods: {
     image,
-    percentageFormatter,
     loadMatches() {
       matchesQuery
         .where(
@@ -168,7 +168,7 @@ export default defineComponent({
         { message: "totalMatches", value: matches.length },
         { message: "totalWin", value: wonMatches.length },
         { message: "totalLose", value: lostMatches.length },
-        { message: "win", value: `${percentageFormatter(ratio)} %` },
+        { message: "win", value: `${formatter.percentageFormatter(ratio)} %` },
         { message: "penaltyPoints", value: penaltyPoints.length },
         { message: "120Match", value: fullScoreMatches.length },
         {
@@ -177,11 +177,11 @@ export default defineComponent({
         },
         {
           message: "callingMatches",
-          value: `${percentageFormatter(callingMatchesRatio)} %`,
+          value: `${formatter.percentageFormatter(callingMatchesRatio)} %`,
         },
         {
           message: "callingMatchesWin",
-          value: `${percentageFormatter(callingStats.ratio)} %`,
+          value: `${formatter.percentageFormatter(callingStats.ratio)} %`,
         },
         {
           message: "mediaCallingScore",

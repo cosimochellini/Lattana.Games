@@ -96,7 +96,6 @@ import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
 import { auth } from "@/services/auth.service";
 import Badge from "@/components/base/Badge.vue";
-import { dayFormatter } from "@/utils/formatters";
 import WinBadge from "@/components/base/WinBadge.vue";
 import { trump } from "@/services/games/trump.service";
 import { tailwind } from "@/services/tailwind.service";
@@ -137,7 +136,6 @@ export default defineComponent({
       editMatch,
       getMoreData,
       deleteMatch,
-      dayFormatter,
       getCurrentPlayer,
       moreDataAvailable,
     };

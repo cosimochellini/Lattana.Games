@@ -38,19 +38,19 @@
             <i
               class="fas fa-birthday-cake h-4 fill-current text-green-700 pr-4 fa-lg"
             ></i>
-            {{ dateFormatter(currentPlayer.birthday) }}
+            {{ formatter.dateFormatter(currentPlayer.birthday) }}
           </p>
           <p
             class="pt-4 text-base font-bold flex items-center justify-center lg:justify-start"
           >
-            <i
-              class="fas fa-lock h-4 fill-current text-green-700 pr-4 fa-lg"
-            ></i>
-            {{ longNumberFormatter(currentPlayer.pin) }}
+            <i class="fas fa-lock h-4 fill-current text-green-700 pr-4 fa-lg">
+            </i>
+            {{ formatter.longNumberFormatter(currentPlayer.pin) }}
           </p>
           <p class="pt-8 text-sm">
-            Creato il {{ dayFormatter(currentPlayer._createdAt) }}, ultima
-            modifica il {{ dayFormatter(currentPlayer._updatedAt) }}
+            Creato il {{ formatter.dayFormatter(currentPlayer._createdAt) }},
+            ultima modifica il
+            {{ formatter.dayFormatter(currentPlayer._updatedAt) }}
           </p>
 
           <div class="pt-12 pb-8">
@@ -92,15 +92,11 @@
 <script lang="ts">
 import { player } from "@/types";
 import { auth } from "@/services/auth.service";
+import { formatter } from "@/utils/formatters";
 import { settings } from "@/instances/package.json";
 import { PhotoTaker } from "@/services/photoTaker.service";
 import { image as imageBuilder } from "@/instances/sanity";
 import { computed, defineComponent, onMounted, ref, unref } from "vue";
-import {
-  dayFormatter,
-  dateFormatter,
-  longNumberFormatter,
-} from "@/utils/formatters";
 
 export default defineComponent({
   name: "Profile",
@@ -128,11 +124,9 @@ export default defineComponent({
     return {
       load,
       settings,
-      dayFormatter,
+      formatter,
       profileImage,
-      dateFormatter,
       currentPlayer,
-      longNumberFormatter,
     };
   },
 });
