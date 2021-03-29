@@ -6,6 +6,8 @@ import { notification } from "../notification.service";
 import { dialog, dialogType } from "../dialog.service";
 import { sanityTypes } from "@/constants/roleConstants";
 import { useInfiniteLoading } from "@/composable/infiniteLoading";
+import { trumpRank } from "@/utils/classes/stats/ranks/trumpRank";
+import { RankingList } from "@/utils/classes/stats/ranks/baseRank";
 import { groq, reference, referenceWithKey } from "@/utils/GroqQueryBuilder";
 import { player, sanityDocument, trumpMatch, trumpMatchPlayer } from "@/types";
 
@@ -29,6 +31,16 @@ export const trump = {
     const { getMoreData, items: matches, moreDataAvailable } = infiniteLoading;
 
     return { getMoreData, matches, moreDataAvailable };
+  },
+
+  getRanking() {
+    return new groq.QueryBuilder(sanityTypes.trumpMatch)
+      .select(
+        "..., players[] -> { player ->, match ->{callingPlayer ->, ...}, ...}"
+      )
+      .cached()
+      .fetch<trumpMatch[]>()
+      .then((matches) => new RankingList(matches, trumpRank.create));
   },
 
   async saveNewMatch(match: trumpMatch) {

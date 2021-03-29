@@ -1,15 +1,3 @@
-import { player } from ".";
-
-export type information = {
-  profile: player;
-  rank: {
-    win: number;
-    lost: number;
-    ratio: number;
-    totalMatches: number;
-  };
-};
-
 export enum orderby {
   win = "win",
   ratio = "ratio",

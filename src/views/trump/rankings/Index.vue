@@ -26,20 +26,20 @@
     </div>
     <div
       class="flex flex-col justify-center px-3 py-3 bg-white border border-gray-300 rounded-xl my-1 mx-2 max-w-2xl text-center lg:m-auto lg:mt-1"
-      v-for="({ profile, rank }, index) in sortedRanks"
-      :key="profile.nickname"
+      v-for="(rank, index) in sortedRanks"
+      :key="rank.profile.nickname"
     >
       <div class="grid grid-cols-4 items-center text-center">
         <img
           class="w-10 h-10 rounded-full col-span-1 m-auto"
-          :src="image(profile.profileImage, 500)"
+          :src="image(rank.profile.profileImage, 500)"
           :class="bindImageRing(index)"
-          :title="profile.name + ' ' + profile.surname"
+          :title="rank.profile.name + ' ' + rank.profile.surname"
         />
         <span class="col-span-2 m-auto">
           <span class="text-gray-700 font-semibold font-sans tracking-wide">
-            {{ profile.name }}
-            {{ profile.surname }}
+            {{ rank.profile.name }}
+            {{ rank.profile.surname }}
           </span>
         </span>
         <span class="col-span-1 m-auto">
@@ -64,34 +64,25 @@
 <script lang="ts">
 import { Dictionary } from "@/types";
 import { defineComponent } from "vue";
+import { orderby } from "@/types/ranking";
 import { image } from "@/instances/sanity";
 import { byNumber, byValue } from "sort-es";
 import { formatter } from "@/utils/formatters";
 import Badge from "@/components/base/Badge.vue";
-import { groq } from "@/utils/GroqQueryBuilder";
 import { tailwind } from "@/services/tailwind.service";
-import { orderby, information } from "@/types/ranking";
 import { trumpMatch, trumpMatchPlayer } from "@/types";
-import { sanityTypes } from "@/constants/roleConstants";
+import { trump } from "@/services/games/trump.service";
 import { orderbyDirection, trumpOrderBy } from "@/types/ranking";
-import { notification } from "@/services/notification.service";
-
-const matchesQuery = new groq.QueryBuilder(sanityTypes.trumpMatch)
-  .select(
-    "..., players[] -> { player ->, match ->{callingPlayer ->, ...}, ...}"
-  )
-  .cached();
-
-declare type trumpInformation = {
-  rank: {
-    calculatedScore: number;
-    calledMatches: number;
-    calledMatches120: number;
-  };
-} & information;
+import { trumpRank } from "@/utils/classes/stats/ranks/trumpRank";
+import { RankingList } from "@/utils/classes/stats/ranks/baseRank";
 
 const allOrderBy = { ...orderby, ...trumpOrderBy };
 const reverseOrderBy = [orderby.lost];
+
+const defaultRanking = new RankingList<trumpMatch, trumpMatchPlayer, trumpRank>(
+  [],
+  trumpRank.create
+);
 
 export default defineComponent({
   components: { Badge },
@@ -102,7 +93,7 @@ export default defineComponent({
       allOrderBy,
       orderbyDirection,
       selectedOrderby: allOrderBy.win,
-      matches: [] as trumpMatch[],
+      ranking: defaultRanking,
       selectedOrderbyDirection: orderbyDirection.desc,
     };
   },
@@ -140,72 +131,16 @@ export default defineComponent({
     },
   },
   activated() {
-    matchesQuery
-      .fetch<trumpMatch[]>()
-      .then((matches) => (this.matches = matches))
-      .catch(notification.warning);
+    trump.getRanking().then((rank) => (this.ranking = rank));
   },
   computed: {
-    ranking(): trumpInformation[] {
-      const ranks = [] as trumpInformation[];
-
-      for (const nickname of this.allPlayers) {
-        const playerFn = (player: trumpMatchPlayer) =>
-          player.player.nickname === nickname;
-
-        const playerMatches = this.matches
-          .map((match) => match.players.find(playerFn))
-          .filter(Boolean) as trumpMatchPlayer[];
-
-        const profile = playerMatches[0].player;
-
-        const winMatches = playerMatches.filter((player) => player.win);
-        const win = winMatches.length;
-
-        const calculatedScore = winMatches.reduce((value, match) => {
-          return match.match.startingScore === 120 ? value + 2 : value + 1;
-        }, 0);
-
-        const lost = playerMatches.length - win;
-
-        const ratio = win / playerMatches.length;
-
-        const calledMatches = playerMatches.filter((match) => {
-          return match.match.callingPlayer._id === profile._id;
-        });
-
-        const match120 = calledMatches.filter(
-          (match) => match.match.startingScore === 120
-        );
-
-        const rank = {
-          win,
-          lost,
-          ratio,
-          calculatedScore,
-          calledMatches120: match120.length,
-          totalMatches: playerMatches.length,
-          calledMatches: calledMatches.length,
-        };
-
-        ranks.push({ rank, profile });
-      }
-      return ranks;
-    },
-    allPlayers(): string[] {
-      return [
-        ...new Set(
-          this.matches.flatMap((x) => x.players.map((p) => p.player.nickname))
-        ),
-      ];
-    },
-    sortedRanks(): trumpInformation[] {
+    sortedRanks(): trumpRank[] {
       const desc = this.selectedOrderbyDirection === orderbyDirection.desc;
       const type = this.selectedOrderby;
 
       return this.ranking
-        .concat()
-        .sort(byValue(({ rank }) => rank[type], byNumber({ desc })));
+        .toList()
+        .sort(byValue((rank) => rank[type], byNumber({ desc })));
     },
   },
 });

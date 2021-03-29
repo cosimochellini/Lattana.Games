@@ -63,10 +63,14 @@ export abstract class BaseRank<
     this.profile = playerMatches[0].player;
   }
 
-  public get win(): number {
+  protected get wins() {
     return this.safeCache(orderby.win, () =>
-      this._playerMatches.filter((player) => player.win)
-    ).length;
+      this._playerMatches.filter(({ win }) => win)
+    );
+  }
+
+  public get win(): number {
+    return this.wins.length;
   }
 
   public get lost(): number {

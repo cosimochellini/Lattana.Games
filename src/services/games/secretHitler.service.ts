@@ -2,7 +2,7 @@ import { uuid } from "@/utils/uuid";
 import { auth } from "../auth.service";
 import { overlay } from "../overlay.service";
 import { sanityClient } from "@/instances/sanity";
-import { secretHitlerMatchPlayer } from "@/types";
+import { player, secretHitlerMatchPlayer } from "@/types";
 import { notification } from "../notification.service";
 import { dialog, dialogType } from "../dialog.service";
 import { sanityTypes } from "@/constants/roleConstants";
@@ -10,6 +10,7 @@ import { sanityDocument, secretHitlerMatch } from "@/types";
 import { byRole } from "@/utils/sortables/secretHitlerSortables";
 import { useInfiniteLoading } from "@/composable/infiniteLoading";
 import { groq, reference, referenceWithKey } from "@/utils/GroqQueryBuilder";
+import { SecretHitlerStats } from "@/utils/classes/stats/secretHitlerMatchStats";
 
 const currentPlayer = auth.currentPlayer;
 
@@ -97,5 +98,18 @@ export const secretHitler = {
     } finally {
       overlay.hide();
     }
+  },
+
+  getStats(player: player) {
+    return new groq.QueryBuilder(sanityTypes.secretHitlerMatchPlayer)
+      .select("..., player ->, match -> {..., players[] -> {...,player -> } }")
+      .where(
+        new groq.ConditionBuilder("player._ref == $playerId").params({
+          playerId: player._id,
+        })
+      )
+      .cached()
+      .fetch<secretHitlerMatchPlayer[]>()
+      .then((matches) => new SecretHitlerStats(matches, player));
   },
 };

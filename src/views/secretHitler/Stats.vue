@@ -99,20 +99,13 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { image } from "@/instances/sanity";
+import { formatter } from "@/utils/formatters";
 import { auth } from "@/services/auth.service";
-import { groq } from "@/utils/GroqQueryBuilder";
 import { tailwind } from "@/services/tailwind.service";
 import { Mate } from "@/utils/classes/stats/baseStats";
-import { sanityTypes } from "@/constants/roleConstants";
-import { secretHitlerMatchPlayer } from "@/types";
-import { formatter } from "@/utils/formatters";
+import { secretHitler } from "@/services/games/secretHitler.service";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { SecretHitlerStats } from "@/utils/classes/stats/secretHitlerMatchStats";
-
-const matchesQuery = new groq.QueryBuilder(sanityTypes.secretHitlerMatchPlayer)
-  .select("..., player ->, match -> {..., players[] -> {...,player -> } }")
-  .cached()
-  .freeze();
 
 export default defineComponent({
   components: { UserAutocomplete },
@@ -121,7 +114,7 @@ export default defineComponent({
       tailwind,
       formatter,
       currentPlayer: auth.currentPlayer,
-      matches: [] as secretHitlerMatchPlayer[],
+      stats: new SecretHitlerStats([], auth.currentPlayer),
     };
   },
   mounted() {
@@ -130,14 +123,9 @@ export default defineComponent({
   methods: {
     image,
     loadMatches() {
-      matchesQuery
-        .where(
-          new groq.ConditionBuilder("player._ref == $playerId").params({
-            playerId: this.currentPlayer._id,
-          })
-        )
-        .fetch<secretHitlerMatchPlayer[]>()
-        .then((matches) => (this.matches = matches));
+      secretHitler
+        .getStats(this.currentPlayer)
+        .then((stats) => (this.stats = stats));
     },
   },
   watch: {
@@ -149,10 +137,9 @@ export default defineComponent({
     },
   },
   computed: {
-    stats(): SecretHitlerStats {
-      return new SecretHitlerStats(this.matches, this.currentPlayer);
-    },
     statistics(): { message: string; value: string | number }[] {
+      if (!this.stats.matches) return [];
+
       const { matches, wonMatches, lostMatches, ratio } = this.stats;
       const { penaltyPoints, liberalMatches, hitlerMatches } = this.stats;
       const { fascistMatches } = this.stats;
@@ -161,7 +148,10 @@ export default defineComponent({
         { message: "totale partite", value: matches.length },
         { message: "vittorie", value: wonMatches.length },
         { message: "sconfitte", value: lostMatches.length },
-        { message: "vittorie", value: `${formatter.percentageFormatter(ratio)} %` },
+        {
+          message: "vittorie",
+          value: `${formatter.percentageFormatter(ratio)} %`,
+        },
         { message: "penalità", value: penaltyPoints.length },
         {
           message: "partite liberali",
