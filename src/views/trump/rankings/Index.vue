@@ -69,20 +69,14 @@ import { image } from "@/instances/sanity";
 import { byNumber, byValue } from "sort-es";
 import { formatter } from "@/utils/formatters";
 import Badge from "@/components/base/Badge.vue";
-import { tailwind } from "@/services/tailwind.service";
-import { trumpMatch, trumpMatchPlayer } from "@/types";
 import { trump } from "@/services/games/trump.service";
+import { tailwind } from "@/services/tailwind.service";
 import { orderbyDirection, trumpOrderBy } from "@/types/ranking";
 import { trumpRank } from "@/utils/classes/stats/ranks/trumpRank";
 import { RankingList } from "@/utils/classes/stats/ranks/baseRank";
 
 const allOrderBy = { ...orderby, ...trumpOrderBy };
 const reverseOrderBy = [orderby.lost];
-
-const defaultRanking = new RankingList<trumpMatch, trumpMatchPlayer, trumpRank>(
-  [],
-  trumpRank.create
-);
 
 export default defineComponent({
   components: { Badge },
@@ -93,7 +87,7 @@ export default defineComponent({
       allOrderBy,
       orderbyDirection,
       selectedOrderby: allOrderBy.win,
-      ranking: defaultRanking,
+      ranking: RankingList.default(trumpRank.create),
       selectedOrderbyDirection: orderbyDirection.desc,
     };
   },

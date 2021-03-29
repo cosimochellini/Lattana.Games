@@ -9,8 +9,10 @@ import { sanityTypes } from "@/constants/roleConstants";
 import { sanityDocument, secretHitlerMatch } from "@/types";
 import { byRole } from "@/utils/sortables/secretHitlerSortables";
 import { useInfiniteLoading } from "@/composable/infiniteLoading";
+import { RankingList } from "@/utils/classes/stats/ranks/baseRank";
 import { groq, reference, referenceWithKey } from "@/utils/GroqQueryBuilder";
 import { SecretHitlerStats } from "@/utils/classes/stats/secretHitlerMatchStats";
+import { secretHitlerRank } from "@/utils/classes/stats/ranks/secretHitlerRank";
 
 const currentPlayer = auth.currentPlayer;
 
@@ -111,5 +113,13 @@ export const secretHitler = {
       .cached()
       .fetch<secretHitlerMatchPlayer[]>()
       .then((matches) => new SecretHitlerStats(matches, player));
+  },
+
+  getRanking() {
+    return new groq.QueryBuilder(sanityTypes.secretHitlerMatch)
+      .select("..., players[] -> { player ->, ...}")
+      .cached()
+      .fetch<secretHitlerMatch[]>()
+      .then((matches) => new RankingList(matches, secretHitlerRank.create));
   },
 };

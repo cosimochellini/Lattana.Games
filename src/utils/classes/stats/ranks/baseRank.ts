@@ -46,6 +46,14 @@ export class RankingList<
       this._groupedRanks.push(this._ctor(playerMatches));
     }
   }
+
+  public static default<
+    TMatch extends IMatch<TMatch, TMatchPlayer>,
+    TMatchPlayer extends IMatchPlayer<TMatch, TMatchPlayer>,
+    TRank extends BaseRank<TMatch, TMatchPlayer>
+  >(fac: (items: TMatchPlayer[]) => TRank) {
+    return new RankingList<TMatch, TMatchPlayer, TRank>([] as TMatch[], fac);
+  }
 }
 
 export abstract class BaseRank<

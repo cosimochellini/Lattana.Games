@@ -65,20 +65,13 @@ import { defineComponent } from "vue";
 import { orderby } from "@/types/ranking";
 import { image } from "@/instances/sanity";
 import { byNumber, byValue } from "sort-es";
-import { secretHitlerMatch } from "@/types";
 import { formatter } from "@/utils/formatters";
 import Badge from "@/components/base/Badge.vue";
-import { groq } from "@/utils/GroqQueryBuilder";
 import { tailwind } from "@/services/tailwind.service";
-import { sanityTypes } from "@/constants/roleConstants";
-import { notification } from "@/services/notification.service";
 import { RankingList } from "@/utils/classes/stats/ranks/baseRank";
+import { secretHitler } from "@/services/games/secretHitler.service";
 import { orderbyDirection, secretHitlerOrderBy } from "@/types/ranking";
 import { secretHitlerRank } from "@/utils/classes/stats/ranks/secretHitlerRank";
-
-const matchesQuery = new groq.QueryBuilder(sanityTypes.secretHitlerMatch)
-  .select("..., players[] -> { player ->, ...}")
-  .cached();
 
 const allOrderBy = { ...orderby, ...secretHitlerOrderBy };
 
@@ -97,8 +90,8 @@ export default defineComponent({
       allOrderBy,
       orderbyDirection,
       selectedOrderby: allOrderBy.win,
-      matches: [] as secretHitlerMatch[],
       selectedOrderbyDirection: orderbyDirection.desc,
+      ranking: RankingList.default(secretHitlerRank.create),
     };
   },
   methods: {
@@ -135,21 +128,15 @@ export default defineComponent({
     },
   },
   activated() {
-    matchesQuery
-      .fetch<secretHitlerMatch[]>()
-      .then((matches) => (this.matches = matches))
-      .catch(notification.warning);
+    secretHitler.getRanking().then((rank) => (this.ranking = rank));
   },
   computed: {
-    rankingList(): secretHitlerRank[] {
-      return new RankingList(this.matches, secretHitlerRank.create).toList();
-    },
     sortedRanks(): secretHitlerRank[] {
       const desc = this.selectedOrderbyDirection === orderbyDirection.desc;
       const type = this.selectedOrderby;
 
-      return this.rankingList
-        .concat()
+      return this.ranking
+        .toList()
         .sort(byValue((rank) => rank[type], byNumber({ desc })));
     },
   },
