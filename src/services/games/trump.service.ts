@@ -44,41 +44,50 @@ export const trump = {
   },
 
   async saveNewMatch(match: trumpMatch) {
-    if (match.players.length !== 5)
-      throw new Error("incorrect number of players");
+    if (match.players.length !== 5) return false;
 
-    const matchToCreate = {
-      _id: uuid(),
-      _type: sanityTypes.trumpMatch,
-      matchDate: match.matchDate,
-      startingScore: match.startingScore,
-      finalScore: match.finalScore,
-      callingPlayer: reference(match.callingPlayer),
-      players: [],
-      createdBy: reference(currentPlayer),
-      updatedBy: undefined,
-    } as sanityDocument<trumpMatch>;
-
-    await sanityClient.create(matchToCreate);
-
-    const playersPromises = match.players.map((p) =>
-      sanityClient.create({
+    try {
+      const matchToCreate = {
         _id: uuid(),
-        _key: uuid(),
-        _type: sanityTypes.trumpMatchPlayer,
-        win: p.win,
-        penaltyPoint: p.penaltyPoint,
-        player: reference(p.player),
-        match: reference(matchToCreate),
-      } as sanityDocument<trumpMatchPlayer>)
-    );
+        _type: sanityTypes.trumpMatch,
+        matchDate: match.matchDate,
+        startingScore: match.startingScore,
+        finalScore: match.finalScore,
+        callingPlayer: reference(match.callingPlayer),
+        players: [],
+        createdBy: reference(currentPlayer),
+        updatedBy: undefined,
+      } as sanityDocument<trumpMatch>;
 
-    const savedPlayers = await Promise.all(playersPromises);
+      overlay.show();
 
-    return await sanityClient
-      .patch(matchToCreate._id)
-      .append("players", savedPlayers.map(referenceWithKey))
-      .commit();
+      await sanityClient.create(matchToCreate);
+
+      const savedPlayers = await Promise.all(
+        match.players.map((p) =>
+          sanityClient.create({
+            _id: uuid(),
+            _key: uuid(),
+            _type: sanityTypes.trumpMatchPlayer,
+            win: p.win,
+            penaltyPoint: p.penaltyPoint,
+            player: reference(p.player),
+            match: reference(matchToCreate),
+          } as sanityDocument<trumpMatchPlayer>)
+        )
+      );
+
+      await sanityClient
+        .patch(matchToCreate._id)
+        .append("players", savedPlayers.map(referenceWithKey))
+        .commit();
+
+      notification.success("salvataggio eseguito");
+
+      return true;
+    } catch (error) {
+      notification.danger(error);
+    }
   },
 
   async updateMatch(match: trumpMatch) {

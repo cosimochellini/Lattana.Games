@@ -4,7 +4,11 @@
       <h2 class="base-subtitle my-1 py-1 first-capitalize">
         {{ $t("trump.form.currentPlayer") }}
       </h2>
-      <user-autocomplete v-model="currentPlayer" class="block px-2 py-1" />
+      <user-autocomplete
+        v-model="currentPlayer"
+        class="block px-2 py-1"
+        :exactPlayers="availablePlayers"
+      />
     </div>
     <h2 class="base-title my-1 py-1 first-capitalize">
       {{ $t("trump.titles.stats") }} 📊
@@ -104,11 +108,11 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { trumpMatchPlayer } from "@/types";
 import { image } from "@/instances/sanity";
 import { formatter } from "@/utils/formatters";
 import { auth } from "@/services/auth.service";
 import { groq } from "@/utils/GroqQueryBuilder";
+import { player, trumpMatchPlayer } from "@/types";
 import { tailwind } from "@/services/tailwind.service";
 import { Mate } from "@/utils/classes/stats/baseStats";
 import { sanityTypes } from "@/constants/roleConstants";
@@ -120,6 +124,14 @@ const matchesQuery = new groq.QueryBuilder(sanityTypes.trumpMatchPlayer)
   .cached()
   .freeze();
 
+const uniquePlayers = new groq.QueryBuilder(sanityTypes.player)
+  .where(
+    new groq.ConditionBuilder(
+      "_id in *[_type=='trumpMatchPlayer' ].player._ref"
+    )
+  )
+  .cached();
+
 export default defineComponent({
   components: { UserAutocomplete },
   data() {
@@ -128,10 +140,15 @@ export default defineComponent({
       formatter,
       matches: [] as trumpMatchPlayer[],
       currentPlayer: auth.currentPlayer,
+      availablePlayers: [] as player[],
     };
   },
   mounted() {
     this.loadMatches();
+
+    uniquePlayers
+      .fetch<player[]>()
+      .then((players) => (this.availablePlayers = players));
   },
   methods: {
     image,

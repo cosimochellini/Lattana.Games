@@ -110,6 +110,7 @@
 import draggable from "vuedraggable";
 import { range } from "@/utils/range";
 import { defineComponent } from "vue";
+import { byString, byValue } from "sort-es";
 import { mergeObjects } from "@/utils/merge";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { tailwind } from "@/services/tailwind.service";
@@ -151,7 +152,9 @@ export default defineComponent({
       )
       .fetch<secretHitlerMatchPlayer[]>()
       .then((players) => {
-        this.remainingPlayers = players.map((x) => x.player);
+        this.remainingPlayers = players
+          .map((x) => x.player)
+          .sort(byValue((x) => x.name, byString()));
       });
   },
   deactivated() {
