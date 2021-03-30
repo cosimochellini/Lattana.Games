@@ -99,7 +99,7 @@ class QueryBuilder {
 
     return this._sanityClient.fetch<T>(query, params).then((response) => {
       if (this._freezed) this.cleanUnFreezed();
-      return response;
+      return response as T;
     });
   }
 
@@ -130,7 +130,7 @@ class QueryBuilder {
     const orderBy = this._orderBy.length
       ? `| ${this._orderBy
           .map((x) => x.value)
-          .map(({ prop, desc }) => `order(${prop} ${desc ? "desc" : "asc"})`)
+          .map(({ prop, desc }) => ` order(${prop} ${desc ? "desc" : "asc"}) `)
           .join(" | ")}`
       : "";
 

@@ -2,7 +2,11 @@
   <div class="max-w-xl md:max-w-4xl px-4 py-4 mx-auto">
     <div class="my-4">
       <h2 class="base-subtitle">Giocatore corrente</h2>
-      <user-autocomplete v-model="currentPlayer" class="block px-2 py-1" />
+      <user-autocomplete
+        v-model="currentPlayer"
+        :exactPlayers="availablePlayers"
+        class="block px-2 py-1"
+      />
     </div>
     <h2 class="base-title">Statistiche 📊</h2>
     <div
@@ -97,6 +101,7 @@
 </template>
 
 <script lang="ts">
+import { player } from "@/types";
 import { defineComponent } from "vue";
 import { image } from "@/instances/sanity";
 import { formatter } from "@/utils/formatters";
@@ -113,12 +118,17 @@ export default defineComponent({
     return {
       tailwind,
       formatter,
+      availablePlayers: [] as player[],
       currentPlayer: auth.currentPlayer,
       stats: new SecretHitlerStats([], auth.currentPlayer),
     };
   },
   mounted() {
     this.loadMatches();
+
+    secretHitler
+      .getActualPlayers()
+      .then((players) => (this.availablePlayers = players));
   },
   methods: {
     image,

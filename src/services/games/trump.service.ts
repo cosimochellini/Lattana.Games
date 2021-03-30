@@ -10,6 +10,7 @@ import { trumpRank } from "@/utils/classes/stats/ranks/trumpRank";
 import { RankingList } from "@/utils/classes/stats/ranks/baseRank";
 import { groq, reference, referenceWithKey } from "@/utils/GroqQueryBuilder";
 import { player, sanityDocument, trumpMatch, trumpMatchPlayer } from "@/types";
+import { TrumpStats } from "@/utils/classes/stats/trumpMatchStats";
 
 const currentPlayer = auth.currentPlayer;
 
@@ -31,6 +32,31 @@ export const trump = {
     const { getMoreData, items: matches, moreDataAvailable } = infiniteLoading;
 
     return { getMoreData, matches, moreDataAvailable };
+  },
+
+  getStats(player: player) {
+    return new groq.QueryBuilder(sanityTypes.trumpMatchPlayer)
+      .select("..., player ->, match -> {..., players[] -> {...,player -> } }")
+      .cached()
+      .where(
+        new groq.ConditionBuilder("player._ref == $playerId").params({
+          playerId: player._id,
+        })
+      )
+      .fetch<trumpMatchPlayer[]>()
+      .then((matches) => new TrumpStats(matches, player));
+  },
+
+  getActualPlayers() {
+    return new groq.QueryBuilder(sanityTypes.player)
+      .where(
+        new groq.ConditionBuilder(
+          "_id in *[_type=='trumpMatchPlayer' && win == true ].player._ref"
+        )
+      )
+      .orderBy(new groq.OrderBuilder("name"))
+      .cached()
+      .fetch<player[]>();
   },
 
   getRanking() {

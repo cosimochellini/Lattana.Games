@@ -107,30 +107,16 @@
 </template>
 
 <script lang="ts">
+import { player } from "@/types";
 import { defineComponent } from "vue";
 import { image } from "@/instances/sanity";
-import { formatter } from "@/utils/formatters";
 import { auth } from "@/services/auth.service";
-import { groq } from "@/utils/GroqQueryBuilder";
-import { player, trumpMatchPlayer } from "@/types";
+import { formatter } from "@/utils/formatters";
+import { trump } from "@/services/games/trump.service";
 import { tailwind } from "@/services/tailwind.service";
 import { Mate } from "@/utils/classes/stats/baseStats";
-import { sanityTypes } from "@/constants/roleConstants";
 import { TrumpStats } from "@/utils/classes/stats/trumpMatchStats";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
-
-const matchesQuery = new groq.QueryBuilder(sanityTypes.trumpMatchPlayer)
-  .select("..., player ->, match -> {..., players[] -> {...,player -> } }")
-  .cached()
-  .freeze();
-
-const uniquePlayers = new groq.QueryBuilder(sanityTypes.player)
-  .where(
-    new groq.ConditionBuilder(
-      "_id in *[_type=='trumpMatchPlayer' ].player._ref"
-    )
-  )
-  .cached();
 
 export default defineComponent({
   components: { UserAutocomplete },
@@ -138,29 +124,22 @@ export default defineComponent({
     return {
       tailwind,
       formatter,
-      matches: [] as trumpMatchPlayer[],
-      currentPlayer: auth.currentPlayer,
       availablePlayers: [] as player[],
+      currentPlayer: auth.currentPlayer,
+      stats: new TrumpStats([], auth.currentPlayer),
     };
   },
   mounted() {
     this.loadMatches();
 
-    uniquePlayers
-      .fetch<player[]>()
+    trump
+      .getActualPlayers()
       .then((players) => (this.availablePlayers = players));
   },
   methods: {
     image,
     loadMatches() {
-      matchesQuery
-        .where(
-          new groq.ConditionBuilder("player._ref == $playerId").params({
-            playerId: this.currentPlayer._id,
-          })
-        )
-        .fetch<trumpMatchPlayer[]>()
-        .then((matches) => (this.matches = matches));
+      trump.getStats(this.currentPlayer).then((stats) => (this.stats = stats));
     },
   },
   watch: {
@@ -172,9 +151,6 @@ export default defineComponent({
     },
   },
   computed: {
-    stats(): TrumpStats {
-      return new TrumpStats(this.matches, this.currentPlayer);
-    },
     statistics(): { message: string; value: string | number }[] {
       const { matches, wonMatches, lostMatches, ratio } = this.stats;
       const { callingMatchesRatio } = this.stats;
