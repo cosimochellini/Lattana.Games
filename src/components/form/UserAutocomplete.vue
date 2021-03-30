@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { player } from "@/types/sanity";
+import { player } from "@/types";
 import Multiselect from "@vueform/multiselect";
 import { defineComponent, PropType } from "vue";
 import { groq } from "@/utils/GroqQueryBuilder";
