@@ -2,7 +2,11 @@
   <div class="max-w-xl md:max-w-4xl px-4 py-4 mx-auto">
     <div class="my-4">
       <h2 class="base-subtitle">Giocatore corrente</h2>
-      <user-autocomplete v-model="currentPlayer" class="block px-2 py-1" />
+      <user-autocomplete
+        v-model="currentPlayer"
+        :exactPlayers="availablePlayers"
+        class="block px-2 py-1"
+      />
     </div>
     <h2 class="base-title">Statistiche 📊</h2>
     <div
@@ -27,55 +31,67 @@
       class="sm:grid sm:grid-flow-row sm:gap-4 sm:grid-cols-1 md:grid-cols-2"
     >
       <div>
-        <h3 class="base-subtitle">Accoppiamenti migliori 👑</h3>
-
+        <h3 class="base-subtitle first-capitalize mt-2">
+          {{ $t("secretHitler.titles.bestMatches") }} 👑
+        </h3>
         <div
           class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded m-2"
           v-for="mate in topMates"
           :key="mate.player._id"
         >
-          <div class="flex justify-evenly items-center">
-            <img
-              class="w-10 h-10 rounded-full"
-              :src="image(mate.player.profileImage, 100)"
-            />
-            <span
-              class="ml-2 text-gray-700 font-semibold font-sans tracking-wide"
-            >
-              {{ mate.nickname }}
+          <div class="grid grid-cols-4 items-center">
+            <span class="col-span-1 text-center m-auto">
+              <img
+                class="w-10 h-10 rounded-full"
+                :src="image(mate.player.profileImage, 500)"
+              />
             </span>
             <span
-              class="ml-4 rounded-xl px-2 py-1 font-semibold"
-              :class="mate.ratio > 0.5 ? 'bg-green-300' : 'bg-red-300'"
+              class="col-span-2 text-gray-700 font-semibold font-sans tracking-wide text-center"
             >
-              {{ percentageFormatter(mate.ratio) }} %
+              {{ mate.player.name }}
+              {{ mate.player.surname }}
+            </span>
+            <span class="col-span-1 text-center">
+              <span
+                class="rounded-xl px-2 py-1 font-semibold"
+                :class="tailwind.backgroundRatio(mate.ratio)"
+              >
+                {{ formatter.percentageFormatter(mate.ratio) }} %
+              </span>
             </span>
           </div>
         </div>
       </div>
       <div>
-        <h3 class="base-subtitle">Peggioni nemici 😱</h3>
-
+        <h3 class="base-subtitle first-capitalize mt-2">
+          {{ $t("secretHitler.titles.worstEnemies") }} 😱
+        </h3>
         <div
           class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded m-2"
           v-for="mate in worstOpponents"
           :key="mate.player._id"
         >
-          <div class="flex justify-around items-center">
-            <img
-              class="w-10 h-10 rounded-full"
-              :src="image(mate.player.profileImage, 100)"
-            />
-            <span
-              class="ml-2 text-gray-700 font-semibold font-sans tracking-wide"
-            >
-              {{ mate.nickname }}
+          <div class="grid grid-cols-4 items-center">
+            <span class="col-span-1 text-center m-auto">
+              <img
+                class="w-10 h-10 rounded-full"
+                :src="image(mate.player.profileImage, 500)"
+              />
             </span>
             <span
-              class="ml-4 rounded-xl px-2 py-1 font-semibold"
-              :class="mate.ratio < 0.5 ? 'bg-green-300' : 'bg-red-300'"
+              class="col-span-2 text-gray-700 font-semibold font-sans tracking-wide text-center"
             >
-              {{ percentageFormatter(mate.ratio) }} %
+              {{ mate.player.name }}
+              {{ mate.player.surname }}
+            </span>
+            <span class="col-span-1 text-center">
+              <span
+                class="rounded-xl px-2 py-1 font-semibold"
+                :class="tailwind.backgroundRatio(mate.ratio, true)"
+              >
+                {{ formatter.percentageFormatter(mate.ratio) }} %
+              </span>
             </span>
           </div>
         </div>
@@ -85,45 +101,41 @@
 </template>
 
 <script lang="ts">
+import { player } from "@/types";
 import { defineComponent } from "vue";
 import { image } from "@/instances/sanity";
-import { groq } from "@/utils/GroqQueryBuilder";
-import { getPlayer } from "@/services/authService";
+import { formatter } from "@/utils/formatters";
+import { auth } from "@/services/auth.service";
+import { tailwind } from "@/services/tailwind.service";
 import { Mate } from "@/utils/classes/stats/baseStats";
-import { sanityTypes } from "@/constants/roleConstants";
-import { percentageFormatter } from "@/utils/formatters";
-import { player, secretHitlerMatchPlayer } from "@/types/sanity";
+import { secretHitler } from "@/services/games/secretHitler.service";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { SecretHitlerStats } from "@/utils/classes/stats/secretHitlerMatchStats";
-
-const matchesQuery = new groq.QueryBuilder(sanityTypes.secretHitlerMatchPlayer)
-  .select("..., player ->, match -> {..., players[] -> {...,player -> } }")
-  .cached()
-  .freeze();
 
 export default defineComponent({
   components: { UserAutocomplete },
   data() {
     return {
-      matches: [] as secretHitlerMatchPlayer[],
-      currentPlayer: getPlayer() as player,
+      tailwind,
+      formatter,
+      availablePlayers: [] as player[],
+      currentPlayer: auth.currentPlayer,
+      stats: new SecretHitlerStats([], auth.currentPlayer),
     };
   },
   mounted() {
     this.loadMatches();
+
+    secretHitler
+      .getActualPlayers()
+      .then((players) => (this.availablePlayers = players));
   },
   methods: {
     image,
-    percentageFormatter,
     loadMatches() {
-      matchesQuery
-        .where(
-          new groq.ConditionBuilder("player._ref == $playerId").params({
-            playerId: this.currentPlayer._id,
-          })
-        )
-        .fetch<secretHitlerMatchPlayer[]>()
-        .then((matches) => (this.matches = matches));
+      secretHitler
+        .getStats(this.currentPlayer)
+        .then((stats) => (this.stats = stats));
     },
   },
   watch: {
@@ -135,10 +147,9 @@ export default defineComponent({
     },
   },
   computed: {
-    stats(): SecretHitlerStats {
-      return new SecretHitlerStats(this.matches, this.currentPlayer);
-    },
     statistics(): { message: string; value: string | number }[] {
+      if (!this.stats.matches) return [];
+
       const { matches, wonMatches, lostMatches, ratio } = this.stats;
       const { penaltyPoints, liberalMatches, hitlerMatches } = this.stats;
       const { fascistMatches } = this.stats;
@@ -147,7 +158,10 @@ export default defineComponent({
         { message: "totale partite", value: matches.length },
         { message: "vittorie", value: wonMatches.length },
         { message: "sconfitte", value: lostMatches.length },
-        { message: "vittorie", value: `${percentageFormatter(ratio)} %` },
+        {
+          message: "vittorie",
+          value: `${formatter.percentageFormatter(ratio)} %`,
+        },
         { message: "penalità", value: penaltyPoints.length },
         {
           message: "partite liberali",

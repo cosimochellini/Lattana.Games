@@ -8,8 +8,8 @@
             class="inline-flex items-center justify-center p-2 rounded-md text-gray-900 focus:bg-transparent transition duration-150 ease-in-out"
             @click.stop="toggleNavbar"
           >
-            <i class="fas fa-bars" v-if="!state.navbarOpen"></i>
-            <i class="fas fa-times" v-else></i>
+            <i class="far fa-bars" v-if="!state.navbarOpen"></i>
+            <i class="far fa-times" v-else></i>
           </button>
         </div>
         <div
@@ -124,12 +124,12 @@
 
 <script lang="ts">
 import { useRouter } from "vue-router";
-import { Dictionary } from "@/types/base";
 import { image } from "@/instances/sanity";
-import { getPlayer } from "@/services/authService";
+import { Dictionary } from "@/types";
+import { auth } from "@/services/auth.service";
 import { useTimedOpen } from "@/composable/timedOpen";
 import { defineComponent, reactive, watch } from "vue";
-import { currentLanguage } from "@/services/langService";
+import { currentLanguage } from "@/services/language.service";
 
 type State = {
   name: string;
@@ -151,7 +151,7 @@ export default defineComponent({
   data() {
     return {
       publicPath: process.env.BASE_URL,
-      player: getPlayer(),
+      player: auth.currentPlayer,
       navbarRoutes: [
         { name: "trump", route: "trumpHistory" },
         { name: "secretHitler", route: "secretHitlerHistory" },
@@ -196,7 +196,7 @@ export default defineComponent({
   },
   computed: {
     profileSrc(): string {
-      return image(this.player?.profileImage ?? "", 300);
+      return image(this.player.profileImage, 500);
     },
     locale(): string {
       return this.$i18n.locale;

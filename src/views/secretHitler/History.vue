@@ -36,13 +36,16 @@
         <span class="first-capitalize">
           {{ $t("secretHitler.form.players") }}
         </span>
-        <div class="flex overflow-hidden px-1" :class="bindSpace(match)">
+        <div
+          class="flex overflow-hidden px-1"
+          :class="tailwind.secretHitler.bindSpace(match)"
+        >
           <img
             v-for="p in match.players"
             :key="p._id"
-            :src="image(p.player.profileImage, 100)"
+            :src="image(p.player.profileImage, 500)"
             :title="`${p.player.name} ${p.player.surname}`"
-            :class="borderColor(p.role)"
+            :class="tailwind.secretHitler.borderColor(p.role)"
             class="inline-block h-8 w-8 rounded-full ring-2 my-2"
           />
         </div>
@@ -72,94 +75,41 @@
 </template>
 
 <script lang="ts">
-import { range } from "@/utils/range";
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
-import { groq } from "@/utils/GroqQueryBuilder";
-import { getPlayer } from "@/services/authService";
+import { secretHitlerMatch } from "@/types";
 import WinBadge from "@/components/base/WinBadge.vue";
+import { tailwind } from "@/services/tailwind.service";
 import DateBadge from "@/components/base/DateBadge.vue";
-import { overlayService } from "@/services/overlayService";
-import { player, secretHitlerMatch } from "@/types/sanity";
+import { getCurrentPlayer } from "@/utils/sharedFunctions";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
 import { useRouterRefresh } from "@/composable/routerRefresh";
-import { byRole } from "@/utils/sortables/secratHitlerSortables";
-import { useInfiniteLoading } from "@/composable/infiniteLoading";
-import { notificationService } from "@/services/notificationService";
-import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
-import { secretHitlerService } from "@/services/games/secretHitlerService";
+import { secretHitler } from "@/services/games/secretHitler.service";
 import SecretHitlerBadge from "@/components/secretHitler/secretHitlerBadge.vue";
-
-const currentPlayer = getPlayer() as player;
-
-const matchesQuery = new groq.QueryBuilder(sanityTypes.secretHitlerMatch)
-  .select(`...,  players[] -> {..., player ->}`)
-  .where(
-    new groq.ConditionBuilder(`$userId in players[] -> player._ref`).params({
-      userId: currentPlayer._id,
-    })
-  )
-  .orderBy(new groq.OrderBuilder("matchDate", true));
 
 export default defineComponent({
   components: { CardSkeleton, SecretHitlerBadge, DateBadge, WinBadge },
   setup() {
     const router = useRouter();
 
-    const infiniteLoading = useInfiniteLoading<secretHitlerMatch>(
-      matchesQuery,
-      {
-        onResponse: (response) =>
-          response.forEach((m) => m.players.sort(byRole)),
-      }
-    );
-    const { items, getMoreData, moreDataAvailable } = infiniteLoading;
+    const { items, getMoreData, moreDataAvailable } = secretHitler.getMatches();
 
-    const deleteMatch = (match: secretHitlerMatch) =>
-      overlayService.showOverlay() &&
-      secretHitlerService
+    const deleteMatch = async (match: secretHitlerMatch) =>
+      secretHitler
         .deleteExistingMatch(match)
-        .then(() => notificationService.success("eliminazione eseguita"))
-        .catch(notificationService.danger)
-        .finally(() => {
-          overlayService.hideOverlay() && infiniteLoading.getMoreData(true);
-        });
-
-    const borderColor = (role: secretHitlerRole) => {
-      switch (role) {
-        case secretHitlerRole.fascist:
-          return "ring-red-500";
-        case secretHitlerRole.liberal:
-          return "ring-blue-500";
-        case secretHitlerRole.hitler:
-          return "ring-black";
-      }
-    };
-
-    const getCurrentPlayer = (match: secretHitlerMatch) =>
-      match.players.find((p) => p.player._id === currentPlayer._id);
+        .then((success) => success && getMoreData(true));
 
     const copyMatch = (match: secretHitlerMatch) =>
       router.push({ name: "secretHitlerNew", query: { ref: match._id } });
 
-    const bindSpace = (match: secretHitlerMatch) => {
-      const players = match.players.length;
-
-      if (range([9, 10], players)) return "-space-x-2";
-      if (range([8, 9], players)) return "-space-x-1";
-      return "";
-    };
-
     useRouterRefresh(() => getMoreData(true));
-
     return {
       items,
       image,
+      tailwind,
       copyMatch,
-      bindSpace,
       deleteMatch,
-      borderColor,
       getMoreData,
       getCurrentPlayer,
       moreDataAvailable,

@@ -4,21 +4,19 @@
 </template>
 
 <script>
-import Navbar from "@/components/base/Navbar.vue";
-import { isAuthorized } from "@/services/authService";
 import { ref } from "vue";
+import { auth } from "@/services/auth.service";
 import { onBeforeRouteUpdate } from "vue-router";
+import Navbar from "@/components/base/Navbar.vue";
 
 export default {
   components: { Navbar },
   setup() {
-    const userAuthorized = ref(isAuthorized());
+    const userAuthorized = ref(auth.isAuthorized());
 
-    onBeforeRouteUpdate(() => (userAuthorized.value = isAuthorized()));
+    onBeforeRouteUpdate(() => (userAuthorized.value = auth.isAuthorized()));
 
-    return {
-      userAuthorized,
-    };
+    return { userAuthorized };
   },
 };
 </script>

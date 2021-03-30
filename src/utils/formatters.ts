@@ -1,7 +1,7 @@
 import { computed } from "vue";
 import { differenceInDays } from "./date";
-import { datable, Dictionary } from "@/types/base";
-import { currentLocale } from "@/services/langService";
+import { datable, Dictionary } from "@/types";
+import { currentLocale } from "@/services/language.service";
 
 const dayFormat = computed(
   () =>
@@ -52,28 +52,6 @@ const relativeTimeFormat = computed(
     })
 );
 
-const relativeTime = (d1: Date, d2: Date = new Date()) => {
-  const elapsed = d1.getTime() - d2.getTime();
-
-  // "Math.abs" accounts for both "past" & "future" scenarios
-  for (const unit of Object.keys(units)) {
-    if (Math.abs(elapsed) > units[unit] || unit == "second")
-      return relativeTimeFormat.value.format(
-        Math.round(elapsed / units[unit]),
-        unit as Intl.RelativeTimeFormatUnit
-      );
-  }
-  return "";
-};
-
-export const longNumberFormatter = (n: number) =>
-  n.toLocaleString(currentLocale.value, {
-    minimumIntegerDigits: 4,
-    useGrouping: false,
-  });
-
-export const percentageFormatter = (n: number) => (n * 100).toFixed(0);
-
 const parseDate = (date: datable): [boolean, Date] => {
   const isValid = false;
 
@@ -87,36 +65,68 @@ const parseDate = (date: datable): [boolean, Date] => {
   return [false, new Date()];
 };
 
-export const dateFormatter = (date: datable) => {
-  const [isValid, d] = parseDate(date);
-  if (!isValid) return "";
-  return dateFormat.value.format(d);
-};
+export const formatter = {
+  relativeTime(d1: Date, d2: Date = new Date()) {
+    const elapsed = d1.getTime() - d2.getTime();
 
-export const dayFormatter = (date: datable) => {
-  const [isValid, d] = parseDate(date);
-  if (!isValid) return "";
-  return dayFormat.value.format(d);
-};
+    // "Math.abs" accounts for both "past" & "future" scenarios
+    for (const unit of Object.keys(units)) {
+      if (Math.abs(elapsed) > units[unit] || unit == "second")
+        return relativeTimeFormat.value.format(
+          Math.round(elapsed / units[unit]),
+          unit as Intl.RelativeTimeFormatUnit
+        );
+    }
+    return "";
+  },
 
-export const recentDayFormatter = (date: datable) => {
-  const [isValid, d] = parseDate(date);
-  if (!isValid) return "";
-  return recentDayFormat.value.format(d);
-};
+  longNumberFormatter(n: number) {
+    return n.toLocaleString(currentLocale.value, {
+      minimumIntegerDigits: 4,
+      useGrouping: false,
+    });
+  },
 
-export const relativeTimeFormatter = (date: datable) => {
-  const [isValid, d] = parseDate(date);
-  if (!isValid) return "";
-  return relativeTime(d);
-};
+  smallNumberFormatter(n: number) {
+    return n.toLocaleString(currentLocale.value, {
+      minimumIntegerDigits: 2,
+      useGrouping: false,
+    });
+  },
 
-export const smartRelativeTime = (date: datable, range: number = 1) => {
-  const [isValid, d] = parseDate(date);
-  if (!isValid) return "";
+  percentageFormatter: (n: number) => (n * 100).toFixed(0),
 
-  if (differenceInDays(d) >= range) {
+  dateFormatter: (date: datable) => {
+    const [isValid, d] = parseDate(date);
+    if (!isValid) return "";
+    return dateFormat.value.format(d);
+  },
+
+  dayFormatter: (date: datable) => {
+    const [isValid, d] = parseDate(date);
+    if (!isValid) return "";
+    return dayFormat.value.format(d);
+  },
+
+  recentDayFormatter: (date: datable) => {
+    const [isValid, d] = parseDate(date);
+    if (!isValid) return "";
     return recentDayFormat.value.format(d);
-  }
-  return relativeTime(d);
+  },
+
+  relativeTimeFormatter: (date: datable) => {
+    const [isValid, d] = parseDate(date);
+    if (!isValid) return "";
+    return formatter.relativeTime(d);
+  },
+
+  smartRelativeTime: (date: datable, range: number = 1) => {
+    const [isValid, d] = parseDate(date);
+    if (!isValid) return "";
+
+    if (differenceInDays(d) >= range) {
+      return recentDayFormat.value.format(d);
+    }
+    return formatter.relativeTime(d);
+  },
 };

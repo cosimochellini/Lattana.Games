@@ -9,9 +9,12 @@
         group="people"
         itemKey="_id"
         class="base-card card-width"
+        v-if="!(!remainingPlayers.length && totalPlayers.length === 10)"
       >
         <template #header>
-          <h2 class="base-subtitle">Giocatori da smistare</h2>
+          <h2 class="base-subtitle">
+            {{ $t("secretHitler.form.remainingPlayers") }}
+          </h2>
 
           <user-autocomplete
             class="w-full"
@@ -43,9 +46,7 @@
             color="bg-blue-100"
             :user="element"
             :avatarColor="
-              winningRole === secretHitlerRole.liberal
-                ? 'ring-green-600'
-                : 'ring-red-600'
+              tailwind.winRingColor(winningRole === secretHitlerRole.liberal)
             "
           />
         </template>
@@ -67,9 +68,7 @@
               element._id === hitlerPlayer._id ? 'bg-gray-300' : 'bg-red-100'
             "
             :avatarColor="
-              winningRole === secretHitlerRole.fascist
-                ? 'ring-green-600'
-                : 'ring-red-600'
+              tailwind.winRingColor(winningRole === secretHitlerRole.liberal)
             "
           />
         </template>
@@ -111,21 +110,17 @@
 import draggable from "vuedraggable";
 import { range } from "@/utils/range";
 import { defineComponent } from "vue";
+import { byString, byValue } from "sort-es";
+import { mergeObjects } from "@/utils/merge";
 import { groq } from "@/utils/GroqQueryBuilder";
+import { tailwind } from "@/services/tailwind.service";
 import { queryRefresh } from "@/composable/routerRefresh";
-import { overlayService } from "@/services/overlayService";
+import { notification } from "@/services/notification.service";
 import DraggableUser from "@/components/base/DraggableUser.vue";
-import { notificationService } from "@/services/notificationService";
+import { secretHitler } from "@/services/games/secretHitler.service";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
-import { secretHitlerService } from "@/services/games/secretHitlerService";
-
-import {
-  player,
-  secretHitlerMatch,
-  secretHitlerMatchPlayer,
-} from "@/types/sanity";
-import { mergeObjects } from "@/utils/merge";
+import { player, secretHitlerMatch, secretHitlerMatchPlayer } from "@/types";
 
 const playersQuery = new groq.QueryBuilder(
   sanityTypes.secretHitlerMatchPlayer
@@ -139,8 +134,8 @@ const initialData = () => ({
   remainingPlayers: [] as player[],
   liberalPlayers: [] as player[],
   fascistPlayers: [] as player[],
+  tailwind,
 });
-
 export default defineComponent({
   components: { UserAutocomplete, draggable, DraggableUser },
   name: "secretHitlerNew",
@@ -157,7 +152,9 @@ export default defineComponent({
       )
       .fetch<secretHitlerMatchPlayer[]>()
       .then((players) => {
-        this.remainingPlayers = players.map((x) => x.player);
+        this.remainingPlayers = players
+          .map((x) => x.player)
+          .sort(byValue((x) => x.name, byString()));
       });
   },
   deactivated() {
@@ -171,12 +168,10 @@ export default defineComponent({
         players: this.totalPlayers,
       };
 
-      overlayService.showOverlay();
-
-      secretHitlerService
+      return secretHitler
         .saveNewMatch(matchToSave)
-        .then(() => notificationService.success("salvataggio eseguito"))
-        .catch(notificationService.danger)
+        .then(() => notification.success("salvataggio eseguito"))
+        .catch(notification.danger)
         .finally(() =>
           this.$router.push({
             name: "secretHitlerHistory",
@@ -214,12 +209,13 @@ export default defineComponent({
   computed: {
     totalPlayers(): secretHitlerMatchPlayer[] {
       return [
-        ...this.liberalPlayers.map((p) =>
-          this.bindPlayer(p, secretHitlerRole.liberal)
-        ),
-        ...this.fascistPlayers.map((p) =>
-          this.bindPlayer(p, secretHitlerRole.fascist, this.hitlerPlayer)
-        ),
+        ...this.liberalPlayers
+          .map((p) => this.bindPlayer(p, secretHitlerRole.liberal))
+          .concat(
+            this.fascistPlayers.map((p) =>
+              this.bindPlayer(p, secretHitlerRole.fascist, this.hitlerPlayer)
+            )
+          ),
       ];
     },
     excludedPlayers(): player[] {
@@ -251,6 +247,6 @@ export default defineComponent({
 
 <style>
 .card-width {
-  @apply w-full md:w-10/12 lg:w-4/5 xl:w-3/5;
+  @apply w-full md:w-10/12 lg:w-4/5 xl:w-3/5 2xl:w-2/5;
 }
 </style>

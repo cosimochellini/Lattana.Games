@@ -23,16 +23,8 @@
           <badge :text="match.startingScore.toString()" />
           <badge
             :text="match.finalScore.toString()"
-            :background="
-              match.finalScore >= match.startingScore
-                ? 'bg-green-200'
-                : 'bg-red-200'
-            "
-            :textColor="
-              match.finalScore >= match.startingScore
-                ? 'text-green-900'
-                : 'text-red-900'
-            "
+            :background="tailwind.trump.background(match)"
+            :textColor="tailwind.trump.text(match)"
           />
         </span>
       </div>
@@ -54,9 +46,9 @@
           <img
             v-for="p in match.players"
             :key="p._id"
-            :src="image(p.player.profileImage, 40)"
+            :src="image(p.player.profileImage, 500)"
             :title="`${p.player.name} ${p.player.surname}`"
-            :class="borderColor(p.win)"
+            :class="tailwind.winRingColor(p.win)"
             class="inline-block h-10 w-10 rounded-full ring-2 my-2"
           />
         </div>
@@ -70,8 +62,8 @@
           class="flex flex-grow m-auto -space-x-1 overflow-hidden px-1 content-center justify-center"
         >
           <img
-            :src="image(match.callingPlayer.profileImage, 40)"
-            class="rounded-full"
+            :src="image(match.callingPlayer.profileImage, 500)"
+            class="rounded-full h-12 w-12"
             :title="`${match.callingPlayer.name} ${match.callingPlayer.surname}`"
           />
         </div>
@@ -98,56 +90,35 @@
 </template>
 
 <script lang="ts">
+import { trumpMatch } from "@/types";
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
-import { groq } from "@/utils/GroqQueryBuilder";
+import { auth } from "@/services/auth.service";
 import Badge from "@/components/base/Badge.vue";
-import { dayFormatter } from "@/utils/formatters";
-import { getPlayer } from "@/services/authService";
-import { player, trumpMatch } from "@/types/sanity";
 import WinBadge from "@/components/base/WinBadge.vue";
+import { trump } from "@/services/games/trump.service";
+import { tailwind } from "@/services/tailwind.service";
 import DateBadge from "@/components/base/DateBadge.vue";
-import { sanityTypes } from "@/constants/roleConstants";
-import { overlayService } from "@/services/overlayService";
-import { trumpService } from "@/services/games/trumpService";
-import CardSkeleton from "@/components/base/CardSkeleton.vue";
+import { getCurrentPlayer } from "@/utils/sharedFunctions";
 import { useRouterRefresh } from "@/composable/routerRefresh";
-import { useInfiniteLoading } from "@/composable/infiniteLoading";
-import { notificationService } from "@/services/notificationService";
+import CardSkeleton from "@/components/base/CardSkeleton.vue";
 
-const currentPlayer = getPlayer() as player;
-
-const matchesQuery = new groq.QueryBuilder(sanityTypes.trumpMatch)
-  .select(`...,  callingPlayer ->, players[] -> {player ->,...}`)
-  .where(
-    new groq.ConditionBuilder(`$userId in players[] -> player._ref`).params({
-      userId: currentPlayer._id,
-    })
-  )
-  .orderBy(new groq.OrderBuilder("matchDate", true));
+const currentPlayer = auth.currentPlayer;
 
 export default defineComponent({
   components: { CardSkeleton, DateBadge, Badge, WinBadge },
   setup() {
     const router = useRouter();
 
-    const {
-      getMoreData,
-      items: matches,
-      moreDataAvailable,
-    } = useInfiniteLoading<trumpMatch>(matchesQuery, { pageSize: 6 });
+    const { getMoreData, matches, moreDataAvailable } = trump.getMatches(
+      currentPlayer
+    );
 
     const deleteMatch = (match: trumpMatch) =>
-      overlayService.showOverlay() &&
-      trumpService
+      trump
         .deleteExistingMatch(match)
-        .then(() => notificationService.success("eliminazione eseguita"))
-        .catch(notificationService.danger)
-        .finally(() => overlayService.hideOverlay() && getMoreData(true));
-
-    const borderColor = (win: boolean) =>
-      win ? "ring-blue-500" : "ring-red-500";
+        .then((success) => success && getMoreData(true));
 
     const copyMatch = (match: trumpMatch) =>
       router.push({ name: "trumpNew", query: { ref: match._id } });
@@ -155,20 +126,16 @@ export default defineComponent({
     const editMatch = (match: trumpMatch) =>
       router.push({ name: "trumpEdit", params: { id: match._id } });
 
-    const getCurrentPlayer = (match: trumpMatch) =>
-      match.players.find((p) => p.player._id === currentPlayer._id);
-
     useRouterRefresh(() => getMoreData(true));
 
     return {
       image,
       matches,
+      tailwind,
       copyMatch,
       editMatch,
       getMoreData,
       deleteMatch,
-      borderColor,
-      dayFormatter,
       getCurrentPlayer,
       moreDataAvailable,
     };

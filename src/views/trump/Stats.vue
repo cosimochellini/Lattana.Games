@@ -4,7 +4,11 @@
       <h2 class="base-subtitle my-1 py-1 first-capitalize">
         {{ $t("trump.form.currentPlayer") }}
       </h2>
-      <user-autocomplete v-model="currentPlayer" class="block px-2 py-1" />
+      <user-autocomplete
+        v-model="currentPlayer"
+        class="block px-2 py-1"
+        :exactPlayers="availablePlayers"
+      />
     </div>
     <h2 class="base-title my-1 py-1 first-capitalize">
       {{ $t("trump.titles.stats") }} 📊
@@ -41,49 +45,59 @@
           v-for="mate in topMates"
           :key="mate.player._id"
         >
-          <div class="flex justify-evenly items-center">
-            <img
-              class="w-10 h-10 rounded-full"
-              :src="image(mate.player.profileImage, 100)"
-            />
-            <span
-              class="ml-2 text-gray-700 font-semibold font-sans tracking-wide"
-            >
-              {{ mate.nickname }}
+          <div class="grid grid-cols-4 items-center">
+            <span class="col-span-1 text-center m-auto">
+              <img
+                class="w-10 h-10 rounded-full"
+                :src="image(mate.player.profileImage, 500)"
+              />
             </span>
             <span
-              class="ml-4 rounded-xl px-2 py-1 font-semibold"
-              :class="mate.ratio > 0.5 ? 'bg-green-300' : 'bg-red-300'"
+              class="col-span-2 text-gray-700 font-semibold font-sans tracking-wide text-center"
             >
-              {{ percentageFormatter(mate.ratio) }} %
+              {{ mate.player.name }}
+              {{ mate.player.surname }}
+            </span>
+            <span class="col-span-1 text-center">
+              <span
+                class="rounded-xl px-2 py-1 font-semibold"
+                :class="tailwind.backgroundRatio(mate.ratio)"
+              >
+                {{ formatter.percentageFormatter(mate.ratio) }} %
+              </span>
             </span>
           </div>
         </div>
       </div>
       <div>
         <h3 class="base-subtitle first-capitalize">
-          {{ $t("trump.titles.worstMatches") }} 👎
+          {{ $t("trump.titles.worstEnemies") }} 😱
         </h3>
         <div
           class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded m-2"
           v-for="mate in worstOpponents"
           :key="mate.player._id"
         >
-          <div class="flex justify-around items-center">
-            <img
-              class="w-10 h-10 rounded-full"
-              :src="image(mate.player.profileImage, 100)"
-            />
-            <span
-              class="ml-2 text-gray-700 font-semibold font-sans tracking-wide"
-            >
-              {{ mate.nickname }}
+          <div class="grid grid-cols-4 items-center">
+            <span class="col-span-1 text-center m-auto">
+              <img
+                class="w-10 h-10 rounded-full"
+                :src="image(mate.player.profileImage, 500)"
+              />
             </span>
             <span
-              class="ml-4 rounded-xl px-2 py-1 font-semibold"
-              :class="mate.ratio < 0.5 ? 'bg-green-300' : 'bg-red-300'"
+              class="col-span-2 text-gray-700 font-semibold font-sans tracking-wide text-center"
             >
-              {{ percentageFormatter(mate.ratio) }} %
+              {{ mate.player.name }}
+              {{ mate.player.surname }}
+            </span>
+            <span class="col-span-1 text-center">
+              <span
+                class="rounded-xl px-2 py-1 font-semibold"
+                :class="tailwind.backgroundRatio(mate.ratio, true)"
+              >
+                {{ formatter.percentageFormatter(mate.ratio) }} %
+              </span>
             </span>
           </div>
         </div>
@@ -93,45 +107,39 @@
 </template>
 
 <script lang="ts">
+import { player } from "@/types";
 import { defineComponent } from "vue";
 import { image } from "@/instances/sanity";
-import { groq } from "@/utils/GroqQueryBuilder";
-import { getPlayer } from "@/services/authService";
+import { auth } from "@/services/auth.service";
+import { formatter } from "@/utils/formatters";
+import { trump } from "@/services/games/trump.service";
+import { tailwind } from "@/services/tailwind.service";
 import { Mate } from "@/utils/classes/stats/baseStats";
-import { sanityTypes } from "@/constants/roleConstants";
-import { percentageFormatter } from "@/utils/formatters";
-import { player, trumpMatchPlayer } from "@/types/sanity";
 import { TrumpStats } from "@/utils/classes/stats/trumpMatchStats";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
-
-const matchesQuery = new groq.QueryBuilder(sanityTypes.trumpMatchPlayer)
-  .select("..., player ->, match -> {..., players[] -> {...,player -> } }")
-  .cached()
-  .freeze();
 
 export default defineComponent({
   components: { UserAutocomplete },
   data() {
     return {
-      matches: [] as trumpMatchPlayer[],
-      currentPlayer: getPlayer() as player,
+      tailwind,
+      formatter,
+      availablePlayers: [] as player[],
+      currentPlayer: auth.currentPlayer,
+      stats: new TrumpStats([], auth.currentPlayer),
     };
   },
   mounted() {
     this.loadMatches();
+
+    trump
+      .getActualPlayers()
+      .then((players) => (this.availablePlayers = players));
   },
   methods: {
     image,
-    percentageFormatter,
     loadMatches() {
-      matchesQuery
-        .where(
-          new groq.ConditionBuilder("player._ref == $playerId").params({
-            playerId: this.currentPlayer._id,
-          })
-        )
-        .fetch<trumpMatchPlayer[]>()
-        .then((matches) => (this.matches = matches));
+      trump.getStats(this.currentPlayer).then((stats) => (this.stats = stats));
     },
   },
   watch: {
@@ -143,9 +151,6 @@ export default defineComponent({
     },
   },
   computed: {
-    stats(): TrumpStats {
-      return new TrumpStats(this.matches, this.currentPlayer);
-    },
     statistics(): { message: string; value: string | number }[] {
       const { matches, wonMatches, lostMatches, ratio } = this.stats;
       const { callingMatchesRatio } = this.stats;
@@ -156,7 +161,7 @@ export default defineComponent({
         { message: "totalMatches", value: matches.length },
         { message: "totalWin", value: wonMatches.length },
         { message: "totalLose", value: lostMatches.length },
-        { message: "win", value: `${percentageFormatter(ratio)} %` },
+        { message: "win", value: `${formatter.percentageFormatter(ratio)} %` },
         { message: "penaltyPoints", value: penaltyPoints.length },
         { message: "120Match", value: fullScoreMatches.length },
         {
@@ -165,11 +170,11 @@ export default defineComponent({
         },
         {
           message: "callingMatches",
-          value: `${percentageFormatter(callingMatchesRatio)} %`,
+          value: `${formatter.percentageFormatter(callingMatchesRatio)} %`,
         },
         {
           message: "callingMatchesWin",
-          value: `${percentageFormatter(callingStats.ratio)} %`,
+          value: `${formatter.percentageFormatter(callingStats.ratio)} %`,
         },
         {
           message: "mediaCallingScore",

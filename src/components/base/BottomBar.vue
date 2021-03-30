@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-14"></div>
+  <div class="mt-16"></div>
   <section class="bottom-bar">
     <div class="flex justify-between">
       <router-link
@@ -48,16 +48,23 @@ const routes: { game: string; elements: BottonElement[] }[] = [
       },
       {
         name: "new",
-        icon: "fas fa-plus-circle",
-        iconActive: "fad fa-plus-circle",
+        icon: "fas fa-plus-octagon",
+        iconActive: "fad fa-plus-octagon",
         route: "trumpNew",
         activeColor: "text-blue-700",
       },
       {
         name: "stats",
-        icon: "far fa-chart-bar",
-        iconActive: "fad fa-chart-bar",
+        icon: "fas fa-analytics",
+        iconActive: "fad fa-analytics",
         route: "trumpStats",
+        activeColor: "text-blue-700",
+      },
+      {
+        name: "rankings",
+        icon: "far fa-trophy-alt",
+        iconActive: "fad fa-trophy-alt",
+        route: "trumpRankings",
         activeColor: "text-blue-700",
       },
     ],
@@ -74,16 +81,23 @@ const routes: { game: string; elements: BottonElement[] }[] = [
       },
       {
         name: "new",
-        icon: "fas fa-plus-circle",
-        iconActive: "fad fa-plus-circle",
+        icon: "fas fa-plus-octagon",
+        iconActive: "fad fa-plus-octagon",
         route: "secretHitlerNew",
         activeColor: "text-red-800",
       },
       {
         name: "stats",
-        icon: "far fa-chart-bar",
-        iconActive: "fad fa-chart-bar",
+        icon: "far fa-analytics",
+        iconActive: "fad fa-analytics",
         route: "secretHitlerStats",
+        activeColor: "text-red-800",
+      },
+      {
+        name: "rankings",
+        icon: "far fa-trophy-alt",
+        iconActive: "fad fa-trophy-alt",
+        route: "secretHitlerRankings",
         activeColor: "text-red-800",
       },
     ],
@@ -114,7 +128,7 @@ export default defineComponent({
 
 <style scoped>
 .bottom-bar {
-  @apply fixed inset-x-0 bottom-0 z-50 bg-white border rounded-t-md m-auto;
-  @apply md:w-1/2 lg:w-1/4 md:rounded-xl md:shadow-2xl md:bottom-5 md:border-2 border-gray-300;
+  @apply fixed inset-x-0 bottom-0 z-40 bg-white border rounded-t-md m-auto;
+  @apply sm:w-11/12 md:w-1/2 lg:w-2/5 xl:w-2/6 2xl:w-1/4 sm:rounded-xl sm:shadow-2xl sm:bottom-5 md:border-2 border-gray-300;
 }
 </style>

@@ -1,6 +1,5 @@
-import { Dictionary } from "@/types/base";
 import { byNumber, byValue } from "sort-es";
-import { IMatch, IMatchPlayer, player } from "@/types/sanity";
+import { IMatch, IMatchPlayer, player, Dictionary } from "@/types";
 
 export type Mate = {
   win: number;
@@ -94,7 +93,7 @@ export abstract class BaseStats<
 
       this._worstOpponents.push({ win, ratio, lose, nickname, player });
     }
-    console.log(this);
+
     return this._worstOpponents.sort(
       byValue("ratio", byNumber({ desc: true }))
     );

@@ -1,15 +1,17 @@
  <template>
-  <div>Logging out...</div>
+  <div class="flex items-center self-center object-center m-11">
+    Logging out...
+  </div>
 </template>
  
  <script lang="ts">
+import { auth } from "@/services/auth.service";
 import { defineComponent, onMounted } from "vue";
-import { setPlayer } from "@/services/authService";
 
 export default defineComponent({
   setup() {
     onMounted(() => {
-      setPlayer(null);
+      auth.logout();
       (window as any).location = "/";
     });
   },

@@ -46,8 +46,8 @@
 <script lang="ts">
 import { useRouter } from "vue-router";
 import { defineComponent, ref } from "vue";
+import { auth } from "@/services/auth.service";
 import Alert from "@/components/base/Alert.vue";
-import { isAuthorized, login } from "@/services/authService";
 
 export default defineComponent({
   components: { Alert },
@@ -58,9 +58,9 @@ export default defineComponent({
 
     async function doLogin() {
       try {
-        await login(form.value.name, form.value.pin);
+        await auth.login(form.value.name, form.value.pin);
 
-        if (isAuthorized()) {
+        if (auth.isAuthorized()) {
           state.value.incorrectCredential = false;
 
           await router.push({ path: "/" });

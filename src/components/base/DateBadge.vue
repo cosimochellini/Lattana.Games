@@ -1,11 +1,14 @@
 <template>
-  <badge :text="smartRelativeTime(date, 1)" background="bg-gray-200" />
+  <badge
+    :text="formatter.smartRelativeTime(date, 1)"
+    background="bg-gray-200"
+  />
 </template>
 
 <script lang="ts">
 import Badge from "./Badge.vue";
 import { defineComponent } from "vue";
-import { smartRelativeTime } from "@/utils/formatters";
+import { formatter } from "@/utils/formatters";
 
 export default defineComponent({
   components: { Badge },
@@ -16,9 +19,7 @@ export default defineComponent({
     },
   },
   setup() {
-    return {
-      smartRelativeTime,
-    };
+    return { formatter };
   },
 });
 </script>

@@ -11,7 +11,7 @@
 <script lang="ts">
 import { useRoute } from "vue-router";
 import { groq } from "@/utils/GroqQueryBuilder";
-import { trumpMatch } from "@/types/sanity";
+import { trumpMatch } from "@/types";
 import { defineComponent, onMounted, ref } from "vue";
 import { sanityTypes } from "@/constants/roleConstants";
 import TrumpMatchPlayer from "@/components/form/TrumpMatchPlayer.vue";

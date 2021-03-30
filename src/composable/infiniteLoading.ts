@@ -1,6 +1,6 @@
 import { nextTick, ref, UnwrapRef } from "vue";
 import { groq, GroqTypes } from "@/utils/GroqQueryBuilder";
-import { notificationService } from "@/services/notificationService";
+import { notification } from "@/services/notification.service";
 
 export const useInfiniteLoading = <T>(
   query: GroqTypes.QueryBuilderType,
@@ -45,7 +45,7 @@ export const useInfiniteLoading = <T>(
           moreDataAvailable.value = pagination.shouldContinue(response);
         });
       })
-      .catch(notificationService.danger);
+      .catch(notification.danger);
   };
 
   return {

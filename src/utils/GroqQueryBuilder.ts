@@ -1,8 +1,8 @@
 import { uuid } from "./uuid";
-import { Dictionary } from "@/types/base";
+import { Dictionary } from "@/types";
 import { readOnlySanityClient, sanityClient } from "@/instances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
-import { QueryableParam, sanityEntity, sanityReference } from "@/types/base";
+import { QueryableParam, sanityEntity, sanityReference } from "@/types";
 
 export const contains = (param: string) => `*${param}*`;
 
@@ -44,28 +44,26 @@ class QueryBuilder {
     return this;
   }
 
-  public where(...builders: ConditionBuilder[]): QueryBuilder {
-    for (const builder of builders) {
-      if (!builder.isValid()) continue;
+  public where(builder: ConditionBuilder): QueryBuilder {
+    if (!builder.isValid()) return this;
 
-      const { condition, params, reverse } = builder.expose();
+    const { condition, params, reverse } = builder.expose();
 
-      this._conditions.push({ value: { condition, reverse } });
+    this._conditions.push({ value: { condition, reverse } });
 
-      this._params.push({ value: params });
-    }
-    return this;
-  }
-
-  public select(select: string): QueryBuilder {
-    this._select.push({ value: select });
+    this._params.push({ value: params });
 
     return this;
   }
 
-  public orderBy(...orders: OrderBuilder[]): QueryBuilder {
-    for (const order of orders)
-      for (const value of order.expose()) this._orderBy.push({ value });
+  public select(value: string): QueryBuilder {
+    this._select.push({ value });
+
+    return this;
+  }
+
+  public orderBy(order: OrderBuilder): QueryBuilder {
+    for (const value of order.expose()) this._orderBy.push({ value });
 
     return this;
   }
@@ -101,7 +99,7 @@ class QueryBuilder {
 
     return this._sanityClient.fetch<T>(query, params).then((response) => {
       if (this._freezed) this.cleanUnFreezed();
-      return response;
+      return response as T;
     });
   }
 
@@ -132,7 +130,7 @@ class QueryBuilder {
     const orderBy = this._orderBy.length
       ? `| ${this._orderBy
           .map((x) => x.value)
-          .map(({ prop, desc }) => `order(${prop} ${desc ? "desc" : "asc"})`)
+          .map(({ prop, desc }) => ` order(${prop} ${desc ? "desc" : "asc"}) `)
           .join(" | ")}`
       : "";
 

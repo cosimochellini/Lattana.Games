@@ -9,6 +9,7 @@
         group="people"
         itemKey="_id"
         class="base-card card-width"
+        v-if="!(!remainingPlayers.length && allPlayers.length === 5)"
       >
         <template #header>
           <h2 class="base-subtitle first-capitalize">
@@ -48,7 +49,7 @@
             :color="
               element._id === callingPlayer._id ? 'bg-blue-300' : 'bg-blue-100'
             "
-            :avatarColor="callingPlayersWin ? 'ring-green-600' : 'ring-red-600'"
+            :avatarColor="tailwind.winRingColor(callingPlayersWin)"
           />
         </template>
       </draggable>
@@ -68,7 +69,7 @@
           <draggable-user
             :user="element"
             color="bg-red-100"
-            :avatarColor="callingPlayersWin ? 'ring-red-600' : 'ring-green-600'"
+            :avatarColor="tailwind.winRingColor(!callingPlayersWin)"
           />
         </template>
       </draggable>
@@ -86,11 +87,11 @@
         />
 
         <div class="m-2 flex justify-between">
-          <label class="base-subtitle first-capitalize" for="initial points">
+          <label class="base-subtitle first-capitalize" for="starting score">
             {{ $t("trump.form.startingScore") }}
           </label>
           <input
-            name="initial points"
+            name="starting score"
             type="number"
             min="60"
             max="120"
@@ -99,13 +100,13 @@
           />
         </div>
         <div class="m-2 flex justify-between">
-          <label class="base-subtitle first-capitalize" for="initial points">
+          <label class="base-subtitle first-capitalize" for="final score">
             {{ $t("trump.form.finalScore") }}
           </label>
           <input
-            name="initial points"
+            name="final score"
             type="number"
-            min="60"
+            min="40"
             max="120"
             class="pa-2 border rounded-md text-center"
             v-model.number="finalScore"
@@ -128,15 +129,15 @@
 import draggable from "vuedraggable";
 import { range } from "@/utils/range";
 import { defineComponent } from "vue";
+import { byString, byValue } from "sort-es";
 import { mergeObjects } from "@/utils/merge";
 import { groq } from "@/utils/GroqQueryBuilder";
+import { trump } from "@/services/games/trump.service";
+import { tailwind } from "@/services/tailwind.service";
 import { sanityTypes } from "@/constants/roleConstants";
 import { queryRefresh } from "@/composable/routerRefresh";
-import { overlayService } from "@/services/overlayService";
-import { trumpService } from "@/services/games/trumpService";
+import { player, trumpMatch, trumpMatchPlayer } from "@/types";
 import DraggableUser from "@/components/base/DraggableUser.vue";
-import { notificationService } from "@/services/notificationService";
-import { player, trumpMatch, trumpMatchPlayer } from "@/types/sanity";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 
 const playersQuery = new groq.QueryBuilder(sanityTypes.trumpMatchPlayer).select(
@@ -150,13 +151,13 @@ const initialData = () => ({
   callingPlayer: {} as player,
   startingScore: 0,
   finalScore: 0,
+  tailwind,
 });
-
 export default defineComponent({
   components: { UserAutocomplete, DraggableUser, draggable },
   name: "trumpNew",
   data: initialData,
-  activated() {
+  async activated() {
     if (!this.$route.query.ref) return;
 
     playersQuery
@@ -167,7 +168,9 @@ export default defineComponent({
       )
       .fetch<trumpMatchPlayer[]>()
       .then((players) => {
-        this.remainingPlayers = players.map((x) => x.player);
+        this.remainingPlayers = players
+          .map((x) => x.player)
+          .sort(byValue((x) => x.name, byString()));
       });
   },
   deactivated() {
@@ -183,27 +186,18 @@ export default defineComponent({
       );
     },
     saveMatch() {
-      try {
-        const match = {
+      trump
+        .saveNewMatch({
           matchDate: new Date(),
-          startingScore: this.startingScore,
           finalScore: this.finalScore,
-          callingPlayer: this.callingPlayer,
           players: this.allMatchPlayers,
-        } as trumpMatch;
-
-        overlayService.showOverlay();
-
-        trumpService
-          .saveNewMatch(match)
-          .then(() => notificationService.success("salvataggio eseguito"))
-          .catch(notificationService.danger)
-          .finally(() =>
-            this.$router.push({ name: "trumpHistory", query: queryRefresh })
-          );
-      } catch (error) {
-        notificationService.danger(error);
-      }
+          startingScore: this.startingScore,
+          callingPlayer: this.callingPlayer,
+        } as trumpMatch)
+        .then((result) => {
+          result &&
+            this.$router.push({ name: "trumpHistory", query: queryRefresh });
+        });
     },
   },
   computed: {
@@ -258,6 +252,6 @@ export default defineComponent({
 
 <style>
 .card-width {
-  @apply w-full md:w-10/12 lg:w-4/5 xl:w-3/5;
+  @apply w-full md:w-10/12 lg:w-4/5 xl:w-3/5 2xl:w-2/5;
 }
 </style>

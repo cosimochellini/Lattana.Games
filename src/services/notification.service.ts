@@ -10,9 +10,11 @@ const getErrorMessage = (error: any) => {
   if (typeof error === "string") return error;
 
   if (typeof error.message === "string") return error.message;
+
+  return error.toString() ?? "";
 };
 
-export const notificationService = {
+export const notification = {
   notify(notification: string, option: notifyOptions | undefined = undefined) {
     return useToast().info(notification, option);
   },

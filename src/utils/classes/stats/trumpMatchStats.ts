@@ -1,5 +1,5 @@
 import { BaseStats } from "./baseStats";
-import { trumpMatch, trumpMatchPlayer } from "@/types/sanity";
+import { trumpMatch, trumpMatchPlayer } from "@/types";
 
 /**
  * TrumpMatch statistics class

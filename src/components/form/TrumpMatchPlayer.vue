@@ -22,7 +22,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import UserAutocomplete from "./UserAutocomplete.vue";
-import { player, trumpMatchPlayer } from "@/types/sanity";
+import { player, trumpMatchPlayer } from "@/types";
 
 export default defineComponent({
   name: "TrumpMatchPlayer",

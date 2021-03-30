@@ -3,7 +3,8 @@
         "route": {
             "history": "history",
             "new": "create",
-            "stats": "statistics"
+            "stats": "statistics",
+            "rankings": "rankings"
         }
     },
     "navbar": {
@@ -32,7 +33,7 @@
             "insertNewMatch": "insert new match",
             "stats": "statistics",
             "bestMatches": "best matches",
-            "worstMatches": "worst matches"
+            "worstEnemies": "worst enemies"
         },
         "form": {
             "matchDate": "match date",
@@ -62,7 +63,7 @@
             "insertNewMatch": "insert new match",
             "stats": "statistics",
             "bestMatches": "best matches",
-            "worstMatches": "worst matches"
+            "worstEnemies": "worst enemies"
         },
         "form": {
             "matchDate": "match date",
@@ -96,6 +97,25 @@
         },
         "userSelect": {
             "placeholder": "choose player"
+        },
+        "orderBy": {
+            "title": "order by",
+            "win": "number of win",
+            "lost": "number of lost",
+            "ratio": "percentage of win",
+            "hitlerMatches": "hitler matches",
+            "liberalMatches": "liberal matches",
+            "fascistMatches": "nazi matches",
+            "totalMatches": "total matches",
+            "calledMatches": "called matches",
+            "calledMatches120": "called matches at 120",
+            "calculatedScore": "calculated score",
+            "asc": "ascendenti",
+            "desc": "discendenti"
         }
+    },
+    "system": {
+        "wait": "wait....",
+        "fewSeconds": "this operation can take a few seconds"
     }
 }
