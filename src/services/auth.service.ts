@@ -1,5 +1,7 @@
 import { player } from "@/types";
+import { clone } from "./clone.service";
 import { groq } from "@/utils/GroqQueryBuilder";
+import { sanityClient } from "@/instances/sanity";
 import { notification } from "./notification.service";
 import { reactiveStorage } from "./reactiveStorage.service";
 import { roleConstants, sanityTypes } from "@/constants/roleConstants";
@@ -18,6 +20,10 @@ export const auth = {
     return currentPlayer.value as Readonly<player>;
   },
 
+  get editablePlayer(): player {
+    return clone.deepClone(currentPlayer.value as player);
+  },
+
   login(name: string, pin: string) {
     return loginQuery
       .where(
@@ -32,6 +38,13 @@ export const auth = {
 
   logout() {
     localStorage.clear();
+  },
+
+  updatePlayer(player: player) {
+    return sanityClient.createOrReplace(player).then((p) => {
+      currentPlayer.value = p;
+      return currentPlayer.value;
+    });
   },
 
   isAuthorized(roles: roleConstants[] = []): boolean {

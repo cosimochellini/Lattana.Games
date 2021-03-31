@@ -16,6 +16,10 @@
   @apply block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-700;
 }
 
+.base-input {
+  @apply focus:ring-indigo-500 focus:border-indigo-500 block w-full min-w-min border text-center font-medium tracking-wider sm:text-sm border-gray-300 rounded-md;
+}
+
 .base-button {
   @apply inline-flex justify-center text-sm font-medium p-3 items-center content-center place-items-center py-2 px-3 text-gray-900 rounded-lg shadow-sm focus:outline-none tracking-wider font-sans capitalize;
   @apply disabled:opacity-70 text-center;
@@ -28,6 +32,10 @@
 
 .base-button.primary {
   @apply bg-blue-300 focus:bg-blue-400 hover:bg-blue-400 focus:ring-blue-500;
+}
+
+.base-button.success {
+  @apply bg-green-300 focus:bg-green-400 hover:bg-green-400 focus:ring-green-500;
 }
 
 .base-button.danger {

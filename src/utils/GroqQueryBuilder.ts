@@ -1,7 +1,7 @@
 import { uuid } from "./uuid";
 import { Dictionary } from "@/types";
-import { readOnlySanityClient, sanityClient } from "@/instances/sanity";
 import { sanityTypes } from "@/constants/roleConstants";
+import { readOnlySanityClient, sanityClient } from "@/instances/sanity";
 import { QueryableParam, sanityEntity, sanityReference } from "@/types";
 
 export const contains = (param: string) => `*${param}*`;
@@ -188,15 +188,11 @@ class ConditionBuilder {
     return this;
   }
 
-  isValid(): boolean {
+  isValid() {
     return !this._optional || ConditionBuilder.check(this._params);
   }
 
-  expose(): {
-    condition: string;
-    params: Dictionary<QueryableParam>;
-    reverse: boolean;
-  } {
+  expose() {
     return {
       condition: this._condition,
       params: this._params,
