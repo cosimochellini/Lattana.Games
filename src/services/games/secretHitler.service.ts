@@ -15,6 +15,8 @@ import { secretHitlerRank } from "@/utils/classes/stats/ranks/secretHitlerRank";
 import { SecretHitlerStats } from "@/utils/classes/stats/secretHitlerMatchStats";
 
 const currentPlayer = auth.currentPlayer;
+const onResponse = (response: secretHitlerMatch[]) =>
+  response.forEach((m) => m.players.sort(byRole));
 
 export const secretHitler = {
   getMatches() {
@@ -27,10 +29,7 @@ export const secretHitler = {
       )
       .orderBy(new groq.OrderBuilder("matchDate", true));
 
-    const onResponse = (response: secretHitlerMatch[]) =>
-      response.forEach((m) => m.players.sort(byRole));
-
-    return useInfiniteLoading(matchesQuery, { onResponse });
+    return useInfiniteLoading(matchesQuery, { onResponse, pageSize: 16 });
   },
 
   getStats(player: player) {

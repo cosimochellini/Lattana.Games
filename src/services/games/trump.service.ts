@@ -26,7 +26,7 @@ export const trump = {
       .orderBy(new groq.OrderBuilder("matchDate", true));
 
     const infiniteLoading = useInfiniteLoading<trumpMatch>(matchesQuery, {
-      pageSize: 6,
+      pageSize: 12,
     });
 
     const { getMoreData, items: matches, moreDataAvailable } = infiniteLoading;

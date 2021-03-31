@@ -16,7 +16,7 @@ export class TrumpStats extends BaseStats<trumpMatch, trumpMatchPlayer> {
         if (ref === this._player._id) this._callingMatches.push(match);
       }
 
-    if (this._callingStats === null)
+    if (!this._callingStats)
       this._callingStats = new TrumpStats(this._callingMatches, this._player);
 
     return this._callingStats;
@@ -36,14 +36,13 @@ export class TrumpStats extends BaseStats<trumpMatch, trumpMatchPlayer> {
   }
 
   public get callingMatchesRatio() {
-    return BaseStats.Ratio(this.callingStats.matches ?? [], this.matches);
+    return BaseStats.Ratio(this.callingStats.matches, this.matches);
   }
 
   public get mediaScore() {
     return (
       this._matches
         .map((x) => x.match.startingScore)
-        .filter((ss) => ss !== 120)
         .reduce((t, c) => t + c, 0) / this._matches.length || 0
     );
   }
