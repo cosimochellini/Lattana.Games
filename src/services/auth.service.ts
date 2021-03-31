@@ -1,19 +1,13 @@
+import { watch } from "vue";
 import { player } from "@/types";
 import { clone } from "./clone.service";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { sanityClient } from "@/instances/sanity";
 import { notification } from "./notification.service";
 import { reactiveStorage } from "./reactiveStorage.service";
-import { roleConstants, sanityTypes } from "@/constants/roleConstants";
+import { playerRole, sanityTypes } from "@/constants/roleConstants";
 
-const LS_PLAYER_KEY = "LG_STORED_USER";
-
-const loginQuery = new groq.QueryBuilder(sanityTypes.player)
-  .select(`..., 'roles': roles[]->role->name`)
-  .get(new groq.PaginationBuilder().first())
-  .freeze();
-
-const currentPlayer = reactiveStorage<player | null>(LS_PLAYER_KEY, null);
+const currentPlayer = reactiveStorage<player | null>("LG_STORED_USER", null);
 
 export const auth = {
   get currentPlayer(): Readonly<player> {
@@ -25,7 +19,9 @@ export const auth = {
   },
 
   login(name: string, pin: string) {
-    return loginQuery
+    return new groq.QueryBuilder(sanityTypes.player)
+      .select(`..., roles[]-> {..., role ->}`)
+      .get(new groq.PaginationBuilder().first())
       .where(
         new groq.ConditionBuilder(
           "(nickname == $name && pin == $pin) || (email == $name && pin == $pin)"
@@ -40,20 +36,50 @@ export const auth = {
     localStorage.clear();
   },
 
-  updatePlayer(player: player) {
-    return sanityClient.createOrReplace(player).then((p) => {
-      currentPlayer.value = p;
-      return currentPlayer.value;
-    });
+  onPlayerUpdate(hook: (player: player) => void) {
+    watch(currentPlayer, (p) => hook(p as player));
   },
 
-  isAuthorized(roles: roleConstants[] = []): boolean {
+  async updatePlayer(player: player) {
+    await sanityClient.createOrReplace(player);
+
+    await this.login(player.nickname, player.pin.toString());
+
+    return currentPlayer.value;
+  },
+
+  async updateProfileImage(file: File | undefined) {
+    if (!file) return;
+
+    await sanityClient.assets
+      .upload("image", file)
+      .then((asset) =>
+        sanityClient
+          .patch(auth.currentPlayer._id)
+          .set({
+            profileImage: {
+              _type: "image",
+              asset: { _type: "reference", _ref: asset._id },
+            },
+          })
+          .commit()
+          .catch(console.error)
+      )
+      .catch(console.error);
+
+    await this.login(
+      this.currentPlayer.nickname,
+      this.currentPlayer.pin.toString()
+    );
+  },
+
+  isAuthorized(roles: playerRole[] = []): boolean {
     try {
       if (currentPlayer.value === null) return false;
 
       if (!roles.length) return true;
 
-      if (currentPlayer.value.roles.includes(roleConstants.Admin)) return true;
+      if (currentPlayer.value.roles.includes(playerRole.admin)) return true;
 
       return currentPlayer.value.roles.some((r) => roles.includes(r));
     } catch (error) {

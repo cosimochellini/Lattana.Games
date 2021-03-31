@@ -180,9 +180,15 @@ export default defineComponent({
 
     const { isOpen: navbarOpen, toggle: toggleNavbar } = useTimedOpen();
     const { isOpen: profileOpen, toggle: toggleProfile } = useTimedOpen();
+
     const state = reactive({ navbarOpen, profileOpen });
 
     return { currentLanguage, state, toggleNavbar, toggleProfile };
+  },
+  mounted() {
+    auth.onPlayerUpdate(() => {
+      this.player = auth.editablePlayer;
+    });
   },
   methods: {
     bindRouterLink(route: string, index: number) {

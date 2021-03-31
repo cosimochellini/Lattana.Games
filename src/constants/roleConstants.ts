@@ -1,8 +1,8 @@
-export enum roleConstants {
-  Admin = "admin",
-  Editor = "editor",
-  Contributor = "contributor",
-  User = "user",
+export enum playerRole {
+  admin = "admin",
+  editor = "editor",
+  contributor = "contributor",
+  user = "user",
 }
 
 export enum sanityTypes {

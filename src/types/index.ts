@@ -1,16 +1,12 @@
 import { sanityTypes } from "@/constants/roleConstants";
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
-import { roleConstants, secretHitlerRole } from "@/constants/roleConstants";
+import { playerRole, secretHitlerRole } from "@/constants/roleConstants";
 
 export interface IMatch<
   TMatch extends IMatch<TMatch, TPlayer>,
   TPlayer extends IMatchPlayer<TMatch, TPlayer>
-> extends sanityEntity,
-    IMatchBase {
-  matchDate: Date;
+> extends IMatchBase {
   players: TPlayer[];
-  createdBy: player;
-  updatedBy: player | null;
 }
 
 export interface IMatchBase extends sanityEntity {
@@ -23,11 +19,7 @@ export interface IMatchBase extends sanityEntity {
 export interface IMatchPlayer<
   TMatch extends IMatch<TMatch, TMatchPlayer>,
   TMatchPlayer extends IMatchPlayer<TMatch, TMatchPlayer>
-> extends sanityEntity,
-    IMatchPlayerBase {
-  player: player;
-  win: boolean;
-  penaltyPoint: boolean;
+> extends IMatchPlayerBase {
   match: TMatch;
 }
 export interface IMatchPlayerBase extends sanityEntity {
@@ -43,7 +35,7 @@ export interface player extends sanityEntity {
   email: string;
   pin: number;
   birthday: string;
-  roles: roleConstants[];
+  roles: playerRole[];
   profileImage: SanityImageSource;
 }
 
@@ -71,6 +63,7 @@ export interface secretHitlerMatch
 export interface Dictionary<T> {
   [key: string]: T;
 }
+
 export type QueryableParam =
   | string
   | null
@@ -87,6 +80,10 @@ export interface sanityEntity {
 
 export interface sanityReference<T> {
   _ref: string;
+}
+
+export interface HTMLInputEvent extends Event {
+  target: HTMLInputElement & EventTarget;
 }
 
 export type sanityPostProp<T> = T extends null

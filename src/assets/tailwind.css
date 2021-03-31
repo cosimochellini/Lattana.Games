@@ -54,7 +54,7 @@
   @apply bg-transparent border border-gray-800 border-opacity-80;
 }
 
-.base-button .fas {
+.base-button .fas, .base-button .fad, .base-button .far {
   @apply ml-1;
 }
 

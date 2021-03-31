@@ -9,9 +9,32 @@
       >
         <div class="p-4 md:p-12 text-center lg:text-left">
           <div
-            class="block lg:hidden rounded-full shadow-xl mx-auto -mt-16 h-48 w-48 bg-cover bg-center"
-            :style="{ backgroundImage: `url('${profileImage}')` }"
-          ></div>
+            class="lg:hidden mx-auto -mt-16 h-48 w-48 bg-cover bg-center relative"
+          >
+            <div
+              class="absolute inset-0 bg-cover bg-center z-0 rounded-full shadow-2xl border"
+              :class="editMode ? 'blur' : 'a'"
+              :style="{ backgroundImage: `url('${profileImage}')` }"
+            ></div>
+            <div
+              v-if="editMode"
+              class="opacity-100 absolute inset-0 z-10 flex justify-center items-center text-xl text-white font-semibold"
+            >
+              <span
+                class="border border-white rounded-lg px-2 py-1 tracking-wide"
+              >
+                Upload foto
+                <input
+                  class="cursor-pointer absolute block opacity-0 pin-r pin-t"
+                  type="file"
+                  accept="image/*"
+                  name="profileImage"
+                  @change="(e) => updateProfileImage(e)"
+                />
+                <i class="fad fa-cloud-upload"></i>
+              </span>
+            </div>
+          </div>
 
           <h1
             class="text-3xl font-bold pt-8 lg:pt-0 text-center tracking-wider"
@@ -91,13 +114,14 @@
             {{ formatter.dayFormatter(currentPlayer._updatedAt) }}
           </p>
 
-          <div class="pt-12 pb-8 flex justify-around">
+          <div class="pt-12 pb-8 flex justify-around gap-4 text-black">
             <button
-              @click="editMode = true"
+              @click="() => (editMode = true)"
               class="base-button primary"
               v-show="!editMode"
             >
               edit profile
+              <i class="fas fa-user-edit"></i>
             </button>
 
             <button
@@ -105,14 +129,16 @@
               class="base-button success"
               v-show="editMode"
             >
-              update profile
+              update
+              <i class="fad fa-save"></i>
             </button>
             <button
               @click="discardChanges"
               class="base-button warning"
               v-show="editMode"
             >
-              discard changes
+              discard
+              <i class="fas fa-trash-undo-alt"></i>
             </button>
           </div>
 
@@ -129,11 +155,25 @@
           </div>
         </div>
       </div>
-      <div class="w-full lg:w-2/5">
+      <div class="w-full lg:w-2/5 text-center hidden lg:block">
         <img
           :src="profileImage"
-          class="rounded-none lg:rounded-lg shadow-2xl hidden lg:block"
+          class="rounded-none lg:rounded-lg shadow-2xl hover:bri"
         />
+        <div class="relative w-64 mt-4 mb-4 m-auto" v-if="editMode">
+          <button class="base-button primary">
+            <span class="ml-2">Update image profile</span>
+
+            <input
+              class="cursor-pointer absolute block opacity-0 pin-r pin-t"
+              type="file"
+              accept="image/*"
+              name="profileImage"
+              @change="updateProfileImage"
+            />
+            <i class="fad fa-cloud-upload"></i>
+          </button>
+        </div>
       </div>
     </div>
     <div class="first-capitalize text-center font-semibold tracking-wider">
@@ -143,8 +183,9 @@
 </template>
 
 <script lang="ts">
+import { HTMLInputEvent } from "@/types";
 import { image } from "@/instances/sanity";
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { auth } from "@/services/auth.service";
 import { formatter } from "@/utils/formatters";
 import { settings } from "@/instances/package.json";
@@ -157,19 +198,27 @@ export default defineComponent({
     const currentPlayer = ref(auth.editablePlayer);
     const editMode = ref(false);
 
-    const profileImage = image(currentPlayer.value.profileImage, 1000);
+    const profileImage = computed(() =>
+      image(currentPlayer.value.profileImage, 1000)
+    );
 
     const discardChanges = () => {
       editMode.value = false;
       currentPlayer.value = auth.editablePlayer;
     };
-    const updateProfile = async () => {
+
+    auth.onPlayerUpdate(() => {
+      currentPlayer.value = auth.editablePlayer;
+      editMode.value = false;
+    });
+
+    const updateProfile = () =>
+      auth.updatePlayer(currentPlayer.value).catch(notification.danger);
+
+    const updateProfileImage = (event: HTMLInputEvent) =>
       auth
-        .updatePlayer(currentPlayer.value)
-        .then(() => (currentPlayer.value = auth.editablePlayer))
-        .catch(notification.danger)
-        .finally(() => (editMode.value = false));
-    };
+        .updateProfileImage(event.target?.files?.[0])
+        .catch(notification.danger);
 
     return {
       settings,
@@ -179,6 +228,7 @@ export default defineComponent({
       currentPlayer,
       updateProfile,
       discardChanges,
+      updateProfileImage,
     };
   },
 });
@@ -187,5 +237,9 @@ export default defineComponent({
 <style>
 .input-width {
   @apply col-span-3 md:col-span-2;
+}
+
+.blur {
+  filter: brightness(0.3) blur(8px);
 }
 </style>
