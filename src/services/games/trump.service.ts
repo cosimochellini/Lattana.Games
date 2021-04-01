@@ -68,6 +68,15 @@ export const trump = {
       .fetch<trumpMatch[]>()
       .then((matches) => new RankingList(matches, trumpRank.create));
   },
+  getOrderedPlayers() {
+    return new groq.QueryBuilder(sanityTypes.player)
+      .select(
+        "..., 'count': count(*[_type=='trumpMatchPlayer' && references(^._id)])"
+      )
+      .orderBy(new groq.OrderBuilder("count", true))
+      .cached()
+      .fetch<player[]>();
+  },
 
   async saveNewMatch(match: trumpMatch) {
     if (match.players.length !== 5) return false;

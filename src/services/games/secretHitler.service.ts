@@ -65,6 +65,16 @@ export const secretHitler = {
       .fetch<player[]>();
   },
 
+  getOrderedPlayers() {
+    return new groq.QueryBuilder(sanityTypes.player)
+      .select(
+        "..., 'count': count(*[_type=='secretHitlerMatchPlayer' && references(^._id)])"
+      )
+      .orderBy(new groq.OrderBuilder("count", true))
+      .cached()
+      .fetch<player[]>();
+  },
+
   async deleteExistingMatch(match: secretHitlerMatch) {
     try {
       const shouldDelete = await dialog.confirm({

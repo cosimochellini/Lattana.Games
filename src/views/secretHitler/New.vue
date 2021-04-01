@@ -21,6 +21,7 @@
             v-show="totalPlayers.length + remainingPlayers.length < 10"
             :excludedPlayers="excludedPlayers"
             @update:modelValue="addPlayer"
+            :exactPlayers="orderedPlayers"
           />
         </template>
         <template #item="{ element }">
@@ -68,7 +69,7 @@
               element._id === hitlerPlayer._id ? 'bg-gray-300' : 'bg-red-100'
             "
             :avatarColor="
-              tailwind.winRingColor(winningRole === secretHitlerRole.liberal)
+              tailwind.winRingColor(winningRole === secretHitlerRole.fascist)
             "
           />
         </template>
@@ -127,15 +128,17 @@ const playersQuery = new groq.QueryBuilder(
 ).select("player ->");
 
 const initialData = () => ({
+  tailwind,
   secretHitlerRole,
   hitlerPlayer: {} as player,
-  allRoles: [secretHitlerRole.fascist, secretHitlerRole.liberal],
-  winningRole: "" as secretHitlerRole,
-  remainingPlayers: [] as player[],
   liberalPlayers: [] as player[],
   fascistPlayers: [] as player[],
-  tailwind,
+  orderedPlayers: [] as player[],
+  remainingPlayers: [] as player[],
+  winningRole: "" as secretHitlerRole,
+  allRoles: [secretHitlerRole.fascist, secretHitlerRole.liberal],
 });
+
 export default defineComponent({
   components: { UserAutocomplete, draggable, DraggableUser },
   name: "secretHitlerNew",
@@ -159,6 +162,11 @@ export default defineComponent({
   },
   deactivated() {
     this.$nextTick(() => mergeObjects(this.$data, initialData()));
+  },
+  mounted() {
+    secretHitler
+      .getOrderedPlayers()
+      .then((players) => (this.orderedPlayers = players));
   },
   methods: {
     saveMatch() {

@@ -21,6 +21,7 @@
             v-show="allPlayers.length < 5"
             :excludedPlayers="allPlayers"
             @update:modelValue="addPlayer"
+            :exactPlayers="orderedPlayers"
           />
         </template>
         <template #item="{ element }">
@@ -145,14 +146,16 @@ const playersQuery = new groq.QueryBuilder(sanityTypes.trumpMatchPlayer).select(
 );
 
 const initialData = () => ({
-  remainingPlayers: [] as player[],
+  tailwind,
+  finalScore: 0,
+  startingScore: 0,
+  callingPlayer: {} as player,
+  orderedPlayers: [] as player[],
   callingPlayers: [] as player[],
   opposingPlayers: [] as player[],
-  callingPlayer: {} as player,
-  startingScore: 0,
-  finalScore: 0,
-  tailwind,
+  remainingPlayers: [] as player[],
 });
+
 export default defineComponent({
   components: { UserAutocomplete, DraggableUser, draggable },
   name: "trumpNew",
@@ -175,6 +178,11 @@ export default defineComponent({
   },
   deactivated() {
     this.$nextTick(() => mergeObjects(this.$data, initialData()));
+  },
+  mounted() {
+    trump
+      .getOrderedPlayers()
+      .then((players) => (this.orderedPlayers = players));
   },
   methods: {
     addPlayer(p: player) {
