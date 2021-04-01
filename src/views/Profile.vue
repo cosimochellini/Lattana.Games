@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="max-w-4xl flex items-center h-auto lg:h-screen flex-wrap mx-auto my-32 lg:my-0"
+      class="max-w-4xl flex items-center h-auto lg:h-screen flex-wrap mx-auto my-20 lg:my-0"
     >
       <!--Main Col-->
       <div
@@ -13,8 +13,8 @@
           >
             <div
               class="absolute inset-0 bg-cover bg-center z-0 rounded-full shadow-2xl border"
-              :class="editMode ? 'blur' : 'a'"
-              :style="{ backgroundImage: `url('${profileImage}')` }"
+              :class="editMode ? 'blur' : ''"
+              :style="{ backgroundImage: ` url('${profileImage}')` }"
             ></div>
             <div
               v-if="editMode"
@@ -28,9 +28,8 @@
                   class="cursor-pointer absolute block opacity-0 w-48 inset-0 pin-r pin-t"
                   type="file"
                   accept="image/*"
-                  capture
                   name="profileImage"
-                  @change="(e) => updateProfileImage(e)"
+                  @change="updateProfileImage"
                 />
                 <i class="fad fa-cloud-upload"></i>
               </span>
@@ -109,11 +108,17 @@
               {{ formatter.longNumberFormatter(currentPlayer.pin) }}
             </span>
           </div>
-          <p class="pt-8 text-sm">
-            Creato il {{ formatter.dayFormatter(currentPlayer._createdAt) }},
-            ultima modifica il
-            {{ formatter.dayFormatter(currentPlayer._updatedAt) }}
-          </p>
+          <div class="pt-8 text-sm">
+            <div class="first-capitalize mt-1" v-if="currentPlayer._createdAt">
+              Creato il
+              <date-badge :date="currentPlayer._createdAt" />
+            </div>
+
+            <div class="first-capitalize mt-1" v-if="currentPlayer._updatedAt">
+              aggiornato il
+              <date-badge :date="currentPlayer._updatedAt" />
+            </div>
+          </div>
 
           <div class="pt-12 pb-8 flex justify-around gap-4 text-black">
             <button
@@ -145,6 +150,7 @@
 
           <div
             class="mt-6 pb-16 lg:pb-0 w-4/5 lg:w-full mx-auto flex flex-wrap items-center justify-evenly"
+            v-if="currentPlayer.roles.length"
           >
             <a
               class="link border-2 p-2 rounded-lg uppercase"
@@ -191,8 +197,10 @@ import { auth } from "@/services/auth.service";
 import { formatter } from "@/utils/formatters";
 import { settings } from "@/instances/package.json";
 import { notification } from "@/services/notification.service";
+import DateBadge from "@/components/base/DateBadge.vue";
 
 export default defineComponent({
+  components: { DateBadge },
   name: "Profile",
 
   setup() {
