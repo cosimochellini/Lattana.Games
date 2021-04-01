@@ -123,9 +123,9 @@
 </template>
 
 <script lang="ts">
+import { Dictionary } from "@/types";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
-import { Dictionary } from "@/types";
 import { auth } from "@/services/auth.service";
 import { useTimedOpen } from "@/composable/timedOpen";
 import { defineComponent, reactive, watch } from "vue";
@@ -170,11 +170,11 @@ export default defineComponent({
       currentLanguage.value = route.params.locale as string;
     });
 
-    watch(currentLanguage, (val) => {
-      currentLanguage.value = val;
+    watch(currentLanguage, (locale) => {
+      currentLanguage.value = locale;
       router.push({
         name: router.currentRoute.value.name as string,
-        params: { locale: val },
+        params: { locale },
       });
     });
 

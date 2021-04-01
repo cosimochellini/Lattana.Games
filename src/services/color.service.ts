@@ -1,10 +1,9 @@
 import { Dictionary } from "@/types";
 import { reactiveStorage } from "./reactiveStorage.service";
 
-const localStorageName = "LS_COLOR";
 declare type color = string;
 
-const currentColors = reactiveStorage<Dictionary<color>>(localStorageName, {});
+const currentColors = reactiveStorage<Dictionary<color>>("LS_COLOR", {});
 
 const getColor = (value: string) => {
   if (!currentColors.value[value]) {

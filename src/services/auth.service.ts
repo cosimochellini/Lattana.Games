@@ -36,8 +36,8 @@ export const auth = {
     localStorage.clear();
   },
 
-  onPlayerUpdate(hook: (player: player) => void) {
-    watch(currentPlayer, (p) => hook(p as player));
+  onPlayerUpdate(hook: () => void) {
+    watch(currentPlayer, hook);
   },
 
   async updatePlayer(player: player) {

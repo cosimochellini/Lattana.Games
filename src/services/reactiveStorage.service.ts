@@ -1,4 +1,4 @@
-import { Ref, ref, watch } from "vue";
+import { ref, watch } from "vue";
 
 export const reactiveStorage = <T>(
   localStoragePath: string,

@@ -25,9 +25,10 @@
               >
                 Upload foto
                 <input
-                  class="cursor-pointer absolute block opacity-0 pin-r pin-t"
+                  class="cursor-pointer absolute block opacity-0 inset-0 pin-r pin-t"
                   type="file"
                   accept="image/*"
+                  capture
                   name="profileImage"
                   @change="(e) => updateProfileImage(e)"
                 />
