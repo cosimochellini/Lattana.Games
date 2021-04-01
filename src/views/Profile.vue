@@ -25,7 +25,7 @@
               >
                 Upload foto
                 <input
-                  class="cursor-pointer absolute block opacity-0 inset-0 pin-r pin-t"
+                  class="cursor-pointer absolute block opacity-0 w-48 inset-0 pin-r pin-t"
                   type="file"
                   accept="image/*"
                   capture

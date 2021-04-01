@@ -1,6 +1,7 @@
 import { watch } from "vue";
 import { player } from "@/types";
 import { clone } from "./clone.service";
+import { overlay } from "./overlay.service";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { sanityClient } from "@/instances/sanity";
 import { notification } from "./notification.service";
@@ -41,32 +42,35 @@ export const auth = {
   },
 
   async updatePlayer(player: player) {
+    overlay.show();
+
     await sanityClient.createOrReplace(player);
 
     await this.login(player.nickname, player.pin.toString());
+
+    overlay.hide();
 
     return currentPlayer.value;
   },
 
   async updateProfileImage(file: File | undefined) {
     if (!file) return;
+    overlay.show();
 
-    await sanityClient.assets
-      .upload("image", file)
-      .then((asset) =>
-        sanityClient
-          .patch(auth.currentPlayer._id)
-          .set({
-            profileImage: {
-              _type: "image",
-              asset: { _type: "reference", _ref: asset._id },
-            },
-          })
-          .commit()
-          .catch(console.error)
-      )
-      .catch(console.error);
-
+    await sanityClient.assets.upload("image", file).then((asset) =>
+      sanityClient
+        .patch(auth.currentPlayer._id)
+        .set({
+          profileImage: {
+            _type: "image",
+            asset: { _type: "reference", _ref: asset._id },
+          },
+        })
+        .commit()
+        .then(overlay.hide)
+        .catch(console.error)
+    );
+    
     await this.login(
       this.currentPlayer.nickname,
       this.currentPlayer.pin.toString()
