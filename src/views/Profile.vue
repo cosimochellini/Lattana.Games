@@ -21,9 +21,9 @@
               class="opacity-100 absolute inset-0 z-10 flex justify-center items-center text-xl text-white font-semibold"
             >
               <span
-                class="border border-white rounded-lg px-2 py-1 tracking-wide"
+                class="border border-white rounded-lg px-2 py-1 tracking-wide first-capitalize"
               >
-                Upload foto
+                {{ $t("form.profile.uploadPhoto") }}
                 <input
                   class="cursor-pointer absolute block opacity-0 w-48 inset-0 pin-r pin-t"
                   type="file"
@@ -110,12 +110,12 @@
           </div>
           <div class="pt-8 text-sm">
             <div class="first-capitalize mt-1" v-if="currentPlayer._createdAt">
-              Creato il
+              {{ $t("system.createdAt") }}
               <date-badge :date="currentPlayer._createdAt" />
             </div>
 
             <div class="first-capitalize mt-1" v-if="currentPlayer._updatedAt">
-              aggiornato il
+              {{ $t("system.updatedAt") }}
               <date-badge :date="currentPlayer._updatedAt" />
             </div>
           </div>
@@ -126,7 +126,7 @@
               class="base-button primary"
               v-show="!editMode"
             >
-              edit profile
+              {{ $t("buttons.base.editProfile") }}
               <i class="fas fa-user-edit"></i>
             </button>
 
@@ -135,7 +135,7 @@
               class="base-button success"
               v-show="editMode"
             >
-              update
+              {{ $t("buttons.base.update") }}
               <i class="fad fa-save"></i>
             </button>
             <button
@@ -143,7 +143,7 @@
               class="base-button warning"
               v-show="editMode"
             >
-              discard
+              {{ $t("buttons.base.discard") }}
               <i class="fas fa-trash-undo-alt"></i>
             </button>
           </div>
@@ -169,7 +169,9 @@
         />
         <div class="relative w-64 mt-4 mb-4 m-auto" v-if="editMode">
           <button class="base-button primary">
-            <span class="ml-2">Update image profile</span>
+            <span class="ml-2">
+              {{ $t("form.profile.uploadPhoto") }}
+            </span>
 
             <input
               class="cursor-pointer absolute block opacity-0 pin-r pin-t"
@@ -183,8 +185,8 @@
         </div>
       </div>
     </div>
-    <div class="first-capitalize text-center font-semibold tracking-wider">
-      version {{ settings.version }}
+    <div class="text-center font-semibold tracking-wider">
+      {{ $t("system.version") }} {{ settings.version }}
     </div>
   </div>
 </template>
@@ -249,6 +251,6 @@ export default defineComponent({
 }
 
 .blur {
-  filter: brightness(0.3) blur(8px);
+  filter: brightness(0.25) blur(10px);
 }
 </style>

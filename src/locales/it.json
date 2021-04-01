@@ -24,7 +24,10 @@
             "save": "salva",
             "edit": "modifica",
             "delete": "cancella",
-            "copy": "copia"
+            "copy": "copia",
+            "editProfile": "modifica profilo",
+            "update": "aggiorna",
+            "discard": "scarta"
         }
     },
     "secretHitler": {
@@ -113,11 +116,17 @@
             "weightedAverage": "media ponderata",
             "asc": "ascendenti",
             "desc": "discendenti"
+        },
+        "profile": {
+            "uploadPhoto": "carica foto"
         }
     },
     "system": {
         "wait": "attendere....",
-        "fewSeconds": "questa operazione può impiegare qualche secondo"
+        "fewSeconds": "questa operazione può impiegare qualche secondo",
+        "version": "versione",
+        "createdAt": "creato il",
+        "updatedAt": "aggiornato il"
     },
     "dialog": {
         "title": {
@@ -128,7 +137,8 @@
         },
         "buttons": {
             "confirm": "conferma",
-            "cancel": "cancel"
+            "cancel": "annulla"
         }
-    }
+    },
+    "notification": {}
 }

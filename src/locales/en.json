@@ -24,7 +24,10 @@
             "save": "save",
             "edit": "edit",
             "delete": "delete",
-            "copy": "copy"
+            "copy": "copy",
+            "editProfile": "edit profile",
+            "update": "update",
+            "discard": "discard"
         }
     },
     "secretHitler": {
@@ -110,12 +113,32 @@
             "calledMatches": "called matches",
             "calledMatches120": "called matches at 120",
             "calculatedScore": "calculated score",
-            "asc": "ascendenti",
-            "desc": "discendenti"
+            "weightedAverage": "weighted average",
+            "asc": "ascendent",
+            "desc": "descendent"
+        },
+        "profile": {
+            "uploadPhoto": "upload photo"
         }
     },
     "system": {
         "wait": "wait....",
-        "fewSeconds": "this operation can take a few seconds"
-    }
+        "fewSeconds": "this operation can take a few seconds",
+        "version": "version",
+        "createdAt": "created at",
+        "updatedAt": "updated at"
+    },
+    "dialog": {
+        "title": {
+            "deleteMatch": "sure you want to cancel the game?"
+        },
+        "description": {
+            "deleteMatch": "attention, this operation is irreversible, think twice."
+        },
+        "buttons": {
+            "confirm": "confirm",
+            "cancel": "cancel"
+        }
+    },
+    "notification": {}
 }

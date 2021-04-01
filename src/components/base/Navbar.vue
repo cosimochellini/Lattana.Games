@@ -1,6 +1,6 @@
 <template>
   <nav class="rounded-b-md" :class="currentState.color">
-    <div class="max-w-7xl mx-auto px-2">
+    <div class="max-w-7xl mx-auto px-2 md:px-0">
       <div class="relative flex items-center justify-between h-16">
         <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
           <!-- Mobile menu button-->
@@ -15,21 +15,19 @@
         <div
           class="flex-1 flex items-center place-items-center content-center justify-center sm:items-stretch sm:justify-start justify-items-center text-gray-900"
         >
-          <span
-            class="font-semibold leading-3 text-2xl tracking-widest capitalize md:pt-1"
+          <div
+            class="font-semibold leading-3 text-2xl tracking-widest capitalize px-3 py-2"
           >
-            <span class="md:hidden">
+            <div class="md:hidden">
               {{ $t(`navbar.route.${currentState.name}`) }}
-            </span>
-            <span class="hidden md:block"> Lattana Games </span>
-          </span>
-          <div class="flex-shrink-0">
-            <i
-              class="block w-auto"
-              :class="`ml-1 text-2xl ${currentState.icon}`"
-            >
-            </i>
+              <i class="w-auto" :class="`ml-1 text-2xl ${currentState.icon}`" />
+            </div>
+            <div class="hidden md:block">
+              Lattana Games
+              <i class="w-auto" :class="`ml-1 text-2xl ${currentState.icon}`" />
+            </div>
           </div>
+
           <div class="hidden sm:block sm:ml-6">
             <div class="flex">
               <router-link
@@ -144,7 +142,7 @@ const availableStates: Dictionary<State> = {
     color: "bg-red-400",
     icon: "fad fa-snake",
   },
-  default: { name: "lattanaGames", color: "bg-gray-600", icon: "" },
+  default: { name: "lattanaGames", color: "bg-gray-500", icon: "fa fa-gamepad-alt" },
 };
 
 export default defineComponent({
