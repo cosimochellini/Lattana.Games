@@ -144,13 +144,14 @@ import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 const playersQuery = new groq.QueryBuilder(sanityTypes.trumpMatchPlayer).select(
   "player ->"
 );
+let orderedPlayers = [] as player[];
 
 const initialData = () => ({
   tailwind,
   finalScore: 0,
+  orderedPlayers,
   startingScore: 0,
   callingPlayer: {} as player,
-  orderedPlayers: [] as player[],
   callingPlayers: [] as player[],
   opposingPlayers: [] as player[],
   remainingPlayers: [] as player[],
@@ -180,9 +181,10 @@ export default defineComponent({
     this.$nextTick(() => mergeObjects(this.$data, initialData()));
   },
   mounted() {
-    trump
-      .getOrderedPlayers()
-      .then((players) => (this.orderedPlayers = players));
+    trump.getOrderedPlayers().then((players) => {
+      this.orderedPlayers = players;
+      orderedPlayers = players;
+    });
   },
   methods: {
     addPlayer(p: player) {

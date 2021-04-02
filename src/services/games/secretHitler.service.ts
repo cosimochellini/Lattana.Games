@@ -71,6 +71,7 @@ export const secretHitler = {
         "..., 'count': count(*[_type=='secretHitlerMatchPlayer' && references(^._id)])"
       )
       .orderBy(new groq.OrderBuilder("count", true))
+      .orderBy(new groq.OrderBuilder("name"))
       .cached()
       .fetch<player[]>();
   },

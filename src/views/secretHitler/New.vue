@@ -127,13 +127,15 @@ const playersQuery = new groq.QueryBuilder(
   sanityTypes.secretHitlerMatchPlayer
 ).select("player ->");
 
+let orderedPlayers = [] as player[];
+
 const initialData = () => ({
   tailwind,
+  orderedPlayers,
   secretHitlerRole,
   hitlerPlayer: {} as player,
   liberalPlayers: [] as player[],
   fascistPlayers: [] as player[],
-  orderedPlayers: [] as player[],
   remainingPlayers: [] as player[],
   winningRole: "" as secretHitlerRole,
   allRoles: [secretHitlerRole.fascist, secretHitlerRole.liberal],
@@ -164,9 +166,10 @@ export default defineComponent({
     this.$nextTick(() => mergeObjects(this.$data, initialData()));
   },
   mounted() {
-    secretHitler
-      .getOrderedPlayers()
-      .then((players) => (this.orderedPlayers = players));
+    secretHitler.getOrderedPlayers().then((players) => {
+      this.orderedPlayers = players;
+      orderedPlayers = players;
+    });
   },
   methods: {
     saveMatch() {

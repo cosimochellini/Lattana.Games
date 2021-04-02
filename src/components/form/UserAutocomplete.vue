@@ -43,9 +43,6 @@ export default defineComponent({
     return {
       fetchedPlayers: [] as player[],
       selectedId: this.modelValue._id ?? "",
-      playerQuery: new groq.QueryBuilder(sanityTypes.player)
-        .orderBy(new groq.OrderBuilder("name"))
-        .cached(),
     };
   },
   mounted() {
@@ -53,14 +50,18 @@ export default defineComponent({
   },
   methods: {
     fetchPlayers() {
-      if (this.exactPlayers)
-        return (this.fetchedPlayers = this.exactPlayers ?? []);
-
       const excluded = this.excludedPlayers
         .filter(({ _id }) => _id !== this.selectedId)
         .map(({ _id }) => _id);
 
-      this.playerQuery
+      if (this.exactPlayers)
+        return (this.fetchedPlayers = (this.exactPlayers ?? []).filter(
+          (p) => !excluded.includes(p._id)
+        ));
+
+      new groq.QueryBuilder(sanityTypes.player)
+        .orderBy(new groq.OrderBuilder("name"))
+        .cached()
         .where(
           new groq.ConditionBuilder("_id in $excluded")
             .params({ excluded })

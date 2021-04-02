@@ -129,6 +129,7 @@ class QueryBuilder {
 
     const orderBy = this._orderBy.length
       ? `| ${this._orderBy
+          .reverse() //fix for groq query
           .map((x) => x.value)
           .map(({ prop, desc }) => ` order(${prop} ${desc ? "desc" : "asc"}) `)
           .join(" | ")}`
