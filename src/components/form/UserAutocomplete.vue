@@ -20,8 +20,6 @@ import { defineComponent, PropType } from "vue";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { sanityTypes } from "@/constants/roleConstants";
 
-// const playerQuery =
-
 export default defineComponent({
   name: "UserAutocomplete",
   props: {
@@ -49,15 +47,18 @@ export default defineComponent({
     this.fetchPlayers();
   },
   methods: {
-    fetchPlayers() {
-      const excluded = this.excludedPlayers
+    async fetchPlayers() {
+      const excluded = (this.excludedPlayers ?? [])
         .filter(({ _id }) => _id !== this.selectedId)
         .map(({ _id }) => _id);
 
-      if (this.exactPlayers)
-        return (this.fetchedPlayers = (this.exactPlayers ?? []).filter(
-          (p) => !excluded.includes(p._id)
-        ));
+      if (this.exactPlayers) {
+        const filterFn = excluded.length
+          ? (p: player) => !excluded.includes(p._id)
+          : () => true;
+
+        return (this.fetchedPlayers = this.exactPlayers.filter(filterFn));
+      }
 
       new groq.QueryBuilder(sanityTypes.player)
         .orderBy(new groq.OrderBuilder("name"))
@@ -79,14 +80,17 @@ export default defineComponent({
     },
   },
   watch: {
-    search() {
-      this.fetchPlayers();
+    excludedPlayers: {
+      handler() {
+        this.fetchPlayers();
+      },
+      deep: true,
     },
-    excludedPlayers() {
-      this.fetchPlayers();
-    },
-    exactPlayers() {
-      this.fetchPlayers();
+    exactPlayers: {
+      handler() {
+        this.fetchPlayers();
+      },
+      deep: true,
     },
     modelValue(player: player) {
       this.selectedId = player?._id;

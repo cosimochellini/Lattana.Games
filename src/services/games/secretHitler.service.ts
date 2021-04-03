@@ -1,5 +1,6 @@
 import { uuid } from "@/utils/uuid";
 import { auth } from "../auth.service";
+import { byString, byValue } from "sort-es";
 import { overlay } from "../overlay.service";
 import { sanityClient } from "@/instances/sanity";
 import { notification } from "../notification.service";
@@ -76,6 +77,16 @@ export const secretHitler = {
       .fetch<player[]>();
   },
 
+  getPreviouslyPlayers(match: string) {
+    return new groq.QueryBuilder(sanityTypes.secretHitlerMatchPlayer)
+      .select("player ->")
+      .where(new groq.ConditionBuilder("match._ref== $match").params({ match }))
+      .fetch<secretHitlerMatchPlayer[]>()
+      .then((players) =>
+        players.map((x) => x.player).sort(byValue((x) => x.name, byString()))
+      );
+  },
+
   async deleteExistingMatch(match: secretHitlerMatch) {
     try {
       const shouldDelete = await dialog.confirm({
@@ -87,6 +98,8 @@ export const secretHitler = {
 
       if (!shouldDelete) return false;
 
+      overlay.show();
+
       await sanityClient.patch(match._id).set({ players: [] }).commit();
 
       const playersPromises =
@@ -97,6 +110,8 @@ export const secretHitler = {
       await sanityClient.delete(match._id);
 
       notification.success("eliminazione eseguita");
+
+      overlay.hide();
 
       return true;
     } catch (error) {

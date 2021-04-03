@@ -12,7 +12,7 @@
         v-if="!(!remainingPlayers.length && totalPlayers.length === 10)"
       >
         <template #header>
-          <h2 class="base-subtitle">
+          <h2 class="base-subtitle first-capitalize">
             {{ $t("secretHitler.form.remainingPlayers") }}
           </h2>
 
@@ -75,7 +75,11 @@
         </template>
       </draggable>
     </div>
-    <form @submit.prevent="saveMatch" class="flex flex-col items-center mt-2">
+    <form
+      @submit.prevent="saveMatch"
+      class="flex flex-col items-center mt-2"
+      v-if="totalPlayers.length > 0 && remainingPlayers.length === 0"
+    >
       <div class="base-card w-full mx-2 py-4 card-width">
         <h2 class="base-subtitle">Ruolo vincitore</h2>
         <select v-model="winningRole" class="base-select w-full">
@@ -111,21 +115,15 @@
 import draggable from "vuedraggable";
 import { range } from "@/utils/range";
 import { defineComponent } from "vue";
-import { byString, byValue } from "sort-es";
 import { mergeObjects } from "@/utils/merge";
-import { groq } from "@/utils/GroqQueryBuilder";
 import { tailwind } from "@/services/tailwind.service";
 import { queryRefresh } from "@/composable/routerRefresh";
+import { secretHitlerRole } from "@/constants/roleConstants";
 import { notification } from "@/services/notification.service";
 import DraggableUser from "@/components/base/DraggableUser.vue";
 import { secretHitler } from "@/services/games/secretHitler.service";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
-import { sanityTypes, secretHitlerRole } from "@/constants/roleConstants";
 import { player, secretHitlerMatch, secretHitlerMatchPlayer } from "@/types";
-
-const playersQuery = new groq.QueryBuilder(
-  sanityTypes.secretHitlerMatchPlayer
-).select("player ->");
 
 let orderedPlayers = [] as player[];
 
@@ -145,31 +143,21 @@ export default defineComponent({
   components: { UserAutocomplete, draggable, DraggableUser },
   name: "secretHitlerNew",
   data: initialData,
-  activated() {
+  async activated() {
     this.remainingPlayers = [];
-    if (!this.$route.query.ref) return;
 
-    playersQuery
-      .where(
-        new groq.ConditionBuilder("match._ref== $match").params({
-          match: this.$route.query.ref,
-        })
-      )
-      .fetch<secretHitlerMatchPlayer[]>()
-      .then((players) => {
-        this.remainingPlayers = players
-          .map((x) => x.player)
-          .sort(byValue((x) => x.name, byString()));
-      });
-  },
-  deactivated() {
-    this.$nextTick(() => mergeObjects(this.$data, initialData()));
-  },
-  mounted() {
-    secretHitler.getOrderedPlayers().then((players) => {
-      this.orderedPlayers = players;
-      orderedPlayers = players;
-    });
+    if (!orderedPlayers.length) {
+      await secretHitler
+        .getOrderedPlayers()
+        .then((players) => (orderedPlayers = players));
+    }
+    mergeObjects(this.$data, initialData());
+
+    if (this.$route.query.ref) {
+      secretHitler
+        .getPreviouslyPlayers(this.$route.query.ref as string)
+        .then((players) => (this.remainingPlayers = players));
+    }
   },
   methods: {
     saveMatch() {
