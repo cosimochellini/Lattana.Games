@@ -1,11 +1,16 @@
 <template>
-  <badge :text="text" :textColor="textColor" :background="background" />
+  <badge
+    :text="text"
+    :textColor="tailwind.base.text(win)"
+    :background="tailwind.base.background(win)"
+  />
 </template>
 
 <script lang="ts">
 import Badge from "./Badge.vue";
 import { useI18n } from "vue-i18n";
 import { computed, defineComponent } from "vue";
+import { tailwind } from "@/services/tailwind.service";
 
 export default defineComponent({
   components: { Badge },
@@ -22,19 +27,7 @@ export default defineComponent({
       props.win ? i18n.t("form.base.win") : i18n.t("form.base.lose")
     );
 
-    const textColor = computed(() =>
-      props.win ? "text-green-900" : "text-red-900"
-    );
-
-    const background = computed(() =>
-      props.win ? "bg-green-200" : "bg-red-200"
-    );
-
-    return {
-      text,
-      textColor,
-      background,
-    };
+    return { text, tailwind };
   },
 });
 </script>

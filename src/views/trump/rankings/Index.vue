@@ -108,7 +108,7 @@ export default defineComponent({
 
       return {
         ring: true,
-        [tailwind.rankingBackground[realIndex]]: true,
+        [tailwind.shared.rankingBackground[realIndex]]: true,
       };
     },
     bindBadgeColor(index: number): string {
@@ -116,12 +116,12 @@ export default defineComponent({
 
       const rate = realIndex / this.sortedRanks.length;
 
-      return tailwind.bindRate(rate);
+      return tailwind.shared.bindRate(rate);
     },
     bindBadgeTextColor(index: number): string {
       const realIndex = this.bindRealIndex(index, true);
 
-      return tailwind.text(realIndex / this.sortedRanks.length < 0.5);
+      return tailwind.base.text(realIndex / this.sortedRanks.length < 0.5);
     },
   },
   activated() {

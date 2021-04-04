@@ -46,9 +46,9 @@
           <img
             v-for="p in match.players"
             :key="p._id"
+            :class="tailwind.base.ringColor(p.win)"
             :src="image(p.player.profileImage, 500)"
             :title="`${p.player.name} ${p.player.surname}`"
-            :class="tailwind.winRingColor(p.win)"
             class="inline-block h-10 w-10 rounded-full ring-2 my-2"
           />
         </div>

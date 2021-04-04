@@ -47,18 +47,6 @@ export const trump = {
       .then((matches) => new TrumpStats(matches, player));
   },
 
-  getActualPlayers() {
-    return new groq.QueryBuilder(sanityTypes.player)
-      .where(
-        new groq.ConditionBuilder(
-          "_id in *[_type=='trumpMatchPlayer' && win == true ].player._ref"
-        )
-      )
-      .orderBy(new groq.OrderBuilder("name"))
-      .cached()
-      .fetch<player[]>();
-  },
-
   getRanking() {
     return new groq.QueryBuilder(sanityTypes.trumpMatch)
       .select(

@@ -54,18 +54,6 @@ export const secretHitler = {
       .then((matches) => new RankingList(matches, secretHitlerRank.create));
   },
 
-  getActualPlayers() {
-    return new groq.QueryBuilder(sanityTypes.player)
-      .where(
-        new groq.ConditionBuilder(
-          "_id in *[_type=='secretHitlerMatchPlayer' && win == true ].player._ref"
-        )
-      )
-      .orderBy(new groq.OrderBuilder("name"))
-      .cached()
-      .fetch<player[]>();
-  },
-
   getOrderedPlayers() {
     return new groq.QueryBuilder(sanityTypes.player)
       .select(
@@ -75,16 +63,6 @@ export const secretHitler = {
       .orderBy(new groq.OrderBuilder("name"))
       .cached()
       .fetch<player[]>();
-  },
-
-  getPreviouslyPlayers(match: string) {
-    return new groq.QueryBuilder(sanityTypes.secretHitlerMatchPlayer)
-      .select("player ->")
-      .where(new groq.ConditionBuilder("match._ref== $match").params({ match }))
-      .fetch<secretHitlerMatchPlayer[]>()
-      .then((players) =>
-        players.map((x) => x.player).sort(byValue((x) => x.name, byString()))
-      );
   },
 
   async deleteExistingMatch(match: secretHitlerMatch) {

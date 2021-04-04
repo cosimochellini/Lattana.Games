@@ -17,8 +17,7 @@
 <script lang="ts">
 import { player } from "@/types";
 import { defineComponent, PropType } from "vue";
-import { groq } from "@/utils/GroqQueryBuilder";
-import { sanityTypes } from "@/constants/roleConstants";
+import { user } from "@/services/user.service";
 
 export default defineComponent({
   name: "UserAutocomplete",
@@ -60,16 +59,8 @@ export default defineComponent({
         return (this.fetchedPlayers = this.exactPlayers.filter(filterFn));
       }
 
-      new groq.QueryBuilder(sanityTypes.player)
-        .orderBy(new groq.OrderBuilder("name"))
-        .cached()
-        .where(
-          new groq.ConditionBuilder("_id in $excluded")
-            .params({ excluded })
-            .optional()
-            .reverse()
-        )
-        .fetch<player[]>()
+      return user
+        .getUsersDropdown({ excluded })
         .then((p) => (this.fetchedPlayers = p));
     },
     emitChanges() {

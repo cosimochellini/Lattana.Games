@@ -3,38 +3,42 @@ import { secretHitlerMatch, trumpMatch } from "@/types";
 import { secretHitlerRole } from "@/constants/roleConstants";
 
 export const tailwind = {
-  winRingColor(win: boolean) {
-    return win ? "ring-green-600" : "ring-red-600";
-  },
-  backgroundRatio(ratio: number, reverse: boolean = false) {
-    return ratio >= 0.5 !== reverse ? "bg-green-300" : "bg-red-300";
-  },
-
-  bindRate(rate: number): string {
-    if (rate < 0.16) return "bg-green-400";
-    if (rate < 0.33) return "bg-green-300";
-    if (rate < 0.5) return "bg-green-200";
-
-    if (rate < 0.66) return "bg-red-200";
-    if (rate < 0.83) return "bg-red-300";
-
-    return "bg-red-400";
+  base: {
+    text(condition: boolean) {
+      return condition ? "text-green-900" : "text-red-900";
+    },
+    background(condition: boolean) {
+      return condition ? "bg-green-300" : "bg-red-300";
+    },
+    ringColor(condition: boolean) {
+      return condition ? "ring-green-600" : "ring-red-600";
+    },
   },
 
-  text(condition: boolean) {
-    return condition ? "text-green-900" : "text-red-900";
-  },
+  shared: {
+    backgroundRatio(ratio: number, reverse: boolean = false) {
+      return tailwind.base.background(ratio >= 0.5 !== reverse);
+    },
 
-  rankingBackground: ["ring-yellow-400", "ring-gray-300", "ring-yellow-700"],
+    bindRate(rate: number): string {
+      if (rate < 0.16) return "bg-green-400";
+      if (rate < 0.33) return "bg-green-300";
+      if (rate < 0.5) return "bg-green-200";
+
+      if (rate < 0.66) return "bg-red-200";
+      if (rate < 0.83) return "bg-red-300";
+
+      return "bg-red-400";
+    },
+    rankingBackground: ["ring-yellow-400", "ring-gray-300", "ring-yellow-700"],
+  },
 
   trump: {
     background(match: trumpMatch) {
-      return match.finalScore >= match.startingScore
-        ? "bg-green-200"
-        : "bg-red-200";
+      return tailwind.base.background(match.finalScore >= match.startingScore);
     },
     text(match: trumpMatch) {
-      return tailwind.text(match.finalScore >= match.startingScore);
+      return tailwind.base.text(match.finalScore >= match.startingScore);
     },
   },
 
@@ -55,6 +59,26 @@ export const tailwind = {
       if (range([9, 10], players)) return "-space-x-2";
       if (range([8, 9], players)) return "-space-x-1";
       return "";
+    },
+    bindBackground(role: string) {
+      switch (role) {
+        case secretHitlerRole.liberal:
+          return "bg-blue-300";
+        case secretHitlerRole.fascist:
+          return "bg-red-300";
+        default:
+          return "bg-gray-400";
+      }
+    },
+    bindTextColor(role: string) {
+      switch (role) {
+        case secretHitlerRole.liberal:
+          return "text-blue-900";
+        case secretHitlerRole.fascist:
+          return "text-red-900";
+        default:
+          return "text-black";
+      }
     },
   },
 };

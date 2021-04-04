@@ -61,7 +61,7 @@
             <span class="col-span-1 text-center">
               <span
                 class="rounded-xl px-2 py-1 font-semibold"
-                :class="tailwind.backgroundRatio(mate.ratio)"
+                :class="tailwind.shared.backgroundRatio(mate.ratio)"
               >
                 {{ formatter.percentageFormatter(mate.ratio) }} %
               </span>
@@ -94,7 +94,7 @@
             <span class="col-span-1 text-center">
               <span
                 class="rounded-xl px-2 py-1 font-semibold"
-                :class="tailwind.backgroundRatio(mate.ratio, true)"
+                :class="tailwind.shared.backgroundRatio(mate.ratio, true)"
               >
                 {{ formatter.percentageFormatter(mate.ratio) }} %
               </span>
@@ -112,6 +112,7 @@ import { defineComponent } from "vue";
 import { image } from "@/instances/sanity";
 import { auth } from "@/services/auth.service";
 import { formatter } from "@/utils/formatters";
+import { user } from "@/services/user.service";
 import { trump } from "@/services/games/trump.service";
 import { tailwind } from "@/services/tailwind.service";
 import { Mate } from "@/utils/classes/stats/baseStats";
@@ -132,8 +133,8 @@ export default defineComponent({
   mounted() {
     this.loadMatches();
 
-    trump
-      .getActualPlayers()
+    user
+      .getActualTrumpPlayers()
       .then((players) => (this.availablePlayers = players));
   },
   methods: {

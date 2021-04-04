@@ -47,7 +47,7 @@
             color="bg-blue-100"
             :user="element"
             :avatarColor="
-              tailwind.winRingColor(winningRole === secretHitlerRole.liberal)
+              tailwind.base.ringColor(winningRole === secretHitlerRole.liberal)
             "
           />
         </template>
@@ -69,7 +69,7 @@
               element._id === hitlerPlayer._id ? 'bg-gray-300' : 'bg-red-100'
             "
             :avatarColor="
-              tailwind.winRingColor(winningRole === secretHitlerRole.fascist)
+              tailwind.base.ringColor(winningRole === secretHitlerRole.fascist)
             "
           />
         </template>
@@ -116,6 +116,7 @@ import draggable from "vuedraggable";
 import { range } from "@/utils/range";
 import { defineComponent } from "vue";
 import { mergeObjects } from "@/utils/merge";
+import { user } from "@/services/user.service";
 import { tailwind } from "@/services/tailwind.service";
 import { queryRefresh } from "@/composable/routerRefresh";
 import { secretHitlerRole } from "@/constants/roleConstants";
@@ -154,8 +155,8 @@ export default defineComponent({
     mergeObjects(this.$data, initialData());
 
     if (this.$route.query.ref) {
-      secretHitler
-        .getPreviouslyPlayers(this.$route.query.ref as string)
+      user
+        .getSecretHitlerRemainingPlayers(this.$route.query.ref as string)
         .then((players) => (this.remainingPlayers = players));
     }
   },

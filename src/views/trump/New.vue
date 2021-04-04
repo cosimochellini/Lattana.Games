@@ -50,7 +50,7 @@
             :color="
               element._id === callingPlayer._id ? 'bg-blue-300' : 'bg-blue-100'
             "
-            :avatarColor="tailwind.winRingColor(callingPlayersWin)"
+            :avatarColor="tailwind.base.ringColor(callingPlayersWin)"
           />
         </template>
       </draggable>
@@ -70,7 +70,7 @@
           <draggable-user
             :user="element"
             color="bg-red-100"
-            :avatarColor="tailwind.winRingColor(!callingPlayersWin)"
+            :avatarColor="tailwind.base.ringColor(!callingPlayersWin)"
           />
         </template>
       </draggable>
@@ -130,20 +130,15 @@
 import draggable from "vuedraggable";
 import { range } from "@/utils/range";
 import { defineComponent } from "vue";
-import { byString, byValue } from "sort-es";
 import { mergeObjects } from "@/utils/merge";
-import { groq } from "@/utils/GroqQueryBuilder";
+import { user } from "@/services/user.service";
 import { trump } from "@/services/games/trump.service";
 import { tailwind } from "@/services/tailwind.service";
-import { sanityTypes } from "@/constants/roleConstants";
 import { queryRefresh } from "@/composable/routerRefresh";
 import { player, trumpMatch, trumpMatchPlayer } from "@/types";
 import DraggableUser from "@/components/base/DraggableUser.vue";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 
-const playersQuery = new groq.QueryBuilder(sanityTypes.trumpMatchPlayer).select(
-  "player ->"
-);
 let orderedPlayers = [] as player[];
 
 const initialData = () => ({
@@ -162,29 +157,23 @@ export default defineComponent({
   name: "trumpNew",
   data: initialData,
   async activated() {
-    if (!this.$route.query.ref) return;
+    try {
+      if (!orderedPlayers.length) {
+        await trump
+          .getOrderedPlayers()
+          .then((players) => (orderedPlayers = players));
+      }
 
-    playersQuery
-      .where(
-        new groq.ConditionBuilder("match._ref == $match").params({
-          match: this.$route.query.ref,
-        })
-      )
-      .fetch<trumpMatchPlayer[]>()
-      .then((players) => {
-        this.remainingPlayers = players
-          .map((x) => x.player)
-          .sort(byValue((x) => x.name, byString()));
-      });
-  },
-  deactivated() {
-    this.$nextTick(() => mergeObjects(this.$data, initialData()));
-  },
-  mounted() {
-    trump.getOrderedPlayers().then((players) => {
-      this.orderedPlayers = players;
-      orderedPlayers = players;
-    });
+      mergeObjects(this.$data, initialData());
+
+      if (this.$route.query.ref) {
+        user
+          .getTrumpRemainingPlayers(this.$route.query.ref as string)
+          .then((players) => (this.remainingPlayers = players));
+      }
+    } catch (error) {
+      console.log(error);
+    }
   },
   methods: {
     addPlayer(p: player) {

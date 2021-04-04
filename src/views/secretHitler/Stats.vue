@@ -55,7 +55,7 @@
             <span class="col-span-1 text-center">
               <span
                 class="rounded-xl px-2 py-1 font-semibold"
-                :class="tailwind.backgroundRatio(mate.ratio)"
+                :class="tailwind.shared.backgroundRatio(mate.ratio)"
               >
                 {{ formatter.percentageFormatter(mate.ratio) }} %
               </span>
@@ -88,7 +88,7 @@
             <span class="col-span-1 text-center">
               <span
                 class="rounded-xl px-2 py-1 font-semibold"
-                :class="tailwind.backgroundRatio(mate.ratio, true)"
+                :class="tailwind.shared.backgroundRatio(mate.ratio, true)"
               >
                 {{ formatter.percentageFormatter(mate.ratio) }} %
               </span>
@@ -106,6 +106,7 @@ import { defineComponent } from "vue";
 import { image } from "@/instances/sanity";
 import { formatter } from "@/utils/formatters";
 import { auth } from "@/services/auth.service";
+import { user } from "@/services/user.service";
 import { tailwind } from "@/services/tailwind.service";
 import { Mate } from "@/utils/classes/stats/baseStats";
 import { secretHitler } from "@/services/games/secretHitler.service";
@@ -126,8 +127,8 @@ export default defineComponent({
   mounted() {
     this.loadMatches();
 
-    secretHitler
-      .getActualPlayers()
+    user
+      .getActualSecretHitlerPlayers()
       .then((players) => (this.availablePlayers = players));
   },
   methods: {
