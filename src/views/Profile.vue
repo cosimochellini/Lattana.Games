@@ -251,6 +251,6 @@ export default defineComponent({
 }
 
 .blur {
-  filter: brightness(0.25) blur(10px);
+  @apply filter blur-md brightness-50;
 }
 </style>
