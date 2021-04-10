@@ -1,13 +1,6 @@
 import { byString, byValue } from "sort-es";
 import { groq } from "@/utils/GroqQueryBuilder";
-import {
-  IMatch,
-  IMatchBase,
-  IMatchPlayerBase,
-  player,
-  secretHitlerMatchPlayer,
-  trumpMatchPlayer,
-} from "@/types";
+import { IMatchPlayerBase, player } from "@/types";
 import { sanityTypes } from "@/constants/roleConstants";
 
 export const user = {

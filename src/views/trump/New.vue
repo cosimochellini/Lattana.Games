@@ -75,7 +75,11 @@
         </template>
       </draggable>
     </div>
-    <form @submit.prevent="saveMatch" class="flex flex-col items-center">
+    <form
+      @submit.prevent="saveMatch"
+      class="flex flex-col items-center"
+      v-show="remainingPlayers.length === 0 && allMatchPlayers.length === 5"
+    >
       <article
         class="base-card flex flex-col items-stretch m-2 justify-between card-width"
       >
@@ -114,14 +118,23 @@
           />
         </div>
       </article>
-      <button
-        class="base-button primary large"
-        @click.prevent="saveMatch"
-        :disabled="!contextValidated"
-      >
-        {{ $t("buttons.base.save") }}
-        <i class="fas fa-save ml-1"></i>
-      </button>
+      <div class="inline-flex gap-4 w-full">
+        <button
+          class="base-button warning w-full"
+          @click.prevent="discardChanges"
+        >
+          {{ $t("buttons.base.discard") }}
+          <i class="fas fa-trash-alt ml-1"></i>
+        </button>
+        <button
+          class="base-button primary w-full"
+          @click.prevent="saveMatch"
+          :disabled="!contextValidated"
+        >
+          {{ $t("buttons.base.save") }}
+          <i class="fas fa-save ml-1"></i>
+        </button>
+      </div>
     </form>
   </div>
 </template>
@@ -135,6 +148,7 @@ import { user } from "@/services/user.service";
 import { trump } from "@/services/games/trump.service";
 import { tailwind } from "@/services/tailwind.service";
 import { queryRefresh } from "@/composable/routerRefresh";
+import { dialog, dialogType } from "@/services/dialog.service";
 import { player, trumpMatch, trumpMatchPlayer } from "@/types";
 import DraggableUser from "@/components/base/DraggableUser.vue";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
@@ -156,8 +170,12 @@ export default defineComponent({
   components: { UserAutocomplete, DraggableUser, draggable },
   name: "trumpNew",
   data: initialData,
-  async activated() {
-    try {
+  activated() {
+    this.resetData();
+  },
+  methods: {
+    async resetData() {
+      this.remainingPlayers = [];
       if (!orderedPlayers.length) {
         await trump
           .getOrderedPlayers()
@@ -171,11 +189,7 @@ export default defineComponent({
           .getTrumpRemainingPlayers(this.$route.query.ref as string)
           .then((players) => (this.remainingPlayers = players));
       }
-    } catch (error) {
-      console.log(error);
-    }
-  },
-  methods: {
+    },
     addPlayer(p: player) {
       this.remainingPlayers.push(p);
     },
@@ -185,18 +199,32 @@ export default defineComponent({
       );
     },
     saveMatch() {
-      trump
-        .saveNewMatch({
-          matchDate: new Date(),
-          finalScore: this.finalScore,
-          players: this.allMatchPlayers,
-          startingScore: this.startingScore,
-          callingPlayer: this.callingPlayer,
-        } as trumpMatch)
-        .then((result) => {
-          result &&
-            this.$router.push({ name: "trumpHistory", query: queryRefresh });
-        });
+      const matchToSave: Partial<trumpMatch> = {
+        matchDate: new Date(),
+        finalScore: this.finalScore,
+        players: this.allMatchPlayers,
+        startingScore: this.startingScore,
+        callingPlayer: this.callingPlayer,
+      };
+
+      trump.saveNewMatch(matchToSave).then((result) => {
+        result &&
+          this.$router.push({ name: "trumpHistory", query: queryRefresh });
+      });
+    },
+    async discardChanges() {
+      const result = await dialog.confirm({
+        title: "discardMatch",
+        type: dialogType.warning,
+        buttons: {
+          confirm: "confirm",
+          cancel: "cancel",
+        },
+      });
+
+      if (!result) return;
+
+      this.resetData();
     },
   },
   computed: {

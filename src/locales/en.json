@@ -130,7 +130,8 @@
     },
     "dialog": {
         "title": {
-            "deleteMatch": "sure you want to cancel the game?"
+            "deleteMatch": "sure you want to cancel the game?",
+            "discardMatch": "sure you want to discard this changes?"
         },
         "description": {
             "deleteMatch": "attention, this operation is irreversible, think twice."

@@ -130,9 +130,11 @@
     },
     "dialog": {
         "title": {
-            "deleteMatch": "sicuro di voler cancellare la partita?"
+            "deleteMatch": "sicuro di voler cancellare la partita?",
+            "discardMatch": "sicuro di scartare le modifiche?"
         },
         "description": {
+            "irreversible": "attenzione, questa operazione è irreversibile, fai a modino.",
             "deleteMatch": "attenzione, questa operazione è irreversibile, fai a modino."
         },
         "buttons": {

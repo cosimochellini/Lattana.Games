@@ -8,9 +8,9 @@ import { sanityTypes } from "@/constants/roleConstants";
 import { useInfiniteLoading } from "@/composable/infiniteLoading";
 import { trumpRank } from "@/utils/classes/stats/ranks/trumpRank";
 import { RankingList } from "@/utils/classes/stats/ranks/baseRank";
+import { TrumpStats } from "@/utils/classes/stats/trumpMatchStats";
 import { groq, reference, referenceWithKey } from "@/utils/GroqQueryBuilder";
 import { player, sanityDocument, trumpMatch, trumpMatchPlayer } from "@/types";
-import { TrumpStats } from "@/utils/classes/stats/trumpMatchStats";
 
 const currentPlayer = auth.currentPlayer;
 
@@ -26,7 +26,7 @@ export const trump = {
       .orderBy(new groq.OrderBuilder("matchDate", true));
 
     const infiniteLoading = useInfiniteLoading<trumpMatch>(matchesQuery, {
-      pageSize: 12,
+      pageSize: 15,
     });
 
     const { getMoreData, items: matches, moreDataAvailable } = infiniteLoading;
@@ -67,8 +67,10 @@ export const trump = {
       .fetch<player[]>();
   },
 
-  async saveNewMatch(match: trumpMatch) {
-    if (match.players.length !== 5) return false;
+  async saveNewMatch(match: Partial<trumpMatch>) {
+    if (match.players?.length !== 5) return false;
+
+    overlay.show();
 
     try {
       const matchToCreate = {
@@ -77,7 +79,7 @@ export const trump = {
         matchDate: match.matchDate,
         startingScore: match.startingScore,
         finalScore: match.finalScore,
-        callingPlayer: reference(match.callingPlayer),
+        callingPlayer: reference(match.callingPlayer!),
         players: [],
         createdBy: reference(currentPlayer),
         updatedBy: undefined,
@@ -111,6 +113,7 @@ export const trump = {
       return true;
     } catch (error) {
       notification.danger(error);
+      return false;
     }
   },
 

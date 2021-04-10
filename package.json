@@ -1,6 +1,6 @@
 {
   "name": "lattana-games",
-  "version": "0.8.19",
+  "version": "0.8.21",
   "private": true,
   "scripts": {
     "serve": "yarn increase && vue-cli-service serve",

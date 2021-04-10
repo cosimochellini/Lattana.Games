@@ -22,6 +22,8 @@ export interface DialogOption {
     confirm: string;
     cancel: string;
   }>;
+
+  ignoreClickOutside?: boolean;
 }
 
 export const dialog = {

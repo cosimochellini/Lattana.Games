@@ -97,16 +97,23 @@
         />
       </div>
 
-      <button
-        class="base-button primary large mt-1"
-        @click.prevent="saveMatch"
-        :disabled="!contextValidated"
-      >
-        <span>
+      <div class="inline-flex gap-4 w-full mt-2">
+        <button
+          class="base-button warning w-full"
+          @click.prevent="discardChanges"
+        >
+          {{ $t("buttons.base.discard") }}
+          <i class="fas fa-trash-alt ml-1"></i>
+        </button>
+        <button
+          class="base-button primary w-full"
+          @click.prevent="saveMatch"
+          :disabled="!contextValidated"
+        >
           {{ $t("buttons.base.save") }}
-        </span>
-        <i class="fas fa-save ml-1"></i>
-      </button>
+          <i class="fas fa-save ml-1"></i>
+        </button>
+      </div>
     </form>
   </div>
 </template>
@@ -120,11 +127,11 @@ import { user } from "@/services/user.service";
 import { tailwind } from "@/services/tailwind.service";
 import { queryRefresh } from "@/composable/routerRefresh";
 import { secretHitlerRole } from "@/constants/roleConstants";
-import { notification } from "@/services/notification.service";
 import DraggableUser from "@/components/base/DraggableUser.vue";
 import { secretHitler } from "@/services/games/secretHitler.service";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { player, secretHitlerMatch, secretHitlerMatchPlayer } from "@/types";
+import { dialog, dialogType } from "@/services/dialog.service";
 
 let orderedPlayers = [] as player[];
 
@@ -144,40 +151,25 @@ export default defineComponent({
   components: { UserAutocomplete, draggable, DraggableUser },
   name: "secretHitlerNew",
   data: initialData,
-  async activated() {
-    this.remainingPlayers = [];
-
-    if (!orderedPlayers.length) {
-      await secretHitler
-        .getOrderedPlayers()
-        .then((players) => (orderedPlayers = players));
-    }
-    mergeObjects(this.$data, initialData());
-
-    if (this.$route.query.ref) {
-      user
-        .getSecretHitlerRemainingPlayers(this.$route.query.ref as string)
-        .then((players) => (this.remainingPlayers = players));
-    }
+  activated() {
+    this.resetData();
   },
   methods: {
-    saveMatch() {
-      const matchToSave: Partial<secretHitlerMatch> = {
-        matchDate: new Date(),
-        winningRole: this.winningRole,
-        players: this.totalPlayers,
-      };
+    async resetData() {
+      this.remainingPlayers = [];
 
-      return secretHitler
-        .saveNewMatch(matchToSave)
-        .then(() => notification.success("salvataggio eseguito"))
-        .catch(notification.danger)
-        .finally(() =>
-          this.$router.push({
-            name: "secretHitlerHistory",
-            query: queryRefresh,
-          })
-        );
+      if (!orderedPlayers.length) {
+        await secretHitler
+          .getOrderedPlayers()
+          .then((players) => (orderedPlayers = players));
+      }
+      mergeObjects(this.$data, initialData());
+
+      if (this.$route.query.ref) {
+        user
+          .getSecretHitlerRemainingPlayers(this.$route.query.ref as string)
+          .then((players) => (this.remainingPlayers = players));
+      }
     },
     addPlayer(player: player) {
       this.remainingPlayers.push(player);
@@ -186,6 +178,35 @@ export default defineComponent({
       this.remainingPlayers = this.remainingPlayers.filter(
         (p) => p._id !== player._id
       );
+    },
+    saveMatch() {
+      const matchToSave: Partial<secretHitlerMatch> = {
+        matchDate: new Date(),
+        winningRole: this.winningRole,
+        players: this.totalPlayers,
+      };
+
+      return secretHitler.saveNewMatch(matchToSave).then((result) => {
+        result &&
+          this.$router.push({
+            name: "secretHitlerHistory",
+            query: queryRefresh,
+          });
+      });
+    },
+    async discardChanges() {
+      const result = await dialog.confirm({
+        title: "discardMatch",
+        type: dialogType.warning,
+        buttons: {
+          confirm: "confirm",
+          cancel: "cancel",
+        },
+      });
+
+      if (!result) return;
+
+      this.resetData();
     },
     updateElement(index: number, p: player) {
       this.remainingPlayers[index] = { ...this.remainingPlayers[index], ...p };

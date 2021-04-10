@@ -1,5 +1,5 @@
 <template>
-  <div v-if="dialogCurrentOpen">
+  <div v-if="dialogCurrentOpen" @click="clickOutside">
     <div class="fixed z-50 inset-0 overflow-y-auto">
       <div
         class="flex items-end justify-center min-h-screen pt-4 px-4 pb-60 text-center sm:block sm:p-0"
@@ -29,7 +29,7 @@
                 >
                   {{ $t("dialog.title." + currentOptions.title) }}
                 </h3>
-                <div class="mt-2">
+                <div class="mt-2" v-show="currentOptions.description">
                   <p class="text-sm text-gray-500 first-capitalize">
                     {{ $t("dialog.description." + currentOptions.description) }}
                   </p>
@@ -81,6 +81,11 @@ export default defineComponent({
     dispatchResult(result: boolean) {
       dialog.closeConfirm(result);
       this.dialogCurrentOpen = false;
+    },
+    clickOutside() {
+      if (this.currentOptions.ignoreClickOutside) return;
+
+      this.dispatchResult(false);
     },
   },
   created() {
