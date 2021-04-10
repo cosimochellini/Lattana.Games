@@ -118,7 +118,7 @@
           />
         </div>
       </article>
-      <div class="inline-flex gap-4 w-full">
+      <div class="inline-flex gap-4 w-full justify-center">
         <button
           class="base-button warning w-full"
           @click.prevent="discardChanges"

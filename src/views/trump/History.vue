@@ -145,6 +145,6 @@ export default defineComponent({
 
 <style scoped>
 .history-container {
-  @apply grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:max-w-screen-2xl m-auto p-3;
+  @apply grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:max-w-screen-2xl m-auto p-3;
 }
 </style>

@@ -97,7 +97,7 @@
         />
       </div>
 
-      <div class="inline-flex gap-4 w-full mt-2">
+      <div class="inline-flex gap-4 w-full mt-2 justify-center">
         <button
           class="base-button warning w-full"
           @click.prevent="discardChanges"
