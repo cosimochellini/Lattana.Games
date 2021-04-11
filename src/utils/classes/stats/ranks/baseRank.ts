@@ -7,12 +7,15 @@ export class RankingList<
   TRank extends BaseRank<TMatch, TMatchPlayer>
 > {
   private _matches: TMatch[];
-  private _ctor: (items: TMatchPlayer[]) => TRank;
+  private _ctor: (items: TMatchPlayer[], total: TMatch[]) => TRank;
   private _uniquePlayers: string[] = [];
 
   private _groupedRanks: TRank[] = [];
 
-  constructor(matches: TMatch[], ctor: (items: TMatchPlayer[]) => TRank) {
+  constructor(
+    matches: TMatch[],
+    ctor: (items: TMatchPlayer[], total: TMatch[]) => TRank
+  ) {
     this._matches = matches;
     this._ctor = ctor;
   }
@@ -43,7 +46,7 @@ export class RankingList<
         })
         .filter(Boolean) as TMatchPlayer[];
 
-      this._groupedRanks.push(this._ctor(playerMatches));
+      this._groupedRanks.push(this._ctor(playerMatches, this._matches));
     }
   }
 
@@ -51,10 +54,16 @@ export class RankingList<
     TMatch extends IMatch<TMatch, TMatchPlayer>,
     TMatchPlayer extends IMatchPlayer<TMatch, TMatchPlayer>,
     TRank extends BaseRank<TMatch, TMatchPlayer>
-  >(fac: (items: TMatchPlayer[]) => TRank) {
+  >(fac: (items: TMatchPlayer[], total: TMatch[]) => TRank) {
     return new RankingList<TMatch, TMatchPlayer, TRank>([] as TMatch[], fac);
   }
 }
+
+export type Rankable = {
+  raw: number;
+  percentage: number;
+  higherBetter: boolean;
+};
 
 export abstract class BaseRank<
   TMatch extends IMatch<TMatch, TMatchPlayer>,
@@ -62,13 +71,16 @@ export abstract class BaseRank<
 > {
   protected _playerMatches: TMatchPlayer[];
 
+  protected _allMatches: TMatch[];
+
   protected _cache: Map<string, TMatchPlayer[]> = new Map();
 
   public profile: player;
 
-  constructor(playerMatches: TMatchPlayer[]) {
+  constructor(playerMatches: TMatchPlayer[], allMatches: TMatch[]) {
     this._playerMatches = playerMatches;
     this.profile = playerMatches[0].player;
+    this._allMatches = allMatches;
   }
 
   protected get wins() {
@@ -77,20 +89,21 @@ export abstract class BaseRank<
     );
   }
 
-  public get win(): number {
-    return this.wins.length;
+  public get win() {
+    return this.rankable(this.wins, this._playerMatches);
   }
 
-  public get lost(): number {
-    return this._playerMatches.length - this.win;
+  public get lost(): Rankable {
+    const raw = this._playerMatches.length - this.wins.length;
+    return {
+      raw,
+      percentage: raw / this._playerMatches.length,
+      higherBetter: false,
+    };
   }
 
-  public get totalMatches(): number {
-    return this._playerMatches.length;
-  }
-
-  public get ratio(): number {
-    return this.win / this._playerMatches.length;
+  public get totalPlayerMatches() {
+    return this.rankable(this._playerMatches, this._allMatches);
   }
 
   protected safeCache(key: string, f: () => TMatchPlayer[]): TMatchPlayer[] {
@@ -110,5 +123,17 @@ export abstract class BaseRank<
         .reduce((initial, current) => initial + (current || 0), 0) /
       filteredMatches.length
     );
+  }
+
+  protected rankable(
+    filtered: unknown[],
+    total: unknown[],
+    higherBetter: boolean = true
+  ): Rankable {
+    return {
+      raw: filtered.length,
+      percentage: filtered.length / total.length || 0,
+      higherBetter,
+    };
   }
 }

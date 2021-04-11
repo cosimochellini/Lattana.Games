@@ -4,12 +4,19 @@
     <div
       class="px-2 pt-2 flex items-center place-content-around max-w-2xl m-auto mb-3"
     >
-      <label class="base-subtitle first-capitalize">
-        {{ $t("form.orderBy.title") }}
-      </label>
       <select class="base-select" v-model="selectedOrderby">
         <option v-for="option in allOrderBy" :key="option" :value="option">
           {{ $t("form.orderBy." + option) }}
+        </option>
+      </select>
+      <select class="base-select" v-model="selectedShape">
+        <option
+          v-for="option in ['raw', 'percentage']"
+          :key="option"
+          :value="option"
+        >
+          <!-- {{ $t("form.orderBy." + option) }} -->
+          {{ option }}
         </option>
       </select>
       <select class="base-select" v-model="selectedOrderbyDirection">
@@ -42,16 +49,9 @@
         </span>
         <span class="col-span-1 m-auto">
           <badge
-            v-if="selectedOrderby !== allOrderBy.ratio"
             :background="bindBadgeColor(index)"
             :textColor="bindBadgeTextColor(index)"
-            :text="formatter.smallNumberFormatter(rank[selectedOrderby])"
-          />
-          <badge
-            v-else
-            :background="bindBadgeColor(index)"
-            :textColor="bindBadgeTextColor(index)"
-            :text="formatter.percentageFormatter(rank[selectedOrderby]) + '%'"
+            :text="bindBadgeText(rank)"
           />
         </span>
       </div>
@@ -68,18 +68,12 @@ import { byNumber, byValue } from "sort-es";
 import { formatter } from "@/utils/formatters";
 import Badge from "@/components/base/Badge.vue";
 import { tailwind } from "@/services/tailwind.service";
-import { RankingList } from "@/utils/classes/stats/ranks/baseRank";
+import { Rankable, RankingList } from "@/utils/classes/stats/ranks/baseRank";
 import { secretHitler } from "@/services/games/secretHitler.service";
 import { orderbyDirection, secretHitlerOrderBy } from "@/types/ranking";
 import { secretHitlerRank } from "@/utils/classes/stats/ranks/secretHitlerRank";
 
 const allOrderBy = { ...orderby, ...secretHitlerOrderBy };
-
-const reverseOrderBy = [
-  orderby.lost,
-  allOrderBy.hitlerMatches,
-  allOrderBy.fascistMatches,
-];
 
 export default defineComponent({
   components: { Badge },
@@ -90,23 +84,22 @@ export default defineComponent({
       allOrderBy,
       orderbyDirection,
       selectedOrderby: allOrderBy.win,
+      selectedShape: "raw" as "raw" | "percentage",
       selectedOrderbyDirection: orderbyDirection.desc,
       ranking: RankingList.default(secretHitlerRank.create),
     };
   },
   methods: {
     image,
-    bindRealIndex(index: number, considerReverse: boolean): number {
+    bindRealIndex(index: number): number {
       const desc = this.selectedOrderbyDirection === orderbyDirection.desc;
-      const reverse = reverseOrderBy.includes(this.selectedOrderby);
+      const reverse = !this.currentRank.higherBetter;
       const reversedIndex = this.sortedRanks.length - index - 1;
 
-      return (considerReverse ? desc !== reverse : desc)
-        ? index
-        : reversedIndex;
+      return (reverse ? desc !== reverse : desc) ? index : reversedIndex;
     },
     bindImageRing(index: number): Dictionary<boolean> {
-      const realIndex = this.bindRealIndex(index, false);
+      const realIndex = this.bindRealIndex(index);
       if (realIndex >= 3) return {};
 
       return {
@@ -115,16 +108,23 @@ export default defineComponent({
       };
     },
     bindBadgeColor(index: number): string {
-      const realIndex = this.bindRealIndex(index, true);
+      const realIndex = this.bindRealIndex(index);
 
       const rate = realIndex / this.sortedRanks.length;
 
       return tailwind.shared.bindRate(rate);
     },
     bindBadgeTextColor(index: number): string {
-      const realIndex = this.bindRealIndex(index, true);
+      const realIndex = this.bindRealIndex(index);
 
       return tailwind.base.text(realIndex / this.sortedRanks.length < 0.5);
+    },
+    bindBadgeText(rank: secretHitlerRank) {
+      const value = rank[this.selectedOrderby][this.selectedShape];
+
+      return this.selectedShape === "percentage"
+        ? formatter.percentageFormatter(value) + " %"
+        : formatter.smallNumberFormatter(value);
     },
   },
   activated() {
@@ -134,10 +134,14 @@ export default defineComponent({
     sortedRanks(): secretHitlerRank[] {
       const desc = this.selectedOrderbyDirection === orderbyDirection.desc;
       const type = this.selectedOrderby;
+      const shape = this.selectedShape;
 
       return this.ranking
         .toList()
-        .sort(byValue((rank) => rank[type], byNumber({ desc })));
+        .sort(byValue((rank) => rank[type][shape], byNumber({ desc })));
+    },
+    currentRank(): Rankable {
+      return this.sortedRanks[0][this.selectedOrderby];
     },
   },
 });

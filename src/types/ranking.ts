@@ -1,9 +1,9 @@
 export enum orderby {
   win = "win",
-  ratio = "ratio",
   lost = "lost",
-  totalMatches = "totalMatches",
+  totalPlayerMatches = "totalPlayerMatches",
 }
+
 export enum secretHitlerOrderBy {
   hitlerMatches = "hitlerMatches",
   liberalMatches = "liberalMatches",

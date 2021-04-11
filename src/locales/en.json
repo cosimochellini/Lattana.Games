@@ -109,7 +109,7 @@
             "hitlerMatches": "hitler matches",
             "liberalMatches": "liberal matches",
             "fascistMatches": "nazi matches",
-            "totalMatches": "total matches",
+            "totalPlayerMatches": "total matches",
             "calledMatches": "called matches",
             "calledMatches120": "called matches at 120",
             "calculatedScore": "calculated score",

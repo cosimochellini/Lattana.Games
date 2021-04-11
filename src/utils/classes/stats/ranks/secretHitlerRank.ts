@@ -1,4 +1,4 @@
-import { BaseRank } from "./baseRank";
+import { BaseRank, Rankable } from "./baseRank";
 import { secretHitlerOrderBy } from "@/types/ranking";
 import { secretHitlerRole } from "@/constants/roleConstants";
 import { secretHitlerMatch, secretHitlerMatchPlayer } from "@/types";
@@ -31,24 +31,33 @@ export class secretHitlerRank extends BaseRank<
     );
   }
   public get hitlerMatches() {
-    return this.hitlers.length;
+    return this.rankable(this.hitlers, this._playerMatches, false);
   }
 
   public get liberalMatches() {
-    return this.liberals.length;
+    return this.rankable(this.liberals, this._playerMatches);
   }
 
   public get fascistMatches() {
-    return this.fascists.length;
+    return this.rankable(this.fascists, this._playerMatches, false);
   }
 
-  public get weightedAverage() {
-    return (
-      this.aggregateAverages(this.liberals, this.hitlers, this.fascists) * 100
-    );
+  public get weightedAverage(): Rankable {
+    return {
+      raw: this._playerMatches.length,
+      percentage: this.aggregateAverages(
+        this.liberals,
+        this.hitlers,
+        this.fascists
+      ),
+      higherBetter: true,
+    };
   }
 
-  public static create(items: secretHitlerMatchPlayer[]) {
-    return new secretHitlerRank(items);
+  public static create(
+    items: secretHitlerMatchPlayer[],
+    totalItems: secretHitlerMatch[]
+  ) {
+    return new secretHitlerRank(items, totalItems);
   }
 }
