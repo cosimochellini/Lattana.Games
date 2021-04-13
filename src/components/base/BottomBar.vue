@@ -27,82 +27,9 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-type BottonElement = {
-  name: string;
-  icon: string;
-  route: string;
-  activeColor: string;
-  iconActive: string;
-};
+import { BottomTab } from "@/types/shared";
+import routes from "@/configuration/bottomBar";
 
-const routes: { game: string; elements: BottonElement[] }[] = [
-  {
-    game: "trump",
-    elements: [
-      {
-        name: "history",
-        icon: "fas fa-history",
-        iconActive: "fad fa-history",
-        route: "trumpHistory",
-        activeColor: "text-blue-700",
-      },
-      {
-        name: "new",
-        icon: "fas fa-plus-octagon",
-        iconActive: "fad fa-plus-octagon",
-        route: "trumpNew",
-        activeColor: "text-blue-700",
-      },
-      {
-        name: "stats",
-        icon: "fas fa-analytics",
-        iconActive: "fad fa-analytics",
-        route: "trumpStats",
-        activeColor: "text-blue-700",
-      },
-      {
-        name: "rankings",
-        icon: "far fa-trophy-alt",
-        iconActive: "fad fa-trophy-alt",
-        route: "trumpRankings",
-        activeColor: "text-blue-700",
-      },
-    ],
-  },
-  {
-    game: "secretHitler",
-    elements: [
-      {
-        name: "history",
-        icon: "fas fa-history",
-        iconActive: "fad fa-history",
-        activeColor: "text-red-800",
-        route: "secretHitlerHistory",
-      },
-      {
-        name: "new",
-        icon: "fas fa-plus-octagon",
-        iconActive: "fad fa-plus-octagon",
-        route: "secretHitlerNew",
-        activeColor: "text-red-800",
-      },
-      {
-        name: "stats",
-        icon: "far fa-analytics",
-        iconActive: "fad fa-analytics",
-        route: "secretHitlerStats",
-        activeColor: "text-red-800",
-      },
-      {
-        name: "rankings",
-        icon: "far fa-trophy-alt",
-        iconActive: "fad fa-trophy-alt",
-        route: "secretHitlerRankings",
-        activeColor: "text-red-800",
-      },
-    ],
-  },
-];
 export default defineComponent({
   data() {
     return { routes };
@@ -114,7 +41,7 @@ export default defineComponent({
     },
   },
   computed: {
-    currentButtonBar(): BottonElement[] {
+    currentButtonBar(): BottomTab[] {
       return this.routes.find((r) => r.game == this.game)?.elements ?? [];
     },
   },
