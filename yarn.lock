@@ -3885,9 +3885,9 @@ ejs@^2.6.1:
   integrity sha512-7vmuyh5+kuUyJKePhQfRQBhXV5Ce+RnaeeQArKu1EAMpL3WbgMt5WG6uQZpEVvYSSsxMXRKOewtDk9RaTKXRlA==
 
 electron-to-chromium@^1.3.712:
-  version "1.3.716"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.716.tgz#cadedb3d07776c56990cedff1a75488afeeac2e0"
-  integrity sha512-yUWKAfpJH5ovgwIlNbBHioedAWolzTVl6tmMaXP1RmCMyYv+U+ukvo9gwA10mLW0eFbyW4n/oC4UIN12gTMn/w==
+  version "1.3.717"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.717.tgz#78d4c857070755fb58ab64bcc173db1d51cbc25f"
+  integrity sha512-OfzVPIqD1MkJ7fX+yTl2nKyOE4FReeVfMCzzxQS+Kp43hZYwHwThlGP+EGIZRXJsxCM7dqo8Y65NOX/HP12iXQ==
 
 elliptic@^6.5.3:
   version "6.5.4"
@@ -9561,9 +9561,9 @@ vue-toastification@^2.0.0-rc.1:
   integrity sha512-hjauv/FyesNZdwcr5m1SCyvu1JmlB+Ts5bTptDLDmsYYlj6Oqv8NYakiElpCF+Abwkn9J/AChh6FwkTL1HOb7Q==
 
 vue3-chart-v2@^0.8.1:
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/vue3-chart-v2/-/vue3-chart-v2-0.8.1.tgz#7371ab195f4bd97939ec696febfff3460d40c906"
-  integrity sha512-nZ6dl4AX5wDlYrcGIr8cnIRSJVNqfC5B0+6gbGCrH0dASfN5uLXkKront7TGj1VhUSW6RdP6Mc3GhdI0SpVpUA==
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/vue3-chart-v2/-/vue3-chart-v2-0.8.2.tgz#243581a1badc5b92bb5b49454923d60a20384c46"
+  integrity sha512-J+v3Q0ayYyWstPY1zOmdx6l/wkHT63Kzrp5X5PNNXrSUoJT8p608danWIJtncpWhuJB8qQ3t2/jWsg4WF8qJjg==
   dependencies:
     "@types/chart.js" "^2.9.29"
     chart.js "^2.9.4"

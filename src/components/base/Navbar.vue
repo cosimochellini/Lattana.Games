@@ -1,7 +1,7 @@
 <template>
-  <nav class="rounded-b-md" :class="currentState.color">
+  <nav class="rounded-b-md" :class="actualState.color">
     <div class="max-w-7xl mx-auto px-2 md:px-0">
-      <div class="relative flex items-center justify-between h-16">
+      <div class="relative flex items-center justify-between h-14 sm:h-16">
         <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
           <!-- Mobile menu button-->
           <button
@@ -19,20 +19,20 @@
             class="font-semibold leading-3 text-2xl tracking-widest capitalize px-3 py-2"
           >
             <div class="md:hidden">
-              <span v-t="'navbar.route.' + currentState.name" />
+              <span v-t="'navbar.route.' + actualState.name" />
 
-              <i class="w-auto" :class="`ml-1 text-2xl ${currentState.icon}`" />
+              <i class="w-auto" :class="`ml-1 text-2xl ${actualState.icon}`" />
             </div>
             <div class="hidden md:block">
               Lattana Games
-              <i class="w-auto" :class="`ml-1 text-2xl ${currentState.icon}`" />
+              <i class="w-auto" :class="`ml-1 text-2xl ${actualState.icon}`" />
             </div>
           </div>
 
           <div class="hidden sm:block sm:ml-6">
             <div class="flex">
               <router-link
-                v-for="(route, index) in navbarRoutes"
+                v-for="(route, index) in navbarConfig.navbarRoutes"
                 :key="route.route"
                 :to="{ name: route.route, params: { locale } }"
                 class="capitalize px-3 py-2 rounded-md text-md font-medium tracking-widest text-lg leading-5 focus:outline-none transition duration-150 ease-in-out text-gray-900 hover:text-white"
@@ -68,7 +68,7 @@
             >
               <div class="py-1 rounded-md bg-white shadow-xs" role="menu">
                 <router-link
-                  v-for="route in profileRoutes"
+                  v-for="route in navbarConfig.profileRoutes"
                   :key="route.route"
                   :to="{ name: route.route, params: { locale } }"
                   class="block px-4 py-2 capitalize text-md tracking-wider leading-5 text-gray-900 transition duration-150 ease-in-out"
@@ -106,7 +106,7 @@
     >
       <div class="px-2 pt-2 pb-3">
         <router-link
-          v-for="route in navbarRoutes"
+          v-for="route in navbarConfig.navbarRoutes"
           :key="route.route"
           :to="{ name: route.route, params: { locale } }"
           @click.passive="toggleNavbar"
@@ -119,47 +119,21 @@
 </template>
 
 <script lang="ts">
-import { Dictionary } from "@/types";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
 import { auth } from "@/services/auth.service";
+import { ApplicationState } from "@/types/shared";
+import navbarConfig from "@/configuration/navbar";
 import { useTimedOpen } from "@/composable/timedOpen";
 import { defineComponent, reactive, watch } from "vue";
 import { currentLanguage } from "@/services/language.service";
 
-type State = {
-  name: string;
-  color: string;
-  icon: string;
-};
-
-const availableStates: Dictionary<State> = {
-  trump: { name: "trump", color: "bg-blue-500", icon: "fas fa-spade" },
-  secretHitler: {
-    name: "secretHitler",
-    color: "bg-red-400",
-    icon: "fad fa-snake",
-  },
-  default: {
-    name: "lattanaGames",
-    color: "bg-gray-500",
-    icon: "fa fa-gamepad-alt",
-  },
-};
-
 export default defineComponent({
   data() {
     return {
-      publicPath: process.env.BASE_URL,
+      navbarConfig,
       player: auth.currentPlayer,
-      navbarRoutes: [
-        { name: "trump", route: "trumpHistory" },
-        { name: "secretHitler", route: "secretHitlerHistory" },
-      ],
-      profileRoutes: [
-        { name: "profile", route: "profile" },
-        { name: "logout", route: "logout" },
-      ],
+      actualState: navbarConfig.states.default,
     };
   },
   setup() {
@@ -207,12 +181,23 @@ export default defineComponent({
     locale(): string {
       return this.$i18n.locale;
     },
-    currentState(): State {
-      for (const key in availableStates)
+    currentState(): ApplicationState {
+      for (const key in navbarConfig.states)
         if (this.$route.matched.find((r) => r.name === key))
-          return availableStates[key];
+          return navbarConfig.states[key];
 
-      return availableStates.default;
+      return navbarConfig.states.default;
+    },
+  },
+  watch: {
+    currentState: {
+      handler(newState: ApplicationState, oldState: ApplicationState) {
+        console.log(newState, oldState);
+        setTimeout(() => {
+          this.actualState = this.currentState;
+        }, 800);
+      },
+      immediate: true,
     },
   },
 });

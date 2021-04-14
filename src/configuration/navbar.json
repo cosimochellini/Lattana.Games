@@ -1,0 +1,39 @@
+{
+    "states": {
+        "trump": {
+            "name": "trump",
+            "color": "bg-blue-500",
+            "icon": "fas fa-spade"
+        },
+        "secretHitler": {
+            "name": "secretHitler",
+            "color": "bg-red-400",
+            "icon": "fad fa-snake"
+        },
+        "default": {
+            "name": "lattanaGames",
+            "color": "bg-gray-500",
+            "icon": "fa fa-gamepad-alt"
+        }
+    },
+    "navbarRoutes": [
+        {
+            "name": "trump",
+            "route": "trumpHistory"
+        },
+        {
+            "name": "secretHitler",
+            "route": "secretHitlerHistory"
+        }
+    ],
+    "profileRoutes": [
+        {
+            "name": "profile",
+            "route": "profile"
+        },
+        {
+            "name": "logout",
+            "route": "logout"
+        }
+    ]
+}
