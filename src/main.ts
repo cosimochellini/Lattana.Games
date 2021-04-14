@@ -7,15 +7,9 @@ import { toast, toastOption } from "./plugins/vueToastification";
 import "./assets/fa";
 import "./assets/tailwind.css";
 
-const loader = async () => {
+(async () => {
   const i18n = await setupI18n();
   const router = setupRouter(i18n);
 
-  createApp(App)
-    .use(i18n)
-    .use(router)
-    .use(toast, toastOption)
-    .mount("#app");
-};
-
-loader().catch(console.error);
+  createApp(App).use(i18n).use(router).use(toast, toastOption).mount("#app");
+})();

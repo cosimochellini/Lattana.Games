@@ -8,8 +8,8 @@
             class="inline-flex items-center justify-center p-2 rounded-md text-gray-900 focus:bg-transparent transition duration-150 ease-in-out"
             @click.stop="toggleNavbar"
           >
-            <i class="far fa-bars" v-if="!state.navbarOpen"></i>
-            <i class="far fa-times" v-else></i>
+            <i class="far fa-bars" v-if="!state.navbarOpen" />
+            <i class="far fa-times" v-else />
           </button>
         </div>
         <div
@@ -19,7 +19,8 @@
             class="font-semibold leading-3 text-2xl tracking-widest capitalize px-3 py-2"
           >
             <div class="md:hidden">
-              {{ $t(`navbar.route.${currentState.name}`) }}
+              <span v-t="'navbar.route.' + currentState.name" />
+
               <i class="w-auto" :class="`ml-1 text-2xl ${currentState.icon}`" />
             </div>
             <div class="hidden md:block">
@@ -36,9 +37,8 @@
                 :to="{ name: route.route, params: { locale } }"
                 class="capitalize px-3 py-2 rounded-md text-md font-medium tracking-widest text-lg leading-5 focus:outline-none transition duration-150 ease-in-out text-gray-900 hover:text-white"
                 :class="bindRouterLink(route.name, index)"
-              >
-                {{ $t(`navbar.route.${route.name}`) }}
-              </router-link>
+                v-t="'navbar.route.' + route.name"
+              />
             </div>
           </div>
         </div>
@@ -73,9 +73,8 @@
                   :to="{ name: route.route, params: { locale } }"
                   class="block px-4 py-2 capitalize text-md tracking-wider leading-5 text-gray-900 transition duration-150 ease-in-out"
                   role="menuitem"
-                >
-                  {{ $t(`navbar.profileRoute.${route.name}`) }}
-                </router-link>
+                  v-t="'navbar.profileRoute.' + route.name"
+                />
                 <div class="w-full mt-2">
                   <div class="inline-flex">
                     <button
@@ -112,9 +111,8 @@
           :to="{ name: route.route, params: { locale } }"
           @click.passive="toggleNavbar"
           class="block px-3 py-2 capitalize rounded-md text-base font-semibold tracking-widest focus:outline-none transition duration-150 ease-in-out text-gray-900"
-        >
-          {{ $t(`navbar.route.${route.name}`) }}
-        </router-link>
+          v-t="'navbar.route.' + route.name"
+        />
       </div>
     </div>
   </nav>
@@ -142,7 +140,11 @@ const availableStates: Dictionary<State> = {
     color: "bg-red-400",
     icon: "fad fa-snake",
   },
-  default: { name: "lattanaGames", color: "bg-gray-500", icon: "fa fa-gamepad-alt" },
+  default: {
+    name: "lattanaGames",
+    color: "bg-gray-500",
+    icon: "fa fa-gamepad-alt",
+  },
 };
 
 export default defineComponent({

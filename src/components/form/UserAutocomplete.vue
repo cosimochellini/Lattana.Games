@@ -1,8 +1,11 @@
 <template>
   <select v-model="selectedId" class="base-select">
-    <option disabled :value="''" class="base-option">
-      {{ $t("form.userSelect.placeholder") }}
-    </option>
+    <option
+      disabled
+      :value="''"
+      class="base-option"
+      v-t="'form.userSelect.placeholder'"
+    />
     <option
       v-for="player in fetchedPlayers"
       :key="player._id"

@@ -1,9 +1,11 @@
 <template>
   <div class="container m-auto p-4">
     <div class="flex flex-col items-center">
-      <h2 class="base-title first-capitalize">
-        {{ $t("trump.titles.insertNewMatch") }}
-      </h2>
+      <h2
+        class="base-title first-capitalize"
+        v-t="'trump.titles.insertNewMatch'"
+      />
+
       <draggable
         :list="remainingPlayers"
         group="people"
@@ -12,9 +14,10 @@
         v-if="!(!remainingPlayers.length && allPlayers.length === 5)"
       >
         <template #header>
-          <h2 class="base-subtitle first-capitalize">
-            {{ $t("trump.form.remainingPlayers") }}
-          </h2>
+          <h2
+            class="base-subtitle first-capitalize"
+            v-t="'trump.form.remainingPlayers'"
+          />
 
           <user-autocomplete
             class="w-full"
@@ -40,9 +43,10 @@
         class="base-card mt-2 card-width"
       >
         <template #header>
-          <h2 class="base-subtitle first-capitalize">
-            {{ $t("trump.form.callingTeam") }}
-          </h2>
+          <h2
+            class="base-subtitle first-capitalize"
+            v-t="'trump.form.callingTeam'"
+          />
         </template>
         <template #item="{ element }">
           <draggable-user
@@ -62,9 +66,10 @@
         class="base-card mt-2 card-width"
       >
         <template #header>
-          <h2 class="base-subtitle first-capitalize">
-            {{ $t("trump.form.opposingTeam") }}
-          </h2>
+          <h2
+            class="base-subtitle first-capitalize"
+            v-t="'trump.form.opposingTeam'"
+          />
         </template>
         <template #item="{ element }">
           <draggable-user
@@ -83,18 +88,23 @@
       <article
         class="base-card flex flex-col items-stretch m-2 justify-between card-width"
       >
-        <h2 class="base-subtitle first-capitalize">
-          {{ $t("trump.form.callingPlayer") }}
-        </h2>
+        <h2
+          class="base-subtitle first-capitalize"
+          v-t="'trump.form.callingPlayer'"
+        />
+
         <user-autocomplete
           :exactPlayers="callingPlayers"
           v-model="callingPlayer"
         />
 
         <div class="m-2 flex justify-between">
-          <label class="base-subtitle first-capitalize" for="starting score">
-            {{ $t("trump.form.startingScore") }}
-          </label>
+          <label
+            class="base-subtitle first-capitalize"
+            for="starting score"
+            v-t="'trump.form.startingScore'"
+          />
+
           <input
             name="starting score"
             type="number"
@@ -105,9 +115,12 @@
           />
         </div>
         <div class="m-2 flex justify-between">
-          <label class="base-subtitle first-capitalize" for="final score">
-            {{ $t("trump.form.finalScore") }}
-          </label>
+          <label
+            class="base-subtitle first-capitalize"
+            for="final score"
+            v-t="'trump.form.finalScore'"
+          />
+
           <input
             name="final score"
             type="number"
@@ -123,16 +136,18 @@
           class="base-button warning w-full"
           @click.prevent="discardChanges"
         >
-          {{ $t("buttons.base.discard") }}
-          <i class="fas fa-trash-alt ml-1"></i>
+          <span v-t="'buttons.base.discard'" />
+
+          <i class="fas fa-trash-alt ml-1" />
         </button>
         <button
           class="base-button primary w-full"
           @click.prevent="saveMatch"
           :disabled="!contextValidated"
         >
-          {{ $t("buttons.base.save") }}
-          <i class="fas fa-save ml-1"></i>
+          <span v-t="'buttons.base.save'" />
+
+          <i class="fas fa-save ml-1" />
         </button>
       </div>
     </form>

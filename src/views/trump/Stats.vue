@@ -1,18 +1,22 @@
 <template>
   <div class="max-w-xl md:max-w-4xl px-4 py-4 mx-auto">
     <div class="font-semibold my-4">
-      <h2 class="base-subtitle my-1 py-1 first-capitalize">
-        {{ $t("trump.form.currentPlayer") }}
-      </h2>
+      <h2
+        class="base-subtitle my-1 py-1 first-capitalize"
+        v-t="'trump.form.currentPlayer'"
+      />
+
       <user-autocomplete
         v-model="currentPlayer"
         class="block px-2 py-1"
         :exactPlayers="availablePlayers"
       />
     </div>
-    <h2 class="base-title my-1 py-1 first-capitalize">
-      {{ $t("trump.titles.stats") }}
-    </h2>
+    <h2
+      class="base-title my-1 py-1 first-capitalize"
+      v-t="'trump.titles.stats'"
+    />
+
     <div
       class="grid grid-flow-row gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-5"
     >
@@ -22,12 +26,15 @@
         :key="statistic.message"
       >
         <div>
-          <p class="text-3xl font-semibold text-center text-gray-800">
-            {{ statistic.value }}
-          </p>
-          <p class="text-lg text-center text-gray-500">
-            {{ $t("trump.stats." + statistic.message) }}
-          </p>
+          <p
+            class="text-3xl font-semibold text-center text-gray-800"
+            v-text="statistic.value"
+          />
+
+          <p
+            class="text-lg text-center text-gray-500"
+            v-t="'trump.stats.' + statistic.message"
+          />
         </div>
       </div>
     </div>
@@ -36,9 +43,10 @@
       class="sm:grid sm:grid-flow-row sm:gap-4 sm:grid-cols-1 md:grid-cols-2"
     >
       <div>
-        <h3 class="base-subtitle first-capitalize">
-          {{ $t("trump.titles.bestMatches") }} 👑
-        </h3>
+        <h3
+          class="base-subtitle first-capitalize"
+          v-t="'trump.titles.bestMatches'"
+        />
 
         <div
           class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded m-2"
@@ -70,9 +78,11 @@
         </div>
       </div>
       <div>
-        <h3 class="base-subtitle first-capitalize">
-          {{ $t("trump.titles.worstEnemies") }} 😱
-        </h3>
+        <h3
+          class="base-subtitle first-capitalize"
+          v-t="'trump.titles.worstEnemies'"
+        />
+
         <div
           class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded m-2"
           v-for="mate in worstOpponents"

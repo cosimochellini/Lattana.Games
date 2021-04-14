@@ -1,18 +1,19 @@
 <template>
   <div class="max-w-xl md:max-w-4xl px-4 py-4 mx-auto">
     <div class="my-4">
-      <h2 class="base-subtitle first-capitalize">
-        {{ $t("secretHitler.form.currentPlayer") }}
-      </h2>
+      <h2
+        class="base-subtitle first-capitalize"
+        v-t="'secretHitler.form.currentPlayer'"
+      />
+
       <user-autocomplete
         v-model="currentPlayer"
         :exactPlayers="availablePlayers"
         class="block px-2 py-1"
       />
     </div>
-    <h2 class="base-title">
-      {{ $t("secretHitler.titles.stats") }}
-    </h2>
+    <h2 class="base-title first-capitalize" v-t="'secretHitler.titles.stats'" />
+
     <div
       class="grid grid-flow-row gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-5"
     >
@@ -22,12 +23,14 @@
         :key="statistic.message"
       >
         <div>
-          <p class="text-3xl font-semibold text-center text-gray-800">
-            {{ statistic.value }}
-          </p>
-          <p class="text-lg text-center text-gray-500">
-            {{ $t("secretHitler.stats." + statistic.message) }}
-          </p>
+          <p
+            class="text-3xl font-semibold text-center text-gray-800"
+            v-text="statistic.value"
+          />
+          <p
+            class="text-lg text-center text-gray-500"
+            v-t="'secretHitler.stats.' + statistic.message"
+          />
         </div>
       </div>
     </div>
@@ -35,9 +38,11 @@
       class="sm:grid sm:grid-flow-row sm:gap-4 sm:grid-cols-1 md:grid-cols-2"
     >
       <div>
-        <h3 class="base-subtitle first-capitalize mt-2">
-          {{ $t("secretHitler.titles.bestMatches") }} 👑
-        </h3>
+        <h3
+          class="base-subtitle first-capitalize mt-2"
+          v-t="'secretHitler.titles.bestMatches'"
+        />
+
         <div
           class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded m-2"
           v-for="mate in topMates"
@@ -68,9 +73,11 @@
         </div>
       </div>
       <div>
-        <h3 class="base-subtitle first-capitalize mt-2">
-          {{ $t("secretHitler.titles.worstEnemies") }} 😱
-        </h3>
+        <h3
+          class="base-subtitle first-capitalize mt-2"
+          v-t="'secretHitler.titles.worstEnemies'"
+        />
+
         <div
           class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded m-2"
           v-for="mate in worstOpponents"

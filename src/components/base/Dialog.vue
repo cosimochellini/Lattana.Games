@@ -26,13 +26,13 @@
               <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                 <h3
                   class="text-lg leading-6 font-medium text-gray-900 first-capitalize"
-                >
-                  {{ $t("dialog.title." + currentOptions.title) }}
-                </h3>
+                  v-t="'dialog.title.' + currentOptions.title"
+                />
                 <div class="mt-2" v-show="currentOptions.description">
-                  <p class="text-sm text-gray-500 first-capitalize">
-                    {{ $t("dialog.description." + currentOptions.description) }}
-                  </p>
+                  <p
+                    class="text-sm text-gray-500 first-capitalize"
+                    v-t="'dialog.description.' + currentOptions.description"
+                  />
                 </div>
               </div>
             </div>
@@ -48,17 +48,15 @@
               v-if="currentOptions.buttons?.confirm"
               @click.stop="dispatchResult(true)"
               :tabindex="0"
-            >
-              {{ $t("dialog.buttons." + currentOptions.buttons?.confirm) }}
-            </button>
+              v-t="'dialog.buttons.' + currentOptions.buttons?.confirm"
+            />
             <button
-              class="base-button transparent w-full mt-3 sm:mt-0"
-              v-if="currentOptions.buttons?.cancel"
-              @click.stop="dispatchResult(false)"
               :tabindex="1"
-            >
-              {{ $t("dialog.buttons." + currentOptions.buttons?.cancel) }}
-            </button>
+              @click.stop="dispatchResult(false)"
+              v-if="currentOptions.buttons?.cancel"
+              class="base-button transparent w-full mt-3 sm:mt-0"
+              v-t="'dialog.buttons.' + currentOptions.buttons?.cancel"
+            />
           </div>
         </div>
       </div>

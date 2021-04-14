@@ -15,17 +15,15 @@ const getErrorMessage = (error: any) => {
   return error.toString() ?? "";
 };
 
-const translate = (translation: string) => useI18n().t(translation);
-
 export const notification = {
   notify(notification: string, option: notifyOptions | undefined = undefined) {
     return useToast().info(notification, option);
   },
   success(translation: string) {
-    return useToast().success(translate(translation));
+    return useToast().success(useI18n().t(translation));
   },
   warning(translation: string) {
-    return useToast().warning(translate(translation));
+    return useToast().warning(useI18n().t(translation));
   },
   danger(error: any) {
     return useToast().error(getErrorMessage(error));

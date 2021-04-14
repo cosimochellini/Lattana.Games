@@ -1,6 +1,6 @@
 <template>
   <badge
-    :text="$t(`secretHitler.roles.${role}`)"
+    :text="$t('secretHitler.roles.' + role)"
     :textColor="tailwind.secretHitler.bindTextColor(role)"
     :background="tailwind.secretHitler.bindBackground(role)"
   />

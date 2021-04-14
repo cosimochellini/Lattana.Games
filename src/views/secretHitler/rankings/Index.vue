@@ -1,29 +1,36 @@
 <template>
   <div class="container text-center m-auto">
-    <h2 class="base-title first-capitalize">
-      {{ $t("secretHitler.titles.ranking") }}
-    </h2>
+    <h2
+      class="base-title first-capitalize"
+      v-t="'secretHitler.titles.ranking'"
+    />
+
     <div
       class="px-2 pt-2 flex items-center place-content-around max-w-2xl m-auto mb-3"
     >
       <select class="base-select" v-model="selectedOrderby">
-        <option v-for="option in allOrderBy" :key="option" :value="option">
-          {{ $t("form.orderBy." + option) }}
-        </option>
+        <option
+          v-for="option in allOrderBy"
+          :key="option"
+          :value="option"
+          v-t="'form.orderBy.' + option"
+        />
       </select>
       <select class="base-select" v-model="selectedShape">
-        <option v-for="option in orderByShape" :key="option" :value="option">
-          {{ $t("form.base.shapeOptions." + option) }}
-        </option>
+        <option
+          v-for="option in orderByShape"
+          :key="option"
+          :value="option"
+          v-t="'form.base.shapeOptions.' + option"
+        />
       </select>
       <select class="base-select" v-model="selectedOrderbyDirection">
         <option
           v-for="option in orderbyDirection"
           :key="option"
           :value="option"
-        >
-          {{ $t("form.orderBy." + option) }}
-        </option>
+          v-t="'form.orderBy.' + option"
+        />
       </select>
     </div>
     <div

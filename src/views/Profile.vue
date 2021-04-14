@@ -23,7 +23,7 @@
               <span
                 class="border border-white rounded-lg px-2 py-1 tracking-wide first-capitalize"
               >
-                {{ $t("form.profile.uploadPhoto") }}
+                <span v-t="'form.profile.uploadPhoto'" />
                 <input
                   class="cursor-pointer absolute block opacity-0 w-48 inset-0 pin-r pin-t"
                   type="file"
@@ -31,7 +31,7 @@
                   name="profileImage"
                   @change="updateProfileImage"
                 />
-                <i class="fad fa-cloud-upload"></i>
+                <i class="fad fa-cloud-upload" />
               </span>
             </div>
           </div>
@@ -110,12 +110,13 @@
           </div>
           <div class="pt-8 text-sm">
             <div class="first-capitalize mt-1" v-if="currentPlayer._createdAt">
-              {{ $t("system.createdAt") }}
+              <span v-t="'system.createdAt'" />
               <date-badge :date="currentPlayer._createdAt" />
             </div>
 
             <div class="first-capitalize mt-1" v-if="currentPlayer._updatedAt">
-              {{ $t("system.updatedAt") }}
+              <span v-t="'system.updatedAt'" />
+
               <date-badge :date="currentPlayer._updatedAt" />
             </div>
           </div>
@@ -126,8 +127,9 @@
               class="base-button primary"
               v-show="!editMode"
             >
-              {{ $t("buttons.base.editProfile") }}
-              <i class="fas fa-user-edit"></i>
+              <span v-t="'buttons.base.editProfile'" />
+
+              <i class="fas fa-user-edit"/>
             </button>
 
             <button
@@ -135,16 +137,18 @@
               class="base-button success"
               v-show="editMode"
             >
-              {{ $t("buttons.base.update") }}
-              <i class="fad fa-save"></i>
+              <span v-t="'buttons.base.update'" />
+
+              <i class="fad fa-save"/>
             </button>
             <button
               @click="discardChanges"
               class="base-button warning"
               v-show="editMode"
             >
-              {{ $t("buttons.base.discard") }}
-              <i class="fas fa-trash-undo-alt"></i>
+              <span v-t="'buttons.base.discard'" />
+
+              <i class="fas fa-trash-undo-alt"/>
             </button>
           </div>
 
@@ -169,9 +173,7 @@
         />
         <div class="relative w-64 mt-4 mb-4 m-auto" v-if="editMode">
           <button class="base-button primary">
-            <span class="ml-2">
-              {{ $t("form.profile.uploadPhoto") }}
-            </span>
+            <span class="ml-2" v-t="'form.profile.uploadPhoto'" />
 
             <input
               class="cursor-pointer absolute block opacity-0 pin-r pin-t"
@@ -180,13 +182,14 @@
               name="profileImage"
               @change="updateProfileImage"
             />
-            <i class="fad fa-cloud-upload"></i>
+            <i class="fad fa-cloud-upload"/>
           </button>
         </div>
       </div>
     </div>
     <div class="text-center font-semibold tracking-wider">
-      {{ $t("system.version") }} {{ settings.version }}
+      <span v-t="'system.version'" />
+      {{ settings.version }}
     </div>
   </div>
 </template>

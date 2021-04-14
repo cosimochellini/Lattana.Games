@@ -16,10 +16,11 @@
         <i
           :class="isActive(element.name) ? element.iconActive : element.icon"
           class="fa-lg"
-        ></i>
-        <span class="tab tab-home block text-sm capitalize tracking-wider">
-          {{ $t(`bottom.route.${element.name}`) }}
-        </span>
+        />
+        <span
+          class="block text-sm capitalize tracking-wider"
+          v-t="`bottom.route.${element.name}`"
+        />
       </router-link>
     </div>
   </section>

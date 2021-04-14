@@ -1,31 +1,25 @@
 <template>
   <h2 class="base-title history-container">
-    <span class="first-capitalize">
-      {{ $t("secretHitler.titles.recentMatches") }}
-    </span>
+    <span class="first-capitalize" v-t="'secretHitler.titles.recentMatches'" />
   </h2>
   <div class="history-container">
     <article v-for="match in items" :key="match._id" class="base-card">
       <div class="grid grid-cols-3">
-        <span class="first-capitalize">
-          {{ $t("secretHitler.form.matchDate") }}
-        </span>
+        <span class="first-capitalize" v-t="'secretHitler.form.matchDate'" />
         <span class="col-span-2 text-center">
           <date-badge :date="match.matchDate" />
         </span>
       </div>
       <div class="grid grid-cols-3 my-2">
-        <span class="first-capitalize">
-          {{ $t("secretHitler.form.winningRole") }}
-        </span>
+        <span class="first-capitalize" v-t="'secretHitler.form.winningRole'" />
+
         <span class="col-span-2 text-center">
           <secret-hitler-badge :role="match.winningRole" />
         </span>
       </div>
       <div class="grid grid-cols-3 my-2">
-        <span class="first-capitalize">
-          {{ $t("secretHitler.form.yourMatch") }}
-        </span>
+        <span class="first-capitalize" v-t="'secretHitler.form.yourMatch'" />
+
         <span class="col-span-2 text-center m-auto">
           <secret-hitler-badge :role="getCurrentPlayer(match)?.role" />
           <win-badge :win="getCurrentPlayer(match)?.win" />
@@ -33,9 +27,7 @@
       </div>
       <hr class="my-2" />
       <div class="flex flex-row items-center justify-around">
-        <span class="first-capitalize">
-          {{ $t("secretHitler.form.players") }}
-        </span>
+        <span class="first-capitalize" v-t="'secretHitler.form.players'" />
         <div
           class="flex overflow-hidden px-1"
           :class="tailwind.secretHitler.bindSpace(match)"
@@ -54,19 +46,18 @@
       <hr class="my-2" />
       <div class="flex justify-items-center justify-around">
         <button class="base-button danger" @click="deleteMatch(match)">
-          {{ $t("buttons.base.delete") }}
-
-          <i class="fas fa-trash-alt"></i>
+          <span v-t="'buttons.base.delete'" />
+          <i class="fas fa-trash-alt" />
         </button>
         <button class="base-button info">
-          {{ $t("buttons.base.edit") }}
+          <span v-t="'buttons.base.edit'" />
 
-          <i class="fas fa-edit"></i>
+          <i class="fas fa-edit" />
         </button>
         <button class="base-button primary" @click="copyMatch(match)">
-          {{ $t("buttons.base.copy") }}
+          <span v-t="'buttons.base.copy'" />
 
-          <i class="fas fa-copy"></i>
+          <i class="fas fa-copy" />
         </button>
       </div>
     </article>

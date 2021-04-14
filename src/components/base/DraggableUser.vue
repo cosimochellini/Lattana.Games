@@ -19,7 +19,7 @@
       v-show="showDelete"
       @click.capture="emitDelete"
     >
-      <i class="fas fa-trash-alt mr-1" @click.capture="emitDelete"></i>
+      <i class="fas fa-trash-alt mr-1" @click.capture="emitDelete"/>
     </button>
   </div>
 </template>

@@ -1,9 +1,10 @@
 <template>
   <div class="container m-auto p-4">
     <div class="flex flex-col items-center">
-      <h2 class="base-title first-capitalize">
-        {{ $t("secretHitler.titles.insertNewMatch") }}
-      </h2>
+      <h2
+        class="base-title first-capitalize"
+        v-t="'secretHitler.titles.insertNewMatch'"
+      />
       <draggable
         :list="remainingPlayers"
         group="people"
@@ -12,9 +13,10 @@
         v-if="!(!remainingPlayers.length && totalPlayers.length === 10)"
       >
         <template #header>
-          <h2 class="base-subtitle first-capitalize">
-            {{ $t("secretHitler.form.remainingPlayers") }}
-          </h2>
+          <h2
+            class="base-subtitle first-capitalize"
+            v-t="'secretHitler.form.remainingPlayers'"
+          />
 
           <user-autocomplete
             class="w-full"
@@ -40,9 +42,10 @@
         class="base-card mt-2 card-width"
       >
         <template #header>
-          <h2 class="base-subtitle first-capitalize">
-            {{ $t("secretHitler.form.liberalPlayers") }}
-          </h2>
+          <h2
+            class="base-subtitle first-capitalize"
+            v-t="'secretHitler.form.liberalPlayers'"
+          />
         </template>
         <template #item="{ element }">
           <draggable-user
@@ -62,9 +65,10 @@
         class="base-card mt-2 card-width"
       >
         <template #header>
-          <h2 class="base-subtitle first-capitalize">
-            {{ $t("secretHitler.form.fascistPlayers") }}
-          </h2>
+          <h2
+            class="base-subtitle first-capitalize"
+            v-t="'secretHitler.form.fascistPlayers'"
+          />
         </template>
         <template #item="{ element }">
           <draggable-user
@@ -85,17 +89,20 @@
       v-if="totalPlayers.length > 0 && remainingPlayers.length === 0"
     >
       <div class="base-card w-full mx-2 py-4 card-width">
-        <h2 class="base-subtitle first-capitalize">
-          {{ $t("secretHitler.form.winningRole") }}
-        </h2>
+        <h2
+          class="base-subtitle first-capitalize"
+          v-t="'secretHitler.form.winningRole'"
+        />
 
         <select v-model="winningRole" class="base-select w-full">
-          <option value="" disabled>
-            {{ $t("secretHitler.form.selectRole") }}
-          </option>
-          <option v-for="role in allRoles" :key="role" :value="role">
-            {{ $t(`secretHitler.roles.${role}`) }}
-          </option>
+          <option value="" disabled v-t="'secretHitler.form.selectRole'" />
+
+          <option
+            v-for="role in allRoles"
+            :key="role"
+            :value="role"
+            v-t="'secretHitler.roles.' + role"
+          />
         </select>
 
         <h2 class="base-subtitle">Hitler</h2>
@@ -111,16 +118,18 @@
           class="base-button warning w-full"
           @click.prevent="discardChanges"
         >
-          {{ $t("buttons.base.discard") }}
-          <i class="fas fa-trash-alt ml-1"></i>
+          <span v-t="'buttons.base.discard'" />
+
+          <i class="fas fa-trash-alt ml-1" />
         </button>
         <button
           class="base-button primary w-full"
           @click.prevent="saveMatch"
           :disabled="!contextValidated"
         >
-          {{ $t("buttons.base.save") }}
-          <i class="fas fa-save ml-1"></i>
+          <span v-t="'buttons.base.save'" />
+
+          <i class="fas fa-save ml-1" />
         </button>
       </div>
     </form>

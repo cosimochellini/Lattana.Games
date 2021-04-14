@@ -1,24 +1,18 @@
 <template>
   <h2 class="history-container base-title">
-    <span class="first-capitalize">
-      {{ $t("trump.titles.recentMatches") }}
-    </span>
+    <span class="first-capitalize" v-t="'trump.titles.recentMatches'" />
   </h2>
-
   <div class="history-container">
     <article v-for="match in matches" :key="match._id" class="base-card">
       <div class="grid grid-cols-2">
-        <span class="first-capitalize">
-          {{ $t("trump.form.matchDate") }}
-        </span>
+        <span class="first-capitalize" v-t="'trump.form.matchDate'" />
         <span class="text-center">
           <date-badge :date="match.matchDate" />
         </span>
       </div>
       <div class="grid grid-cols-2 my-2">
-        <span class="first-capitalize">
-          {{ $t("trump.form.scores") }}
-        </span>
+        <span class="first-capitalize" v-t="'trump.form.scores'" />
+
         <span class="text-center">
           <badge :text="match.startingScore.toString()" />
           <badge
@@ -30,16 +24,15 @@
       </div>
 
       <div class="grid grid-cols-2 my-2">
-        <span class="first-capitalize">
-          {{ $t("trump.form.outcome") }}
-        </span>
+        <span class="first-capitalize" v-t="'trump.form.outcome'" />
+
         <span class="text-center">
           <win-badge :win="getCurrentPlayer(match)?.win" />
         </span>
       </div>
       <hr class="my-2" />
       <div class="flex flex-row items-center place-content-between">
-        <span class="first-capitalize"> {{ $t("trump.form.players") }} </span>
+        <span class="first-capitalize" v-t="'trump.form.players'" />
         <div
           class="flex flex-grow m-auto -space-x-1 overflow-hidden px-1 content-center justify-center"
         >
@@ -55,9 +48,8 @@
       </div>
       <hr class="my-2" />
       <div class="flex flex-row items-center justify-self-auto">
-        <span class="first-capitalize">
-          {{ $t("trump.form.callingPlayer") }}
-        </span>
+        <span class="first-capitalize" v-t="'trump.form.callingPlayer'" />
+
         <div
           class="flex flex-grow m-auto -space-x-1 overflow-hidden px-1 content-center justify-center"
         >
@@ -71,17 +63,20 @@
       <hr class="my-2" />
       <div class="flex justify-items-center justify-around">
         <button class="base-button danger" @click="deleteMatch(match)">
-          {{ $t("buttons.base.delete") }}
-          <i class="fas fa-trash-alt"></i>
+          <span v-t="'buttons.base.delete'" />
+          <i class="fas fa-trash-alt" />
         </button>
-        <!-- @click="editMatch(match)" -->
+
         <button class="base-button info">
-          {{ $t("buttons.base.edit") }}
-          <i class="fas fa-edit"></i>
+          <span v-t="'buttons.base.edit'" />
+
+          <i class="fas fa-edit" />
         </button>
+
         <button class="base-button primary" @click="copyMatch(match)">
-          {{ $t("buttons.base.copy") }}
-          <i class="fas fa-copy"></i>
+          <span v-t="'buttons.base.copy'" />
+
+          <i class="fas fa-copy" />
         </button>
       </div>
     </article>
