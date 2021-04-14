@@ -1,5 +1,5 @@
 <template>
-  <nav class="rounded-b-md" :class="actualState.color">
+  <nav class="rounded-b-md transition duration-500" :class="actualState.color">
     <div class="max-w-7xl mx-auto px-2 md:px-0">
       <div class="relative flex items-center justify-between h-14 sm:h-16">
         <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -19,7 +19,10 @@
             class="font-semibold leading-3 text-2xl tracking-widest capitalize px-3 py-2"
           >
             <div class="md:hidden">
-              <span v-t="'navbar.route.' + actualState.name" />
+              <span
+                v-t="'navbar.route.' + actualState.name"
+                class="transition duration-500"
+              />
 
               <i class="w-auto" :class="`ml-1 text-2xl ${actualState.icon}`" />
             </div>
@@ -119,6 +122,7 @@
 </template>
 
 <script lang="ts">
+import { Dictionary } from "@/types";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
 import { auth } from "@/services/auth.service";
@@ -134,6 +138,8 @@ export default defineComponent({
       navbarConfig,
       player: auth.currentPlayer,
       actualState: navbarConfig.states.default,
+
+      leavingState: {} as ApplicationState,
     };
   },
   setup() {
@@ -188,14 +194,27 @@ export default defineComponent({
 
       return navbarConfig.states.default;
     },
+    bindNavbarClasses(): Dictionary<boolean> {
+      const ret = {
+        transition: true,
+        [this.actualState.color]: true,
+        "duration-500": true,
+      };
+
+      return ret;
+    },
   },
   watch: {
     currentState: {
-      handler(newState: ApplicationState, oldState: ApplicationState) {
-        console.log(newState, oldState);
-        setTimeout(() => {
-          this.actualState = this.currentState;
-        }, 800);
+      handler(_: ApplicationState, oldState: ApplicationState | null) {
+        const defaultState = navbarConfig.states.default;
+
+        this.leavingState = oldState ?? defaultState;
+
+        const timeout =
+          this.leavingState.name === defaultState.name ? 1000 : 300;
+
+        setTimeout(() => (this.actualState = this.currentState), timeout);
       },
       immediate: true,
     },
