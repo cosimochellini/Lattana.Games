@@ -21,3 +21,8 @@ export enum orderbyDirection {
   asc = "asc",
   desc = "desc",
 }
+
+export enum orderByShape {
+  raw = "raw",
+  percentage = "percentage",
+}

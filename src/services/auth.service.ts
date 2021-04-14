@@ -1,6 +1,6 @@
 import { watch } from "vue";
 import { player } from "@/types";
-import { clone } from "./clone.service";
+import { deepClone } from "@/utils";
 import { overlay } from "./overlay.service";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { sanityClient } from "@/instances/sanity";
@@ -16,7 +16,7 @@ export const auth = {
   },
 
   get editablePlayer(): player {
-    return clone.deepClone(currentPlayer.value as player);
+    return deepClone(currentPlayer.value as player);
   },
 
   login(name: string, pin: string) {
@@ -70,7 +70,7 @@ export const auth = {
         .then(overlay.hide)
         .catch(console.error)
     );
-    
+
     await this.login(
       this.currentPlayer.nickname,
       this.currentPlayer.pin.toString()

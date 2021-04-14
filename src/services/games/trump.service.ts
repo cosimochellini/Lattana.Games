@@ -1,4 +1,4 @@
-import { uuid } from "@/utils/uuid";
+import { uuid } from "@/utils";
 import { auth } from "../auth.service";
 import { overlay } from "../overlay.service";
 import { sanityClient } from "@/instances/sanity";
@@ -56,6 +56,7 @@ export const trump = {
       .fetch<trumpMatch[]>()
       .then((matches) => new RankingList(matches, trumpRank.create));
   },
+
   getOrderedPlayers() {
     return new groq.QueryBuilder(sanityTypes.player)
       .select(
@@ -108,8 +109,6 @@ export const trump = {
         .append("players", savedPlayers.map(referenceWithKey))
         .commit();
 
-      notification.success("salvataggio eseguito");
-
       return true;
     } catch (error) {
       notification.danger(error);
@@ -143,7 +142,7 @@ export const trump = {
 
       await sanityClient.delete(match._id);
 
-      notification.success("eliminazione eseguita");
+      notification.success("notification.delete");
 
       return true;
     } catch (error) {

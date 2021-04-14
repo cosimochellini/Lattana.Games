@@ -16,8 +16,8 @@
 
 <script lang="ts">
 import { player } from "@/types";
-import { defineComponent, PropType } from "vue";
 import { user } from "@/services/user.service";
+import { defineComponent, PropType } from "vue";
 
 export default defineComponent({
   name: "UserAutocomplete",

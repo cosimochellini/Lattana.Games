@@ -1,6 +1,8 @@
 <template>
   <div class="container text-center m-auto">
-    <span class="base-title">Rankings</span>
+    <h2 class="base-title first-capitalize">
+      {{ $t("secretHitler.titles.ranking") }}
+    </h2>
     <div
       class="px-2 pt-2 flex items-center place-content-around max-w-2xl m-auto mb-3"
     >
@@ -10,13 +12,8 @@
         </option>
       </select>
       <select class="base-select" v-model="selectedShape">
-        <option
-          v-for="option in ['raw', 'percentage']"
-          :key="option"
-          :value="option"
-        >
-          <!-- {{ $t("form.orderBy." + option) }} -->
-          {{ option }}
+        <option v-for="option in orderByShape" :key="option" :value="option">
+          {{ $t("form.base.shapeOptions." + option) }}
         </option>
       </select>
       <select class="base-select" v-model="selectedOrderbyDirection">
@@ -62,15 +59,15 @@
 <script lang="ts">
 import { Dictionary } from "@/types";
 import { defineComponent } from "vue";
-import { orderby } from "@/types/ranking";
+import { orderby, orderByShape } from "@/types/ranking";
 import { image } from "@/instances/sanity";
 import { byNumber, byValue } from "sort-es";
 import { formatter } from "@/utils/formatters";
 import Badge from "@/components/base/Badge.vue";
 import { tailwind } from "@/services/tailwind.service";
-import { Rankable, RankingList } from "@/utils/classes/stats/ranks/baseRank";
 import { secretHitler } from "@/services/games/secretHitler.service";
 import { orderbyDirection, secretHitlerOrderBy } from "@/types/ranking";
+import { Rankable, RankingList } from "@/utils/classes/stats/ranks/baseRank";
 import { secretHitlerRank } from "@/utils/classes/stats/ranks/secretHitlerRank";
 
 const allOrderBy = { ...orderby, ...secretHitlerOrderBy };
@@ -83,8 +80,9 @@ export default defineComponent({
       formatter,
       allOrderBy,
       orderbyDirection,
+      orderByShape,
       selectedOrderby: allOrderBy.win,
-      selectedShape: "raw" as "raw" | "percentage",
+      selectedShape: orderByShape.raw,
       selectedOrderbyDirection: orderbyDirection.desc,
       ranking: RankingList.default(secretHitlerRank.create),
     };

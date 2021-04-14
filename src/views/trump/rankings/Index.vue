@@ -1,27 +1,17 @@
 <template>
   <div class="container text-center m-auto">
-    <span class="base-title">Rankings</span>
-    <div
-      class="px-2 pt-2 flex items-center place-content-around max-w-2xl m-auto mb-3"
-    >
-      <label class="base-subtitle first-capitalize">
-        <!-- <span class="tracking-tighter md:tracking-wide lg:tracking-widest">
-          {{ $t("form.orderBy.title") }}
-        </span> -->
-      </label>
+    <h2 class="base-title first-capitalize">
+      {{ $t("trump.titles.ranking") }}
+    </h2>
+    <div class="pt-2 flex items-center place-content-around max-w-2xl mb-3">
       <select class="base-select" v-model="selectedOrderby">
         <option v-for="option in allOrderBy" :key="option" :value="option">
           {{ $t("form.orderBy." + option) }}
         </option>
       </select>
       <select class="base-select" v-model="selectedShape">
-        <option
-          v-for="option in ['raw', 'percentage']"
-          :key="option"
-          :value="option"
-        >
-          <!-- {{ $t("form.orderBy." + option) }} -->
-          {{ option }}
+        <option v-for="option in orderByShape" :key="option" :value="option">
+          {{ $t("form.base.shapeOptions." + option) }}
         </option>
       </select>
       <select class="base-select" v-model="selectedOrderbyDirection">
@@ -67,19 +57,18 @@
 <script lang="ts">
 import { Dictionary } from "@/types";
 import { defineComponent } from "vue";
-import { orderby } from "@/types/ranking";
 import { image } from "@/instances/sanity";
 import { byNumber, byValue } from "sort-es";
 import { formatter } from "@/utils/formatters";
 import Badge from "@/components/base/Badge.vue";
 import { trump } from "@/services/games/trump.service";
 import { tailwind } from "@/services/tailwind.service";
+import { orderby, orderByShape } from "@/types/ranking";
 import { orderbyDirection, trumpOrderBy } from "@/types/ranking";
 import { trumpRank } from "@/utils/classes/stats/ranks/trumpRank";
 import { Rankable, RankingList } from "@/utils/classes/stats/ranks/baseRank";
 
 const allOrderBy = { ...orderby, ...trumpOrderBy };
-
 export default defineComponent({
   components: { Badge },
   name: "Ranking",
@@ -87,9 +76,10 @@ export default defineComponent({
     return {
       formatter,
       allOrderBy,
+      orderByShape,
       orderbyDirection,
       selectedOrderby: allOrderBy.win,
-      selectedShape: "raw" as "raw" | "percentage",
+      selectedShape: orderByShape.raw,
       ranking: RankingList.default(trumpRank.create),
       selectedOrderbyDirection: orderbyDirection.desc,
     };

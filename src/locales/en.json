@@ -36,7 +36,8 @@
             "insertNewMatch": "insert new match",
             "stats": "statistics",
             "bestMatches": "best matches",
-            "worstEnemies": "worst enemies"
+            "worstEnemies": "worst enemies",
+            "ranking": "ranking"
         },
         "form": {
             "matchDate": "match date",
@@ -45,14 +46,20 @@
             "yourMatch": "your match",
             "players": "players",
             "remainingPlayers": "remaining players",
-            "currentPlayer": "current player"
+            "currentPlayer": "current player",
+            "liberalPlayers": "liberal players",
+            "fascistPlayers": "fascist players",
+            "selectRole": "select role"
         },
         "stats": {
             "totalMatches": "total matches",
             "totalWin": "total win",
             "totalLose": "total lose",
             "win": "win",
-            "penaltyPoints": "penalty points"
+            "penaltyPoints": "penalty points",
+            "liberals": "liberal matches",
+            "fascists": "fascist matches",
+            "hitlers": "hitler matches"
         },
         "roles": {
             "hitler": "hitler",
@@ -66,7 +73,8 @@
             "insertNewMatch": "insert new match",
             "stats": "statistics",
             "bestMatches": "best matches",
-            "worstEnemies": "worst enemies"
+            "worstEnemies": "worst enemies",
+            "ranking": "ranking"
         },
         "form": {
             "matchDate": "match date",
@@ -96,7 +104,11 @@
     "form": {
         "base": {
             "win": "win",
-            "lose": "lose"
+            "lose": "lose",
+            "shapeOptions": {
+                "raw": "raw",
+                "percentage": "percentage"
+            }
         },
         "userSelect": {
             "placeholder": "choose player"
@@ -134,6 +146,7 @@
             "discardMatch": "sure you want to discard this changes?"
         },
         "description": {
+            "irreversible": "attention, this operation is irreversible, think twice.",
             "deleteMatch": "attention, this operation is irreversible, think twice."
         },
         "buttons": {
@@ -141,5 +154,7 @@
             "cancel": "cancel"
         }
     },
-    "notification": {}
+    "notification": {
+        "delete": "successful delete"
+    }
 }

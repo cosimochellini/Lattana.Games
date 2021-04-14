@@ -192,14 +192,14 @@
 </template>
 
 <script lang="ts">
+import { settings } from "@/utils";
 import { HTMLInputEvent } from "@/types";
 import { image } from "@/instances/sanity";
-import { computed, defineComponent, ref } from "vue";
 import { auth } from "@/services/auth.service";
 import { formatter } from "@/utils/formatters";
-import { settings } from "@/instances/package.json";
-import { notification } from "@/services/notification.service";
+import { computed, defineComponent, ref } from "vue";
 import DateBadge from "@/components/base/DateBadge.vue";
+import { notification } from "@/services/notification.service";
 
 export default defineComponent({
   components: { DateBadge },

@@ -1,5 +1,3 @@
-import { trumpMatchPlayer } from "@/types";
-
 type DataSet = {
   label: string;
   backgroundColor: string;

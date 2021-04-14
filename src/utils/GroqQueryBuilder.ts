@@ -1,4 +1,4 @@
-import { uuid } from "./uuid";
+import { uuid } from "@/utils";
 import { Dictionary } from "@/types";
 import { sanityTypes } from "@/constants/roleConstants";
 import { readOnlySanityClient, sanityClient } from "@/instances/sanity";

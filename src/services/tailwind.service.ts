@@ -1,4 +1,4 @@
-import { range } from "@/utils/range";
+import { range } from "@/utils";
 import { secretHitlerMatch, trumpMatch } from "@/types";
 import { secretHitlerRole } from "@/constants/roleConstants";
 

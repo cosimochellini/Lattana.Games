@@ -1,14 +1,18 @@
 <template>
   <div class="max-w-xl md:max-w-4xl px-4 py-4 mx-auto">
     <div class="my-4">
-      <h2 class="base-subtitle">Giocatore corrente</h2>
+      <h2 class="base-subtitle first-capitalize">
+        {{ $t("secretHitler.form.currentPlayer") }}
+      </h2>
       <user-autocomplete
         v-model="currentPlayer"
         :exactPlayers="availablePlayers"
         class="block px-2 py-1"
       />
     </div>
-    <h2 class="base-title">Statistiche 📊</h2>
+    <h2 class="base-title">
+      {{ $t("secretHitler.titles.stats") }}
+    </h2>
     <div
       class="grid grid-flow-row gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-5"
     >
@@ -22,7 +26,7 @@
             {{ statistic.value }}
           </p>
           <p class="text-lg text-center text-gray-500">
-            {{ statistic.message }}
+            {{ $t("secretHitler.stats." + statistic.message) }}
           </p>
         </div>
       </div>
@@ -156,26 +160,14 @@ export default defineComponent({
       const { fascistMatches } = this.stats;
 
       return [
-        { message: "totale partite", value: matches.length },
-        { message: "vittorie", value: wonMatches.length },
-        { message: "sconfitte", value: lostMatches.length },
-        {
-          message: "vittorie",
-          value: `${formatter.percentageFormatter(ratio)} %`,
-        },
-        { message: "penalità", value: penaltyPoints.length },
-        {
-          message: "partite liberali",
-          value: liberalMatches.length,
-        },
-        {
-          message: "partite fasciste",
-          value: fascistMatches.length,
-        },
-        {
-          message: "partite hitler",
-          value: hitlerMatches.length,
-        },
+        { message: "totalMatches", value: matches.length },
+        { message: "totalWin", value: wonMatches.length },
+        { message: "totalLose", value: lostMatches.length },
+        { message: "win", value: `${formatter.percentageFormatter(ratio)} %` },
+        { message: "penaltyPoints", value: penaltyPoints.length },
+        { message: "liberals", value: liberalMatches.length },
+        { message: "fascists", value: fascistMatches.length },
+        { message: "hitlers", value: hitlerMatches.length },
       ];
     },
     topMates(): Mate[] {
@@ -187,6 +179,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style>
-</style>

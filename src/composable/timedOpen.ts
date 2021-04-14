@@ -10,11 +10,13 @@ export const useTimedOpen = (
   const toggle = () => {
     isOpen.value = !isOpen.value;
   };
+
   watch(isOpen, (value) =>
     value
       ? (interval = setTimeout(() => (isOpen.value = false), timeInterval))
       : clearTimeout(interval)
   );
+
   return {
     isOpen,
     toggle,

@@ -1,4 +1,4 @@
-import { uuid } from "@/utils/uuid";
+import { uuid } from "@/utils";
 import { auth } from "../auth.service";
 import { overlay } from "../overlay.service";
 import { sanityClient } from "@/instances/sanity";
@@ -86,7 +86,7 @@ export const secretHitler = {
 
       await sanityClient.delete(match._id);
 
-      notification.success("eliminazione eseguita");
+      notification.success("notification.delete");
 
       overlay.hide();
 

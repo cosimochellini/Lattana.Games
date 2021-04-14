@@ -141,9 +141,8 @@
 
 <script lang="ts">
 import draggable from "vuedraggable";
-import { range } from "@/utils/range";
 import { defineComponent } from "vue";
-import { mergeObjects } from "@/utils/merge";
+import { mergeObjects, range } from "@/utils";
 import { user } from "@/services/user.service";
 import { trump } from "@/services/games/trump.service";
 import { tailwind } from "@/services/tailwind.service";
@@ -257,7 +256,7 @@ export default defineComponent({
       const callingPlayerSelected = !!this.callingPlayer._id;
       const startingScoreCorrect = range([60, 120], this.startingScore);
       const finalScoreCorrect = range([1, 120], this.finalScore);
-      const noRemaingPlayers = this.remainingPlayers.length === 0;
+      const noRemainingPlayers = this.remainingPlayers.length === 0;
       const correctPlayersNumber = this.allPlayers.length === 5;
       const correctDifference = difference === 1;
 
@@ -265,8 +264,8 @@ export default defineComponent({
       const correct120Difference = range([-1, 0], difference);
 
       return (
-        noRemaingPlayers &&
         finalScoreCorrect &&
+        noRemainingPlayers &&
         startingScoreCorrect &&
         correctPlayersNumber &&
         callingPlayerSelected &&

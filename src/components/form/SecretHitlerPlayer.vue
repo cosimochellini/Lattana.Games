@@ -28,8 +28,8 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import UserAutocomplete from "./UserAutocomplete.vue";
-import { secretHitlerRole } from "@/constants/roleConstants";
 import { player, secretHitlerMatchPlayer } from "@/types";
+import { secretHitlerRole } from "@/constants/roleConstants";
 
 export default defineComponent({
   name: "SecretHitlerMatchPlayer",

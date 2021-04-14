@@ -1,5 +1,5 @@
 import { computed } from "vue";
-import { differenceInDays } from "./date";
+import { differenceInDays } from "@/utils";
 import { datable, Dictionary } from "@/types";
 import { currentLocale } from "@/services/language.service";
 

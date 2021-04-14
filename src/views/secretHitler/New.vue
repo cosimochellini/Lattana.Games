@@ -40,7 +40,9 @@
         class="base-card mt-2 card-width"
       >
         <template #header>
-          <h2 class="base-subtitle">Giocatori liberali</h2>
+          <h2 class="base-subtitle first-capitalize">
+            {{ $t("secretHitler.form.liberalPlayers") }}
+          </h2>
         </template>
         <template #item="{ element }">
           <draggable-user
@@ -60,7 +62,9 @@
         class="base-card mt-2 card-width"
       >
         <template #header>
-          <h2 class="base-subtitle">Giocatori fascisti</h2>
+          <h2 class="base-subtitle first-capitalize">
+            {{ $t("secretHitler.form.fascistPlayers") }}
+          </h2>
         </template>
         <template #item="{ element }">
           <draggable-user
@@ -81,9 +85,14 @@
       v-if="totalPlayers.length > 0 && remainingPlayers.length === 0"
     >
       <div class="base-card w-full mx-2 py-4 card-width">
-        <h2 class="base-subtitle">Ruolo vincitore</h2>
+        <h2 class="base-subtitle first-capitalize">
+          {{ $t("secretHitler.form.winningRole") }}
+        </h2>
+
         <select v-model="winningRole" class="base-select w-full">
-          <option value="" disabled>seleziona ruolo</option>
+          <option value="" disabled>
+            {{ $t("secretHitler.form.selectRole") }}
+          </option>
           <option v-for="role in allRoles" :key="role" :value="role">
             {{ $t(`secretHitler.roles.${role}`) }}
           </option>
@@ -120,18 +129,17 @@
 
 <script lang="ts">
 import draggable from "vuedraggable";
-import { range } from "@/utils/range";
 import { defineComponent } from "vue";
-import { mergeObjects } from "@/utils/merge";
+import { mergeObjects, range } from "@/utils";
 import { user } from "@/services/user.service";
 import { tailwind } from "@/services/tailwind.service";
 import { queryRefresh } from "@/composable/routerRefresh";
 import { secretHitlerRole } from "@/constants/roleConstants";
+import { dialog, dialogType } from "@/services/dialog.service";
 import DraggableUser from "@/components/base/DraggableUser.vue";
 import { secretHitler } from "@/services/games/secretHitler.service";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { player, secretHitlerMatch, secretHitlerMatchPlayer } from "@/types";
-import { dialog, dialogType } from "@/services/dialog.service";
 
 let orderedPlayers = [] as player[];
 
@@ -186,7 +194,7 @@ export default defineComponent({
         players: this.totalPlayers,
       };
 
-      return secretHitler.saveNewMatch(matchToSave).then((result) => {
+      secretHitler.saveNewMatch(matchToSave).then((result) => {
         result &&
           this.$router.push({
             name: "secretHitlerHistory",
@@ -230,13 +238,12 @@ export default defineComponent({
   computed: {
     totalPlayers(): secretHitlerMatchPlayer[] {
       return [
-        ...this.liberalPlayers
-          .map((p) => this.bindPlayer(p, secretHitlerRole.liberal))
-          .concat(
-            this.fascistPlayers.map((p) =>
-              this.bindPlayer(p, secretHitlerRole.fascist, this.hitlerPlayer)
-            )
-          ),
+        ...this.liberalPlayers.map((p) =>
+          this.bindPlayer(p, secretHitlerRole.liberal)
+        ),
+        ...this.fascistPlayers.map((p) =>
+          this.bindPlayer(p, secretHitlerRole.fascist, this.hitlerPlayer)
+        ),
       ];
     },
     excludedPlayers(): player[] {
@@ -250,13 +257,13 @@ export default defineComponent({
 
       const hitlerSelected = !!this.hitlerPlayer._id;
       const winningRoleSelected = !!this.winningRole;
-      const noRemaingPlayers = this.remainingPlayers.length === 0;
+      const noRemainingPlayers = this.remainingPlayers.length === 0;
       const correctPlayersNumber = range([6, 11], this.totalPlayers.length);
       const correctPlayerDistribution = range([1, 2], difference);
 
       return (
         hitlerSelected &&
-        noRemaingPlayers &&
+        noRemainingPlayers &&
         winningRoleSelected &&
         correctPlayersNumber &&
         correctPlayerDistribution

@@ -36,7 +36,8 @@
             "insertNewMatch": "inserisci nuova partita",
             "stats": "statistiche",
             "bestMatches": "accoppiamenti migliori",
-            "worstEnemies": "peggiori nemici"
+            "worstEnemies": "peggiori nemici",
+            "ranking": "classifica"
         },
         "form": {
             "matchDate": "data partita",
@@ -45,14 +46,20 @@
             "yourMatch": "la tua partita",
             "players": "giocatori",
             "remainingPlayers": "giocatori da smistare",
-            "currentPlayer": "giocatore corrente"
+            "currentPlayer": "giocatore corrente",
+            "liberalPlayers": "giocatori liberali",
+            "fascistPlayers": "giocatori fascisti",
+            "selectRole": "seleziona ruolo"
         },
         "stats": {
             "totalMatches": "totale partite",
             "totalWin": "vittorie totali",
             "totalLose": "sconfitte totali",
             "win": "vittorie",
-            "penaltyPoints": "penalità"
+            "penaltyPoints": "penalità",
+            "liberals": "partite liberali",
+            "fascists": "partite fasciste",
+            "hitlers": "partite hitler"
         },
         "roles": {
             "hitler": "hitler",
@@ -66,7 +73,8 @@
             "insertNewMatch": "inserisci nuova partita",
             "stats": "statistiche",
             "bestMatches": "accoppiamenti migliori",
-            "worstEnemies": "peggiori nemici"
+            "worstEnemies": "peggiori nemici",
+            "ranking": "classifica"
         },
         "form": {
             "matchDate": "data partita",
@@ -96,7 +104,11 @@
     "form": {
         "base": {
             "win": "vittoria",
-            "lose": "sconfitta"
+            "lose": "sconfitta",
+            "shapeOptions": {
+                "raw": "totali",
+                "percentage": "percentuale"
+            }
         },
         "userSelect": {
             "placeholder": "seleziona giocatore"
@@ -142,5 +154,7 @@
             "cancel": "annulla"
         }
     },
-    "notification": {}
+    "notification": {
+        "delete": "eliminazione eseguita"
+    }
 }
