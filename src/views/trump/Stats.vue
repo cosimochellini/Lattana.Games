@@ -11,7 +11,7 @@
       />
     </div>
     <h2 class="base-title my-1 py-1 first-capitalize">
-      {{ $t("trump.titles.stats") }} 📊
+      {{ $t("trump.titles.stats") }}
     </h2>
     <div
       class="grid grid-flow-row gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-5"
