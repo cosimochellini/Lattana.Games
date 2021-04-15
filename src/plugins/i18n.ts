@@ -1,6 +1,7 @@
 import { nextTick, unref } from "vue";
 import { createI18n } from "vue-i18n";
 import { currentLanguage } from "@/services/language.service";
+import { setI18n } from "@/instances/i18n";
 
 export const SUPPORT_LOCALES = ["en", "it"];
 
@@ -20,7 +21,7 @@ export async function setupI18n() {
   });
 
   setI18nLanguage(i18n, initialLanguage);
-
+  setI18n(i18n);
   return i18n;
 }
 

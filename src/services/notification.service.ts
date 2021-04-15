@@ -1,4 +1,4 @@
-import { useI18n } from "vue-i18n";
+import { i18n } from "@/instances/i18n";
 import { TYPE, useToast } from "vue-toastification";
 import { ToastOptions } from "vue-toastification/dist/types/types";
 
@@ -20,10 +20,10 @@ export const notification = {
     return useToast().info(notification, option);
   },
   success(translation: string) {
-    return useToast().success(useI18n().t(translation));
+    return useToast().success(i18n.global.t(translation));
   },
   warning(translation: string) {
-    return useToast().warning(useI18n().t(translation));
+    return useToast().warning(i18n.global.t(translation));
   },
   danger(error: any) {
     return useToast().error(getErrorMessage(error));

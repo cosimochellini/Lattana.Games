@@ -1,3 +1,4 @@
+import { i18n } from "@/instances/i18n";
 import { auth } from "@/services/auth.service";
 import { overlay } from "@/services/overlay.service";
 import { currentLanguage } from "@/services/language.service";
@@ -106,7 +107,7 @@ const routes: RouteRecordRaw[] = [
   },
 ];
 
-export function setupRouter(i18n: any) {
+export function setupRouter() {
   const locale = i18n.global.locale.value;
 
   // create router instance

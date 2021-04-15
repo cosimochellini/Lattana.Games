@@ -2,13 +2,13 @@
   <div class="container text-center m-auto">
     <h2 class="base-title first-capitalize" v-t="'trump.titles.ranking'" />
 
-    <div class="pt-2 flex items-center place-content-around max-w-2xl mb-3">
+    <div class="pt-2 flex items-center place-content-around max-w-2xl mb-3 m-auto">
       <select class="base-select" v-model="selectedOrderby">
         <option
           v-for="option in allOrderBy"
           :key="option"
           :value="option"
-          v-t="'form.base.orderBy.' + option"
+          v-t="'form.orderBy.' + option"
         />
       </select>
       <select class="base-select" v-model="selectedShape">
@@ -24,7 +24,7 @@
           v-for="option in orderbyDirection"
           :key="option"
           :value="option"
-          v-t="'form.base.orderBy.' + option"
+          v-t="'form.orderBy.' + option"
         />
       </select>
     </div>
