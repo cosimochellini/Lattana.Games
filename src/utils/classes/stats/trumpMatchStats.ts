@@ -11,7 +11,7 @@ export class TrumpStats extends BaseStats<trumpMatch, trumpMatchPlayer> {
 
   public get callingStats() {
     if (!this._callingMatches.length)
-      for (const match of this.matches) {
+      for (const match of this._matches) {
         const ref = (match.match.callingPlayer as any)._ref;
         if (ref === this._player._id) this._callingMatches.push(match);
       }
@@ -24,19 +24,15 @@ export class TrumpStats extends BaseStats<trumpMatch, trumpMatchPlayer> {
 
   public get fullScoreMatches() {
     if (!this._fullScoreMatches.length)
-      for (const match of this.matches)
+      for (const match of this._matches)
         if (match.match.startingScore === 120)
           this._fullScoreMatches.push(match);
 
     return this._fullScoreMatches;
   }
 
-  public get ratio() {
-    return BaseStats.Ratio(this.wonMatches, this.matches);
-  }
-
   public get callingMatchesRatio() {
-    return BaseStats.Ratio(this.callingStats.matches, this.matches);
+    return BaseStats.Ratio(this.callingStats._matches, this._matches);
   }
 
   public get mediaScore() {

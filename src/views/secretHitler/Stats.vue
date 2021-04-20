@@ -12,28 +12,9 @@
         class="block px-2 py-1"
       />
     </div>
-    <h2 class="base-title first-capitalize" v-t="'secretHitler.titles.stats'" />
 
-    <div
-      class="grid grid-flow-row gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-5"
-    >
-      <div
-        class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded"
-        v-for="statistic in statistics"
-        :key="statistic.message"
-      >
-        <div>
-          <p
-            class="text-3xl font-semibold text-center text-gray-800"
-            v-text="statistic.value"
-          />
-          <p
-            class="text-lg text-center text-gray-500"
-            v-t="'secretHitler.stats.' + statistic.message"
-          />
-        </div>
-      </div>
-    </div>
+    <stats-list :statistics="statistics" :game="'secretHitler'" />
+
     <div
       class="sm:grid sm:grid-flow-row sm:gap-4 sm:grid-cols-1 md:grid-cols-2"
     >
@@ -112,20 +93,21 @@
 </template>
 
 <script lang="ts">
-import { player } from "@/types";
 import { defineComponent } from "vue";
 import { image } from "@/instances/sanity";
 import { formatter } from "@/utils/formatters";
 import { auth } from "@/services/auth.service";
 import { user } from "@/services/user.service";
 import { tailwind } from "@/services/tailwind.service";
-import { Mate } from "@/utils/classes/stats/baseStats";
+import { player, secretHitlerMatchPlayer } from "@/types";
+import StatsList from "@/components/base/ReadableStats.vue";
+import { Mate, ReadableStats } from "@/utils/classes/stats/baseStats";
 import { secretHitler } from "@/services/games/secretHitler.service";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { SecretHitlerStats } from "@/utils/classes/stats/secretHitlerMatchStats";
 
 export default defineComponent({
-  components: { UserAutocomplete },
+  components: { UserAutocomplete, StatsList },
   data() {
     return {
       tailwind,
@@ -159,23 +141,8 @@ export default defineComponent({
     },
   },
   computed: {
-    statistics(): { message: string; value: string | number }[] {
-      if (!this.stats.matches) return [];
-
-      const { matches, wonMatches, lostMatches, ratio } = this.stats;
-      const { penaltyPoints, liberalMatches, hitlerMatches } = this.stats;
-      const { fascistMatches } = this.stats;
-
-      return [
-        { message: "totalMatches", value: matches.length },
-        { message: "totalWin", value: wonMatches.length },
-        { message: "totalLose", value: lostMatches.length },
-        { message: "win", value: `${formatter.percentageFormatter(ratio)} %` },
-        { message: "penaltyPoints", value: penaltyPoints.length },
-        { message: "liberals", value: liberalMatches.length },
-        { message: "fascists", value: fascistMatches.length },
-        { message: "hitlers", value: hitlerMatches.length },
-      ];
+    statistics(): ReadableStats<secretHitlerMatchPlayer>[] {
+      return this.stats.GetReadableStats();
     },
     topMates(): Mate[] {
       return this.stats.bestMates.slice(0, 5);

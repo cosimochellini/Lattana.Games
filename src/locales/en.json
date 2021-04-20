@@ -58,8 +58,11 @@
             "win": "win",
             "penaltyPoints": "penalty points",
             "liberals": "liberal matches",
+            "liberalWins": "liberal wins",
             "fascists": "fascist matches",
-            "hitlers": "hitler matches"
+            "fascistWins": "fascist wins",
+            "hitlers": "hitler matches",
+            "hitlerWins": "hitler wins"
         },
         "roles": {
             "hitler": "hitler",

@@ -129,6 +129,7 @@ class QueryBuilder {
 
     const orderBy = this._orderBy.length
       ? `| ${this._orderBy
+          .concat()
           .reverse() //fix for groq query
           .map((x) => x.value)
           .map(({ prop, desc }) => ` order(${prop} ${desc ? "desc" : "asc"}) `)
@@ -140,7 +141,7 @@ class QueryBuilder {
     return `${where} {${select}} ${orderBy} ${pagination}`.trim();
   }
 
-  private get freezedFields() {
+  private get freezedFields(): Freezable<unknown>[][] {
     return [this._conditions, this._params, this._select, this._orderBy];
   }
 
@@ -152,11 +153,11 @@ class QueryBuilder {
     this.freezedFields.forEach(QueryBuilder.setAsFreezed);
   }
 
-  static filterFreezed(props: Freezable<unknown>[]) {
+  static filterFreezed(props: Freezable<unknown>[]): void {
     props = props.filter((p) => p.freezed);
   }
 
-  static setAsFreezed(props: Freezable<unknown>[]) {
+  static setAsFreezed(props: Freezable<unknown>[]): void {
     props.forEach((p) => (p.freezed = true));
   }
 }

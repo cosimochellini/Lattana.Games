@@ -9,6 +9,13 @@ export type Mate = {
   player: player;
 };
 
+export type ReadableStats<T> = {
+  raw: number;
+  percentage: number | null;
+  display: string;
+  rawItems: T[];
+};
+
 export abstract class BaseStats<
   TMatch extends IMatch<TMatch, TMatchPlayer>,
   TMatchPlayer extends IMatchPlayer<TMatch, TMatchPlayer>
@@ -27,19 +34,19 @@ export abstract class BaseStats<
   }
 
   protected loadBaseStats() {
-    for (const match of this.matches)
+    for (const match of this._matches)
       if (match.win) this._wonMatches.push(match);
       else this._lostMatches.push(match);
   }
 
   protected loadPenalties() {
-    for (const match of this.matches)
+    for (const match of this._matches)
       if (match.penaltyPoint) this._penaltyPoints.push(match);
   }
 
   protected loadBestMates() {
     const mates: Dictionary<Mate> = {};
-    const plays = this.matches.flatMap((m) =>
+    const plays = this._matches.flatMap((m) =>
       m.match.players.filter(
         (p) => m.player._id !== p.player._id && m.win === p.win
       )
@@ -69,7 +76,7 @@ export abstract class BaseStats<
 
   protected loadWorstOpponents() {
     const mates: Dictionary<Mate> = {};
-    const plays = this.matches.flatMap((m) =>
+    const plays = this._matches.flatMap((m) =>
       m.match.players.filter(
         (p) => m.player._id !== p.player._id && m.win !== p.win
       )
@@ -100,30 +107,31 @@ export abstract class BaseStats<
   }
 
   public get matches() {
-    return this._matches;
+    return BaseStats.BindStats("totalMatches", this._matches, null);
   }
 
   public get wonMatches() {
     if (!this._lostMatches.length && !this._wonMatches.length)
       this.loadBaseStats();
 
-    return this._wonMatches;
+    return BaseStats.BindStats("totalWin", this._wonMatches, this._matches);
   }
 
   public get lostMatches() {
     if (!this._lostMatches.length && !this._wonMatches.length)
       this.loadBaseStats();
 
-    return this._lostMatches;
-  }
-  public get ratio() {
-    return BaseStats.Ratio(this.wonMatches, this.matches);
+    return BaseStats.BindStats("totalLose", this._lostMatches, this._matches);
   }
 
   public get penaltyPoints() {
     if (!this._penaltyPoints.length) this.loadPenalties();
 
-    return this._penaltyPoints;
+    return BaseStats.BindStats(
+      "penaltyPoints",
+      this._penaltyPoints,
+      this._matches
+    );
   }
 
   public get bestMates() {
@@ -140,5 +148,26 @@ export abstract class BaseStats<
 
   public static Ratio<T>(first: T[], second: T[]) {
     return first.length / second.length || 0;
+  }
+
+  public GetReadableStats() {
+    return [this.wonMatches, this.penaltyPoints];
+  }
+
+  public static BindStats<T>(
+    display: string,
+    subset: T[],
+    set: unknown[] | null = null
+  ): ReadableStats<T> {
+    const ret: ReadableStats<T> = {
+      display,
+      raw: subset.length,
+      percentage: null,
+      rawItems: subset,
+    };
+
+    if (set) ret.percentage = BaseStats.Ratio(subset, set);
+
+    return ret;
   }
 }

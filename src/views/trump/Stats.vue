@@ -12,10 +12,7 @@
         :exactPlayers="availablePlayers"
       />
     </div>
-    <h2
-      class="base-title my-1 py-1 first-capitalize"
-      v-t="'trump.titles.stats'"
-    />
+    <stats-list :statistics="statistics" :game="'secretHitler'" />
 
     <div
       class="grid grid-flow-row gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-5"
@@ -117,20 +114,21 @@
 </template>
 
 <script lang="ts">
-import { player } from "@/types";
 import { defineComponent } from "vue";
 import { image } from "@/instances/sanity";
 import { auth } from "@/services/auth.service";
 import { formatter } from "@/utils/formatters";
 import { user } from "@/services/user.service";
+import { player, trumpMatchPlayer } from "@/types";
 import { trump } from "@/services/games/trump.service";
 import { tailwind } from "@/services/tailwind.service";
-import { Mate } from "@/utils/classes/stats/baseStats";
+import StatsList from "@/components/base/ReadableStats.vue";
 import { TrumpStats } from "@/utils/classes/stats/trumpMatchStats";
+import { Mate, ReadableStats } from "@/utils/classes/stats/baseStats";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 
 export default defineComponent({
-  components: { UserAutocomplete },
+  components: { UserAutocomplete, StatsList },
   data() {
     return {
       tailwind,
@@ -162,36 +160,8 @@ export default defineComponent({
     },
   },
   computed: {
-    statistics(): { message: string; value: string | number }[] {
-      const { matches, wonMatches, lostMatches, ratio } = this.stats;
-      const { callingMatchesRatio } = this.stats;
-      const { penaltyPoints, callingStats, fullScoreMatches } = this.stats;
-      const { mediaScore } = callingStats;
-
-      return [
-        { message: "totalMatches", value: matches.length },
-        { message: "totalWin", value: wonMatches.length },
-        { message: "totalLose", value: lostMatches.length },
-        { message: "win", value: `${formatter.percentageFormatter(ratio)} %` },
-        { message: "penaltyPoints", value: penaltyPoints.length },
-        { message: "120Match", value: fullScoreMatches.length },
-        {
-          message: "callingMatches",
-          value: callingStats.matches.length,
-        },
-        {
-          message: "callingMatches",
-          value: `${formatter.percentageFormatter(callingMatchesRatio)} %`,
-        },
-        {
-          message: "callingMatchesWin",
-          value: `${formatter.percentageFormatter(callingStats.ratio)} %`,
-        },
-        {
-          message: "mediaCallingScore",
-          value: mediaScore.toFixed(0),
-        },
-      ];
+    statistics(): ReadableStats<trumpMatchPlayer>[] {
+      return this.stats.GetReadableStats();
     },
     topMates(): Mate[] {
       return this.stats.bestMates.slice(0, 5);

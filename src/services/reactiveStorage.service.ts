@@ -4,7 +4,8 @@ export const reactiveStorage = <T>(
   localStoragePath: string,
   defaultValue: T
 ) => {
-  const initialValue = getLsRawValue(localStoragePath, defaultValue);
+  const initialValue: T = getLsRawValue(localStoragePath) ?? defaultValue;
+
   const lsValue = ref(initialValue);
 
   watch(lsValue, (newValue) => {
@@ -14,12 +15,10 @@ export const reactiveStorage = <T>(
   return lsValue;
 };
 
-const getLsRawValue = <T>(localStoragePath: string, defaultValue: T): T => {
+const getLsRawValue = <T>(localStoragePath: string): T | null => {
   try {
-    return (
-      JSON.parse(localStorage.getItem(localStoragePath) ?? "") ?? defaultValue
-    );
+    return JSON.parse(localStorage.getItem(localStoragePath) ?? "");
   } catch (error) {
-    return defaultValue;
+    return null;
   }
 };
