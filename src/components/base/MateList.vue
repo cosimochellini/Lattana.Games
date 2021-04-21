@@ -11,7 +11,10 @@
         v-for="(mate, index) in best"
         :key="mate.player._id"
       >
-        <div class="grid grid-cols-4 items-center">
+        <div
+          class="grid grid-cols-4 items-center"
+          @click="toggleSelected(mate.player._id, 'bestMateSelected')"
+        >
           <span class="col-span-1 text-center m-auto">
             <img
               class="w-10 h-10 rounded-full"
@@ -27,10 +30,25 @@
           </span>
           <span class="col-span-1 text-center">
             <span
+              v-if="!bestMateSelected.has(mate.player._id)"
               class="rounded-xl px-2 py-1 font-semibold"
               :class="tailwind.shared.backgroundRatio(mate.ratio)"
             >
               {{ formatter.percentageFormatter(mate.ratio) }}
+            </span>
+            <span v-if="bestMateSelected.has(mate.player._id)">
+              <span
+                class="rounded-xl px-2 py-1 font-semibold tracking-wider"
+                :class="tailwind.base.background(true)"
+              >
+                {{ formatter.smallNumberFormatter(mate.win) }}
+              </span>
+              <span
+                class="rounded-xl px-2 py-1 font-semibold tracking-wider ml-2"
+                :class="tailwind.base.background(false)"
+              >
+                {{ formatter.smallNumberFormatter(mate.lose) }}
+              </span>
             </span>
           </span>
         </div>
@@ -47,7 +65,10 @@
         v-for="(mate, index) in worst"
         :key="mate.player._id"
       >
-        <div class="grid grid-cols-4 items-center">
+        <div
+          class="grid grid-cols-4 items-center"
+          @click="toggleSelected(mate.player._id, 'worstMateSelected')"
+        >
           <span class="col-span-1 text-center m-auto">
             <img
               class="w-10 h-10 rounded-full"
@@ -63,10 +84,25 @@
           </span>
           <span class="col-span-1 text-center">
             <span
+              v-if="!worstMateSelected.has(mate.player._id)"
               class="rounded-xl px-2 py-1 font-semibold"
               :class="tailwind.shared.backgroundRatio(mate.ratio, true)"
             >
               {{ formatter.percentageFormatter(mate.ratio) }}
+            </span>
+            <span v-if="worstMateSelected.has(mate.player._id)">
+              <span
+                class="rounded-xl px-2 py-1 font-semibold tracking-wider"
+                :class="tailwind.base.background(true)"
+              >
+                {{ formatter.smallNumberFormatter(mate.lose) }}
+              </span>
+              <span
+                class="rounded-xl px-2 py-1 font-semibold tracking-wider ml-2"
+                :class="tailwind.base.background(false)"
+              >
+                {{ formatter.smallNumberFormatter(mate.win) }}
+              </span>
             </span>
           </span>
         </div>
@@ -81,6 +117,7 @@ import { formatter } from "@/utils/formatters";
 import { defineComponent, PropType } from "vue";
 import { Mate } from "@/utils/classes/stats/baseStats";
 import { tailwind } from "@/services/tailwind.service";
+
 export default defineComponent({
   name: "MateList",
   props: {
@@ -101,10 +138,21 @@ export default defineComponent({
     return {
       tailwind,
       formatter,
+
+      bestMateSelected: new Set<string>(),
+      worstMateSelected: new Set<string>(),
     };
   },
   methods: {
     image,
+    toggleSelected(
+      playerId: string,
+      ref: "bestMateSelected" | "worstMateSelected"
+    ) {
+      this[ref].has(playerId)
+        ? this[ref].delete(playerId)
+        : this[ref].add(playerId);
+    },
   },
 });
 </script>
