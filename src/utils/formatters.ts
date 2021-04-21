@@ -93,6 +93,14 @@ export const formatter = {
       useGrouping: false,
     });
   },
+  
+  smallestNumberFormatter(n: number) {
+    return n.toLocaleString(currentLocale.value, {
+      minimumIntegerDigits: 1,
+      maximumFractionDigits: 2,
+      useGrouping: false,
+    });
+  },
 
   percentageFormatter: (n: number) => (n * 100).toFixed(0),
 

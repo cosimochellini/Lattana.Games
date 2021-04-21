@@ -98,9 +98,12 @@
             "totalLose": "total lose",
             "win": "win",
             "penaltyPoints": "penalty points",
-            "120Match": "120 matches",
+            "120Matches": "120 matches",
+            "120MatchesWin": "120 matches won",
             "callingMatches": "calling matches",
-            "callingMatchesWin": "calling match won",
+            "callingMatchesWins": "calling matches won",
+            "called120Matches": "calling 120 matches",
+            "called120MatchesWin": "calling 120 matches won",
             "mediaCallingScore": "media calling score"
         }
     },

@@ -11,16 +11,16 @@
     >
       <div @click="setTab(statistic)">
         <p
-          class="text-3xl font-semibold text-center text-gray-800"
-          v-text="statistic.raw"
           v-if="!selectedStatistics.has(statistic.display)"
+          v-text="formatter.smallestNumberFormatter(statistic.raw)"
+          class="text-3xl font-semibold text-center text-gray-800"
         />
         <p
-          class="text-3xl font-semibold text-center text-gray-800"
+          v-else
           v-text="
             formatter.percentageFormatter(statistic.percentage ?? 0) + '%'
           "
-          v-else
+          class="text-3xl font-semibold text-center text-gray-800"
         />
         <p
           class="text-lg text-center text-gray-500"

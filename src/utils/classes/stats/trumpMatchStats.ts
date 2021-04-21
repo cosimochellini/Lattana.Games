@@ -1,45 +1,121 @@
-import { BaseStats } from "./baseStats";
+import { BaseStats, ReadableStats } from "./baseStats";
 import { trumpMatch, trumpMatchPlayer } from "@/types";
 
 /**
  * TrumpMatch statistics class
  */
 export class TrumpStats extends BaseStats<trumpMatch, trumpMatchPlayer> {
-  private _callingMatches: trumpMatchPlayer[] = [];
-  private _fullScoreMatches: trumpMatchPlayer[] = [];
+  private _fullScoreMatches: TrumpStats | null = null;
   private _callingStats: TrumpStats | null = null;
 
   public get callingStats() {
-    if (!this._callingMatches.length)
-      for (const match of this._matches) {
-        const ref = (match.match.callingPlayer as any)._ref;
-        if (ref === this._player._id) this._callingMatches.push(match);
-      }
+    if (!this._callingStats) this.loadCallingStats();
 
-    if (!this._callingStats)
-      this._callingStats = new TrumpStats(this._callingMatches, this._player);
+    return BaseStats.BindStats(
+      "callingMatches",
+      this._callingStats!.wonMatches.rawItems,
+      this._matches
+    );
+  }
 
-    return this._callingStats;
+  public get callingWinStats() {
+    if (!this._callingStats) this.loadCallingStats();
+
+    return BaseStats.BindStats(
+      "callingMatchesWins",
+      this._callingStats!.wonMatches.rawItems,
+      this._callingStats!._matches
+    );
   }
 
   public get fullScoreMatches() {
-    if (!this._fullScoreMatches.length)
-      for (const match of this._matches)
-        if (match.match.startingScore === 120)
-          this._fullScoreMatches.push(match);
+    if (!this._fullScoreMatches) this.loadFullScore();
 
-    return this._fullScoreMatches;
-  }
-
-  public get callingMatchesRatio() {
-    return BaseStats.Ratio(this.callingStats._matches, this._matches);
-  }
-
-  public get mediaScore() {
-    return (
+    return BaseStats.BindStats(
+      "120Matches",
+      this._fullScoreMatches!._matches,
       this._matches
-        .map((x) => x.match.startingScore)
-        .reduce((t, c) => t + c, 0) / this._matches.length || 0
     );
+  }
+
+  public get fullScoreWinMatches() {
+    if (!this._fullScoreMatches) this.loadFullScore();
+
+    return BaseStats.BindStats(
+      "120MatchesWin",
+      this._fullScoreMatches!.wonMatches.rawItems,
+      this._fullScoreMatches!._matches
+    );
+  }
+
+  public get fullScoreCallingMatches() {
+    if (!this._fullScoreMatches) this.loadFullScore();
+
+    this._fullScoreMatches!.callingStats; //for load the _callingStats
+
+    return BaseStats.BindStats(
+      "called120Matches",
+      this._fullScoreMatches!._callingStats!._matches,
+      this._fullScoreMatches!._matches
+    );
+  }
+
+  public get fullScoreCallingWinMatches() {
+    if (!this._fullScoreMatches) this.loadFullScore();
+
+    this._fullScoreMatches!.callingStats; //for load the _callingStats
+
+    return BaseStats.BindStats(
+      "called120MatchesWin",
+      this._fullScoreMatches!._callingStats!.wonMatches.rawItems,
+      this._fullScoreMatches!._callingStats!._matches
+    );
+  }
+
+  public get mediaScore(): ReadableStats<trumpMatchPlayer> {
+    const mediaScore =
+      this._matches
+        .map(({ match }) => match.startingScore)
+        .reduce((t, c) => t + c, 0) / this._matches.length || 0;
+
+    return {
+      raw: mediaScore,
+      display: "mediaCallingScore",
+      rawItems: this._matches,
+      percentage: null,
+    };
+  }
+
+  private loadCallingStats() {
+    const callingMatches = [] as trumpMatchPlayer[];
+    for (const match of this._matches) {
+      const ref = (match.match.callingPlayer as any)._ref;
+      if (ref === this._player._id) callingMatches.push(match);
+    }
+
+    this._callingStats = new TrumpStats(callingMatches, this._player);
+  }
+
+  private loadFullScore() {
+    const fullScoreMatches = [] as trumpMatchPlayer[];
+
+    for (const match of this._matches)
+      if (match.match.startingScore === 120) fullScoreMatches.push(match);
+
+    this._fullScoreMatches = new TrumpStats(fullScoreMatches, this._player);
+  }
+
+  public GetReadableStats() {
+    return super
+      .GetReadableStats()
+      .concat([
+        this.callingStats,
+        this.callingWinStats,
+        this.fullScoreMatches,
+        this.fullScoreWinMatches,
+        this.fullScoreCallingMatches,
+        this.fullScoreCallingWinMatches,
+        this.mediaScore,
+      ]);
   }
 }
