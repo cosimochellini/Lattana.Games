@@ -8,8 +8,8 @@
 
       <user-autocomplete
         v-model="currentPlayer"
-        :exactPlayers="availablePlayers"
         class="block px-2 py-1"
+        :exactPlayers="availablePlayers"
       />
     </div>
 

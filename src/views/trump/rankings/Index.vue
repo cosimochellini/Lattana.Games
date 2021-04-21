@@ -2,7 +2,9 @@
   <div class="container text-center m-auto">
     <h2 class="base-title first-capitalize" v-t="'trump.titles.ranking'" />
 
-    <div class="pt-2 flex items-center place-content-around max-w-2xl mb-3 m-auto">
+    <div
+      class="pt-2 flex items-center place-content-around max-w-2xl mb-3 m-auto"
+    >
       <select class="base-select" v-model="selectedOrderby">
         <option
           v-for="option in allOrderBy"
@@ -97,15 +99,11 @@ export default defineComponent({
 
       return (reverse ? desc !== reverse : desc) ? index : reversedIndex;
     },
-    bindImageRing(index: number): Dictionary<boolean> {
-      const realIndex = this.bindRealIndex(index);
-      if (realIndex >= 3) return {};
 
-      return {
-        ring: true,
-        [tailwind.shared.rankingBackground[realIndex]]: true,
-      };
+    bindImageRing(index: number): Dictionary<boolean> {
+      return tailwind.shared.bindImageRing(this.bindRealIndex(index));
     },
+
     bindBadgeColor(index: number): string {
       const realIndex = this.bindRealIndex(index);
 
@@ -121,8 +119,8 @@ export default defineComponent({
     bindBadgeText(rank: trumpRank) {
       const value = rank[this.selectedOrderby][this.selectedShape];
 
-      return this.selectedShape === "percentage"
-        ? formatter.percentageFormatter(value) + " %"
+      return this.selectedShape === orderByShape.percentage
+        ? formatter.percentageFormatter(value)
         : formatter.smallNumberFormatter(value);
     },
   },

@@ -17,9 +17,7 @@
         />
         <p
           v-else
-          v-text="
-            formatter.percentageFormatter(statistic.percentage ?? 0) + '%'
-          "
+          v-text="formatter.percentageFormatter(statistic.percentage ?? 0)"
           class="text-3xl font-semibold text-center text-gray-800"
         />
         <p

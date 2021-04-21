@@ -66,12 +66,12 @@
 <script lang="ts">
 import { Dictionary } from "@/types";
 import { defineComponent } from "vue";
-import { orderby, orderByShape } from "@/types/ranking";
 import { image } from "@/instances/sanity";
 import { byNumber, byValue } from "sort-es";
 import { formatter } from "@/utils/formatters";
 import Badge from "@/components/base/Badge.vue";
 import { tailwind } from "@/services/tailwind.service";
+import { orderby, orderByShape } from "@/types/ranking";
 import { secretHitler } from "@/services/games/secretHitler.service";
 import { orderbyDirection, secretHitlerOrderBy } from "@/types/ranking";
 import { Rankable, RankingList } from "@/utils/classes/stats/ranks/baseRank";
@@ -103,15 +103,11 @@ export default defineComponent({
 
       return (reverse ? desc !== reverse : desc) ? index : reversedIndex;
     },
-    bindImageRing(index: number): Dictionary<boolean> {
-      const realIndex = this.bindRealIndex(index);
-      if (realIndex >= 3) return {};
 
-      return {
-        ring: true,
-        [tailwind.shared.rankingBackground[realIndex]]: true,
-      };
+    bindImageRing(index: number): Dictionary<boolean> {
+      return tailwind.shared.bindImageRing(this.bindRealIndex(index));
     },
+
     bindBadgeColor(index: number): string {
       const realIndex = this.bindRealIndex(index);
 
@@ -119,16 +115,18 @@ export default defineComponent({
 
       return tailwind.shared.bindRate(rate);
     },
+
     bindBadgeTextColor(index: number): string {
       const realIndex = this.bindRealIndex(index);
 
       return tailwind.base.text(realIndex / this.sortedRanks.length < 0.5);
     },
+
     bindBadgeText(rank: secretHitlerRank) {
       const value = rank[this.selectedOrderby][this.selectedShape];
 
-      return this.selectedShape === "percentage"
-        ? formatter.percentageFormatter(value) + " %"
+      return this.selectedShape === orderByShape.percentage
+        ? formatter.percentageFormatter(value)
         : formatter.smallNumberFormatter(value);
     },
   },

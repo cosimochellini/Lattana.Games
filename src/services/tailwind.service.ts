@@ -1,5 +1,5 @@
 import { range } from "@/utils";
-import { secretHitlerMatch, trumpMatch } from "@/types";
+import { Dictionary, secretHitlerMatch, trumpMatch } from "@/types";
 import { secretHitlerRole } from "@/constants/roleConstants";
 
 export const tailwind = {
@@ -30,7 +30,17 @@ export const tailwind = {
 
       return "bg-red-400";
     },
+
     rankingBackground: ["ring-yellow-400", "ring-gray-300", "ring-yellow-700"],
+
+    bindImageRing(index: number): Dictionary<boolean> {
+      if (index >= 3) return {};
+
+      return {
+        ring: true,
+        [tailwind.shared.rankingBackground[index]]: true,
+      };
+    },
   },
 
   trump: {

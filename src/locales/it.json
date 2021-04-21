@@ -58,8 +58,11 @@
             "win": "vittorie",
             "penaltyPoints": "penalità",
             "liberals": "partite liberali",
+            "liberalWins": "partite liberali vinte",
             "fascists": "partite fasciste",
-            "hitlers": "partite hitler"
+            "fascistWins": "partite fasciste vinte",
+            "hitlers": "partite hitler",
+            "hitlerWins": "partite hitler vinte"
         },
         "roles": {
             "hitler": "hitler",
@@ -95,9 +98,12 @@
             "totalLose": "sconfitte totali",
             "win": "vittorie",
             "penaltyPoints": "penalità",
-            "120Match": "partite 120",
+            "120Matches": "partite 120",
+            "120MatchesWin": "partite vinte a 120",
             "callingMatches": "partite chiamate",
-            "callingMatchesWin": "chiamate vittoriose",
+            "callingMatchesWins": "partite chiamate vinte",
+            "called120Matches": "partite chiamate a 120",
+            "called120MatchesWin": "partite chiamate a 120 vinte",
             "mediaCallingScore": "media punteggio chiamato"
         }
     },

@@ -8,7 +8,7 @@
 
       <div
         class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded m-2"
-        v-for="mate in best"
+        v-for="(mate, index) in best"
         :key="mate.player._id"
       >
         <div class="grid grid-cols-4 items-center">
@@ -16,6 +16,7 @@
             <img
               class="w-10 h-10 rounded-full"
               :src="image(mate.player.profileImage, 500)"
+              :class="tailwind.shared.bindImageRing(index)"
             />
           </span>
           <span
@@ -29,7 +30,7 @@
               class="rounded-xl px-2 py-1 font-semibold"
               :class="tailwind.shared.backgroundRatio(mate.ratio)"
             >
-              {{ formatter.percentageFormatter(mate.ratio) }} %
+              {{ formatter.percentageFormatter(mate.ratio) }}
             </span>
           </span>
         </div>
@@ -43,7 +44,7 @@
 
       <div
         class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded m-2"
-        v-for="mate in worst"
+        v-for="(mate, index) in worst"
         :key="mate.player._id"
       >
         <div class="grid grid-cols-4 items-center">
@@ -51,6 +52,7 @@
             <img
               class="w-10 h-10 rounded-full"
               :src="image(mate.player.profileImage, 500)"
+              :class="tailwind.shared.bindImageRing(index)"
             />
           </span>
           <span
@@ -64,7 +66,7 @@
               class="rounded-xl px-2 py-1 font-semibold"
               :class="tailwind.shared.backgroundRatio(mate.ratio, true)"
             >
-              {{ formatter.percentageFormatter(mate.ratio) }} %
+              {{ formatter.percentageFormatter(mate.ratio) }}
             </span>
           </span>
         </div>
