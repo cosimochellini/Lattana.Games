@@ -1,6 +1,6 @@
 import { range } from "@/utils";
-import { Dictionary, secretHitlerMatch, trumpMatch } from "@/types";
 import { secretHitlerRole } from "@/constants/roleConstants";
+import { Dictionary, secretHitlerMatch, trumpMatch } from "@/types";
 
 export const tailwind = {
   base: {

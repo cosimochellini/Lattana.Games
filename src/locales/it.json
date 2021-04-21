@@ -58,11 +58,11 @@
             "win": "vittorie",
             "penaltyPoints": "penalità",
             "liberals": "partite liberali",
-            "liberalWins": "partite liberali vinte",
+            "liberalWins": "liberali vinte",
             "fascists": "partite fasciste",
-            "fascistWins": "partite fasciste vinte",
+            "fascistWins": "fasciste vinte",
             "hitlers": "partite hitler",
-            "hitlerWins": "partite hitler vinte"
+            "hitlerWins": "hitler vinte"
         },
         "roles": {
             "hitler": "hitler",
