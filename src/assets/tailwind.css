@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 .base-card {
-  @apply overflow-hidden bg-white rounded-lg shadow-lg p-4 max-w-6xl;
+  @apply overflow-hidden bg-white rounded-xl shadow-lg p-4 max-w-6xl;
 }
 
 .base-select {

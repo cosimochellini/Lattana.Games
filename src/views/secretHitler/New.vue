@@ -105,7 +105,7 @@
           />
         </select>
 
-        <h2 class="base-subtitle">Hitler</h2>
+        <h2 class="base-subtitle mt-2">Hitler</h2>
         <user-autocomplete
           :exactPlayers="fascistPlayers"
           class="w-full"

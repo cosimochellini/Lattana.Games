@@ -7,7 +7,7 @@
       />
 
       <div
-        class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded m-2"
+        class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded-2xl shadow-lg m-2"
         v-for="(mate, index) in best"
         :key="mate.player._id"
       >
@@ -61,7 +61,7 @@
       />
 
       <div
-        class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded m-2"
+        class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded-2xl shadow-lg m-2"
         v-for="(mate, index) in worst"
         :key="mate.player._id"
       >

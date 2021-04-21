@@ -14,24 +14,25 @@
         </span>
 
         <div
-          class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+          class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
         >
           <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div class="sm:flex sm:items-start">
               <div
                 class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10"
               >
-                <i class="fas fa-exclamation-triangle"/>
+                <i class="fas fa-exclamation-triangle" />
               </div>
               <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                 <h3
-                  class="text-lg leading-6 font-medium text-gray-900 first-capitalize"
+                  class="text-lg leading-6 font-medium text-gray-900 first-capitalize tracking-wide"
                   v-t="'dialog.title.' + currentOptions.title"
                 />
                 <div class="mt-2" v-show="currentOptions.description">
                   <p
                     class="text-sm text-gray-500 first-capitalize"
                     v-t="'dialog.description.' + currentOptions.description"
+                    v-if="currentOptions.description"
                   />
                 </div>
               </div>

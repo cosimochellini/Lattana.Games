@@ -5,7 +5,7 @@
     class="grid grid-flow-row gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-5"
   >
     <div
-      class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded"
+      class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded-xl shadow-lg"
       v-for="statistic in statistics"
       :key="statistic.display"
     >
