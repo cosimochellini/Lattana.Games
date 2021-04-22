@@ -106,16 +106,17 @@ export class TrumpStats extends BaseStats<trumpMatch, trumpMatchPlayer> {
   }
 
   public GetReadableStats() {
-    return super
-      .GetReadableStats()
-      .concat([
-        this.callingStats,
-        this.callingWinStats,
-        this.fullScoreMatches,
-        this.fullScoreWinMatches,
-        this.fullScoreCallingMatches,
-        this.fullScoreCallingWinMatches,
-        this.mediaScore,
-      ]);
+    return [
+      this.matches,
+      this.wonMatches,
+      this.fullScoreMatches,
+      this.fullScoreWinMatches,
+      this.callingStats,
+      this.callingWinStats,
+      this.fullScoreCallingMatches,
+      this.fullScoreCallingWinMatches,
+      this.mediaScore,
+      this.penaltyPoints,
+    ];
   }
 }
