@@ -36,7 +36,7 @@
             "insertNewMatch": "inserisci nuova partita",
             "stats": "statistiche",
             "bestMatches": "accoppiamenti migliori",
-            "worstEnemies": "peggiori nemici",
+            "worstMatches": "peggiori nemici",
             "ranking": "classifica"
         },
         "form": {
@@ -76,7 +76,7 @@
             "insertNewMatch": "inserisci nuova partita",
             "stats": "statistiche",
             "bestMatches": "accoppiamenti migliori",
-            "worstEnemies": "peggiori nemici",
+            "worstMatches": "peggiori nemici",
             "ranking": "classifica"
         },
         "form": {

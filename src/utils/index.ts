@@ -26,3 +26,28 @@ export const range = (r: [number, number], value: number): boolean => {
 export const settings = require("@/../package.json") as PackageJson;
 
 export const deepClone = <T>(obj: T) => JSON.parse(JSON.stringify(obj)) as T;
+
+export class Toggle<T> {
+  private _single: boolean;
+  private _selectedItem: T | null = null;
+  private _selectedSet = new Set<T>();
+
+  constructor(single: boolean = true) {
+    this._single = single;
+  }
+
+  public toggle(item: T) {
+    if (this._single)
+      this._selectedItem = this._selectedItem === item ? null : item;
+    else
+      this._selectedSet.has(item)
+        ? this._selectedSet.delete(item)
+        : this._selectedSet.add(item);
+  }
+
+  public has(item: T) {
+    return this._single
+      ? this._selectedItem === item
+      : this._selectedSet.has(item);
+  }
+}

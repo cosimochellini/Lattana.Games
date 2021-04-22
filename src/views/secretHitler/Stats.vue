@@ -1,6 +1,6 @@
 <template>
-  <div class="max-w-xl md:max-w-4xl px-4 py-4 mx-auto">
-    <div class="my-4">
+  <div class="max-w-xl md:max-w-4xl px-4 py-2 mx-auto">
+    <div class="my-2">
       <h2
         class="base-subtitle first-capitalize"
         v-t="'secretHitler.form.currentPlayer'"
@@ -28,7 +28,7 @@
 import { defineComponent } from "vue";
 import { auth } from "@/services/auth.service";
 import { user } from "@/services/user.service";
-import MateList from "@/components/base/MateList.vue";
+import MateList from "@/components/base/MateSection.vue";
 import { player, secretHitlerMatchPlayer } from "@/types";
 import StatsList from "@/components/base/ReadableStats.vue";
 import { secretHitler } from "@/services/games/secretHitler.service";
