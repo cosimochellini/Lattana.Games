@@ -102,7 +102,7 @@ export const formatter = {
     });
   },
 
-  percentageFormatter: (n: number) => (n * 100).toFixed(0) + " %",
+  percentageFormatter: (n: number) => (n * 100).toFixed(0) + "%",
 
   dateFormatter: (date: datable) => {
     const [isValid, d] = parseDate(date);

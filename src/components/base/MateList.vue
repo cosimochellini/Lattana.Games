@@ -7,12 +7,12 @@
       />
 
       <div
-        class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded-2xl shadow-lg m-2"
+        class="flex flex-col justify-center p-4 bg-white rounded-2xl shadow-lg my-2"
         v-for="(mate, index) in best"
         :key="mate.player._id"
       >
         <div
-          class="grid grid-cols-4 items-center"
+          class="grid grid-cols-5 items-center"
           @click="toggleSelected(mate.player._id, 'bestMateSelected')"
         >
           <span class="col-span-1 text-center m-auto">
@@ -23,12 +23,12 @@
             />
           </span>
           <span
-            class="col-span-2 text-gray-700 font-semibold font-sans tracking-wide text-center"
+            class="col-span-3 text-gray-700 font-semibold font-sans tracking-wide text-center"
           >
             {{ mate.player.name }}
             {{ mate.player.surname }}
           </span>
-          <span class="col-span-1 text-center">
+          <span class="col-span-1 text-center tracking-widest">
             <span
               v-if="!bestMateSelected.has(mate.player._id)"
               class="rounded-xl px-2 py-1 font-semibold"
@@ -38,13 +38,13 @@
             </span>
             <span v-if="bestMateSelected.has(mate.player._id)">
               <span
-                class="rounded-xl px-2 py-1 font-semibold tracking-wider"
+                class="rounded-xl px-2 py-1 font-semibold"
                 :class="tailwind.base.background(true)"
               >
                 {{ formatter.smallNumberFormatter(mate.win) }}
               </span>
               <span
-                class="rounded-xl px-2 py-1 font-semibold tracking-wider ml-2"
+                class="rounded-xl px-2 py-1 font-semibold ml-2"
                 :class="tailwind.base.background(false)"
               >
                 {{ formatter.smallNumberFormatter(mate.lose) }}
@@ -61,12 +61,12 @@
       />
 
       <div
-        class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded-2xl shadow-lg m-2"
+        class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded-2xl shadow-lg my-2"
         v-for="(mate, index) in worst"
         :key="mate.player._id"
       >
         <div
-          class="grid grid-cols-4 items-center"
+          class="grid grid-cols-5 items-center"
           @click="toggleSelected(mate.player._id, 'worstMateSelected')"
         >
           <span class="col-span-1 text-center m-auto">
@@ -77,12 +77,12 @@
             />
           </span>
           <span
-            class="col-span-2 text-gray-700 font-semibold font-sans tracking-wide text-center"
+            class="col-span-3 text-gray-700 font-semibold font-sans tracking-wide text-center"
           >
             {{ mate.player.name }}
             {{ mate.player.surname }}
           </span>
-          <span class="col-span-1 text-center">
+          <span class="col-span-1 text-center tracking-widest">
             <span
               v-if="!worstMateSelected.has(mate.player._id)"
               class="rounded-xl px-2 py-1 font-semibold"
@@ -92,13 +92,13 @@
             </span>
             <span v-if="worstMateSelected.has(mate.player._id)">
               <span
-                class="rounded-xl px-2 py-1 font-semibold tracking-wider"
+                class="rounded-xl px-2 py-1 font-semibold"
                 :class="tailwind.base.background(true)"
               >
                 {{ formatter.smallNumberFormatter(mate.lose) }}
               </span>
               <span
-                class="rounded-xl px-2 py-1 font-semibold tracking-wider ml-2"
+                class="rounded-xl px-2 py-1 font-semibold ml-2"
                 :class="tailwind.base.background(false)"
               >
                 {{ formatter.smallNumberFormatter(mate.win) }}

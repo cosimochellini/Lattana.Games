@@ -99,12 +99,12 @@
             "win": "vittorie",
             "penaltyPoints": "penalità",
             "120Matches": "partite 120",
-            "120MatchesWin": "partite vinte a 120",
+            "120MatchesWin": "vittorie 120",
             "callingMatches": "partite chiamate",
-            "callingMatchesWins": "partite chiamate vinte",
-            "called120Matches": "partite chiamate a 120",
-            "called120MatchesWin": "partite chiamate a 120 vinte",
-            "mediaCallingScore": "media punteggio chiamato"
+            "callingMatchesWins": "chiamate vinte",
+            "called120Matches": "chiamate 120",
+            "called120MatchesWin": "chiamate 120 vinte",
+            "mediaCallingScore": "media chiamate"
         }
     },
     "form": {

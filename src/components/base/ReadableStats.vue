@@ -2,20 +2,20 @@
   <h2 class="base-title first-capitalize" v-t="game + '.titles.stats'" />
 
   <div
-    class="grid grid-flow-row gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-5"
+    class="grid grid-flow-row gap-3 md:gap-4 lg:gap-5 grid-cols-2 sm:grid-cols-3 md:grid-cols-5"
   >
     <div
       class="flex flex-col justify-center bg-white rounded-xl shadow-lg"
       v-for="statistic in statistics"
       :key="statistic.display"
     >
-      <div class="relative px-4 py-4">
+      <div class="relative p-3">
         <span
-          class="absolute top-0 right-0 m-1 inline-flex items-center justify-center px-2 py-1 mr-2 text-xs font-bold leading-none rounded-full"
+          class="absolute top-0 right-0 m-1 inline-flex items-center justify-center px-2 py-1.5 text-xs font-bold leading-none rounded-full opacity-70"
           :class="
             selectedStatistics.has(statistic.display)
-              ? 'bg-green-300'
-              : 'bg-blue-300'
+              ? 'bg-green-200'
+              : 'bg-blue-200'
           "
         >
           <i
@@ -40,7 +40,8 @@
             class="text-3xl font-semibold text-center text-gray-800 tracking-wider"
           />
           <p
-            class="text-lg text-center text-gray-500"
+            class="text-center text-gray-500"
+            :class="dynamicText(statistic.display)"
             v-t="game + '.stats.' + statistic.display"
           />
         </div>
@@ -82,6 +83,18 @@ export default defineComponent({
       isClicked
         ? this.selectedStatistics.delete(stat.display)
         : this.selectedStatistics.add(stat.display);
+    },
+    dynamicText(name: string) {
+      const rawValue = this.$t(this.game + ".stats." + name);
+
+      switch (true) {
+        case rawValue.length < 16:
+          return "text-lg";
+        case rawValue.length > 16:
+          return "text-md";
+      }
+
+      return "";
     },
   },
 });
