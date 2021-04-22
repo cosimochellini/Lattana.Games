@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col justify-center px-3 py-3 bg-white border border-gray-300 rounded-xl my-1 mx-2 max-w-2xl text-center lg:m-auto lg:mt-1"
+    class="flex flex-col justify-center p-3 bg-white rounded-2xl shadow-lg m-2 lg:my-3 max-w-2xl text-center lg:m-auto lg:mt-1"
     v-for="(rank, index) in rankingList"
     :key="rank.profile.nickname"
   >
@@ -19,6 +19,7 @@
       </span>
       <span class="col-span-1 m-auto">
         <badge
+          class="text-base tracking-wide rounded-md"
           :background="bindBadgeColor(index)"
           :textColor="bindBadgeTextColor(index)"
           :text="bindBadgeText(rank)"

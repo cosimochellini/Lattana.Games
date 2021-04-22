@@ -1,7 +1,8 @@
 {
   "name": "lattana-games",
-  "version": "0.10.10",
-  "private": true,
+  "version": "0.11.2",
+  "private": false,
+  "license": "MIT",
   "scripts": {
     "serve": "yarn increase && vue-cli-service serve",
     "build": "vue-cli-service build",
