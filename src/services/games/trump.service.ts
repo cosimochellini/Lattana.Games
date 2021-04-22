@@ -15,9 +15,6 @@ import { player, sanityDocument, trumpMatch, trumpMatchPlayer } from "@/types";
 const currentPlayer = auth.currentPlayer;
 
 export const trump = {
-  notification() {
-    notification.success("notification.delete");
-  },
   getMatches(player: player | null) {
     const matchesQuery = new groq.QueryBuilder(sanityTypes.trumpMatch)
       .select(`...,  callingPlayer ->, players[] -> {player ->,...}`)

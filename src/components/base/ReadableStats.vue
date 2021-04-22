@@ -12,11 +12,11 @@
       <div class="relative px-4 py-4">
         <span
           class="absolute top-0 right-0 m-1 inline-flex items-center justify-center px-2 py-1 mr-2 text-xs font-bold leading-none rounded-full"
-           :class="
-              selectedStatistics.has(statistic.display)
-                ? 'bg-green-300'
-                : 'bg-blue-300'
-            "
+          :class="
+            selectedStatistics.has(statistic.display)
+              ? 'bg-green-300'
+              : 'bg-blue-300'
+          "
         >
           <i
             class="fas"
@@ -50,9 +50,9 @@
 </template>
 
 <script lang="ts">
-import { ReadableStats } from "@/utils/classes/stats/baseStats";
 import { formatter } from "@/utils/formatters";
 import { defineComponent, PropType } from "vue";
+import { ReadableStats } from "@/utils/classes/stats/baseStats";
 
 export default defineComponent({
   name: "readableStats",

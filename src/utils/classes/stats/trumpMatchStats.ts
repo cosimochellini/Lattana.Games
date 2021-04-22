@@ -13,7 +13,7 @@ export class TrumpStats extends BaseStats<trumpMatch, trumpMatchPlayer> {
 
     return BaseStats.BindStats(
       "callingMatches",
-      this._callingStats!.wonMatches.rawItems,
+      this._callingStats!._matches,
       this._matches
     );
   }
@@ -49,26 +49,26 @@ export class TrumpStats extends BaseStats<trumpMatch, trumpMatchPlayer> {
   }
 
   public get fullScoreCallingMatches() {
-    if (!this._fullScoreMatches) this.loadFullScore();
+    if (!this._callingStats) this.loadCallingStats();
 
-    this._fullScoreMatches!.callingStats; //for load the _callingStats
+    this._callingStats!.fullScoreMatches; //for load the _fullScoreMatches
 
     return BaseStats.BindStats(
       "called120Matches",
-      this._fullScoreMatches!._callingStats!._matches,
-      this._fullScoreMatches!._matches
+      this._callingStats!._fullScoreMatches!._matches,
+      this._callingStats!._matches
     );
   }
 
   public get fullScoreCallingWinMatches() {
-    if (!this._fullScoreMatches) this.loadFullScore();
+    if (!this._callingStats) this.loadCallingStats();
 
-    this._fullScoreMatches!.callingStats; //for load the _callingStats
+    this._callingStats!.fullScoreMatches; //for load the _fullScoreMatches
 
     return BaseStats.BindStats(
       "called120MatchesWin",
-      this._fullScoreMatches!._callingStats!.wonMatches.rawItems,
-      this._fullScoreMatches!._callingStats!._matches
+      this._callingStats!._fullScoreMatches!.wonMatches.rawItems,
+      this._callingStats!._fullScoreMatches!._matches
     );
   }
 
