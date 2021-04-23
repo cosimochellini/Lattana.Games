@@ -88,7 +88,7 @@ export default defineComponent({
     return {
       tailwind,
       formatter,
-      selectedMates: new Toggle<string>(true),
+      selectedMates: new Toggle(),
     };
   },
   methods: { image },

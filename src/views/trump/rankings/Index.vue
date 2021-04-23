@@ -3,7 +3,7 @@
     <h2 class="base-title first-capitalize" v-t="'trump.titles.ranking'" />
 
     <div
-      class="pt-1 flex items-center place-content-around max-w-2xl mb-3"
+      class="pt-1 flex items-center place-content-around max-w-2xl mb-3 m-auto"
     >
       <select class="base-select" v-model="selectedOrderby">
         <option

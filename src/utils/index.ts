@@ -27,12 +27,12 @@ export const settings = require("@/../package.json") as PackageJson;
 
 export const deepClone = <T>(obj: T) => JSON.parse(JSON.stringify(obj)) as T;
 
-export class Toggle<T> {
+export class Toggle<T = string> {
   private _single: boolean;
   private _selectedItem: T | null = null;
   private _selectedSet = new Set<T>();
 
-  constructor(single: boolean = true) {
+  constructor(single: boolean = false) {
     this._single = single;
   }
 

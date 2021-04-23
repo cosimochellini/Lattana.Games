@@ -51,6 +51,7 @@
 </template>
 
 <script lang="ts">
+import { Toggle } from "@/utils";
 import { formatter } from "@/utils/formatters";
 import { defineComponent, PropType } from "vue";
 import { ReadableStats } from "@/utils/classes/stats/baseStats";
@@ -59,7 +60,7 @@ export default defineComponent({
   name: "readableStats",
   props: {
     statistics: {
-      type: Array as PropType<ReadableStats<unknown>[]>,
+      type: Array as PropType<Array<ReadableStats<unknown>>>,
       required: true,
     },
     game: {
@@ -70,19 +71,16 @@ export default defineComponent({
   data() {
     return {
       formatter,
-      selectedStatistics: new Set<string>(),
+      selectedStatistics: new Toggle(),
     };
   },
   methods: {
     setTab(stat: ReadableStats<unknown>) {
       const hasPercentage = stat.percentage !== null;
-      const isClicked = this.selectedStatistics.has(stat.display);
 
       if (!hasPercentage) return;
 
-      isClicked
-        ? this.selectedStatistics.delete(stat.display)
-        : this.selectedStatistics.add(stat.display);
+      this.selectedStatistics.toggle(stat.display);
     },
     dynamicText(name: string) {
       const rawValue = this.$t(this.game + ".stats." + name);
