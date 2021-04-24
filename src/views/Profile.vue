@@ -108,6 +108,18 @@
               {{ formatter.longNumberFormatter(currentPlayer.pin) }}
             </span>
           </div>
+          <div
+            class="mt-6 w-4/5 lg:w-full mx-auto flex flex-wrap items-center justify-evenly"
+            v-if="currentPlayer.roles?.length"
+          >
+            <a
+              class="link border-2 p-2 rounded-lg first-capitalize tracking-wider"
+              v-for="role in currentPlayer.roles.split(';')"
+              :key="role"
+            >
+              {{ role }}
+            </a>
+          </div>
           <div class="pt-8 text-sm">
             <div class="first-capitalize mt-1" v-if="currentPlayer._createdAt">
               <span v-t="'system.createdAt'" />
@@ -129,7 +141,7 @@
             >
               <span v-t="'buttons.base.editProfile'" />
 
-              <i class="fas fa-user-edit"/>
+              <i class="fas fa-user-edit" />
             </button>
 
             <button
@@ -139,7 +151,7 @@
             >
               <span v-t="'buttons.base.update'" />
 
-              <i class="fad fa-save"/>
+              <i class="fad fa-save" />
             </button>
             <button
               @click="discardChanges"
@@ -148,21 +160,8 @@
             >
               <span v-t="'buttons.base.discard'" />
 
-              <i class="fas fa-trash-undo-alt"/>
+              <i class="fas fa-trash-undo-alt" />
             </button>
-          </div>
-
-          <div
-            class="mt-6 pb-16 lg:pb-0 w-4/5 lg:w-full mx-auto flex flex-wrap items-center justify-evenly"
-            v-if="currentPlayer.roles?.length"
-          >
-            <a
-              class="link border-2 p-2 rounded-lg uppercase"
-              v-for="role in currentPlayer.roles"
-              :key="role"
-            >
-              {{ role }}
-            </a>
           </div>
         </div>
       </div>
@@ -182,7 +181,7 @@
               name="profileImage"
               @change="updateProfileImage"
             />
-            <i class="fad fa-cloud-upload"/>
+            <i class="fad fa-cloud-upload" />
           </button>
         </div>
       </div>
