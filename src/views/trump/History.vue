@@ -60,8 +60,12 @@
           />
         </div>
       </div>
-      <hr class="my-2" />
-      <div class="flex justify-items-center justify-around">
+      <hr class="my-2" v-show="guard.role.editor" />
+
+      <div
+        class="flex justify-items-center justify-around"
+        v-show="guard.role.editor"
+      >
         <button class="base-button danger" @click="deleteMatch(match)">
           <span v-t="'buttons.base.delete'" />
           <i class="fas fa-trash-alt" />
@@ -69,17 +73,16 @@
 
         <button class="base-button info">
           <span v-t="'buttons.base.edit'" />
-
           <i class="fas fa-edit" />
         </button>
 
         <button class="base-button primary" @click="copyMatch(match)">
           <span v-t="'buttons.base.copy'" />
-
           <i class="fas fa-copy" />
         </button>
       </div>
     </article>
+
     <card-skeleton @visible="getMoreData" v-if="moreDataAvailable" />
   </div>
 </template>
@@ -91,6 +94,7 @@ import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
 import { auth } from "@/services/auth.service";
 import Badge from "@/components/base/Badge.vue";
+import { guard } from "@/services/guard.service";
 import WinBadge from "@/components/base/WinBadge.vue";
 import { trump } from "@/services/games/trump.service";
 import { tailwind } from "@/services/tailwind.service";
@@ -125,6 +129,7 @@ export default defineComponent({
 
     return {
       image,
+      guard,
       matches,
       tailwind,
       copyMatch,

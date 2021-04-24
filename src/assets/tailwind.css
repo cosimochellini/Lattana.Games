@@ -21,9 +21,9 @@
 }
 
 .base-button {
-  @apply inline-flex justify-center text-sm font-medium p-3 items-center content-center place-items-center py-2 px-3 text-gray-900 rounded-lg shadow-sm focus:outline-none tracking-wider font-sans capitalize;
-  @apply disabled:opacity-70 text-center;
-  @apply focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm;
+  @apply text-sm font-medium font-sans capitalize text-gray-900;
+  @apply disabled:opacity-70 focus:outline-none focus:ring-2 focus:ring-offset-2 sm:w-auto sm:text-sm;
+  @apply inline-flex justify-center items-center content-center place-items-center text-center py-2 px-3 rounded-lg shadow-sm tracking-wider;
 }
 
 .base-button.large {
@@ -54,8 +54,10 @@
   @apply bg-transparent border border-gray-800 border-opacity-80;
 }
 
-.base-button .fas, .base-button .fad, .base-button .far {
-  @apply ml-1;
+.base-button .fas,
+.base-button .fad,
+.base-button .far {
+  @apply pl-1;
 }
 
 .base-title {

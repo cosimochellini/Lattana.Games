@@ -154,7 +154,7 @@
 
           <div
             class="mt-6 pb-16 lg:pb-0 w-4/5 lg:w-full mx-auto flex flex-wrap items-center justify-evenly"
-            v-if="currentPlayer.roles.length"
+            v-if="currentPlayer.roles?.length"
           >
             <a
               class="link border-2 p-2 rounded-lg uppercase"

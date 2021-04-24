@@ -6,7 +6,7 @@ import { groq } from "@/utils/GroqQueryBuilder";
 import { sanityClient } from "@/instances/sanity";
 import { notification } from "./notification.service";
 import { reactiveStorage } from "./reactiveStorage.service";
-import { playerRole, sanityTypes } from "@/constants/roleConstants";
+import { role, sanityTypes } from "@/constants/roleConstants";
 
 const currentPlayer = reactiveStorage<player | null>("LG_STORED_USER", null);
 
@@ -77,15 +77,18 @@ export const auth = {
     );
   },
 
-  isAuthorized(roles: playerRole[] = []): boolean {
+  isAuthorized(roles: role[] | null = null): boolean {
     try {
       if (currentPlayer.value === null) return false;
 
-      if (!roles.length) return true;
+      if (!roles?.length) return true;
 
-      if (currentPlayer.value.roles.includes(playerRole.admin)) return true;
+      if (currentPlayer.value.roles?.includes(role.admin)) return true;
 
-      return currentPlayer.value.roles.some((r) => roles.includes(r));
+      for (const role of roles)
+        if (currentPlayer.value.roles?.includes(role)) return true;
+
+      return false;
     } catch (error) {
       return false;
     }

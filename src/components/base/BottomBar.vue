@@ -30,6 +30,7 @@
 import { defineComponent } from "vue";
 import { BottomTab } from "@/types/shared";
 import routes from "@/configuration/bottomBar";
+import { auth } from "@/services/auth.service";
 
 export default defineComponent({
   data() {
@@ -43,7 +44,10 @@ export default defineComponent({
   },
   computed: {
     currentButtonBar(): BottomTab[] {
-      return this.routes.find((r) => r.game == this.game)?.elements ?? [];
+      const availableTabs =
+        this.routes.find((r) => r.game == this.game)?.elements ?? [];
+
+      return availableTabs.filter((tab) => auth.isAuthorized(tab.roles));
     },
   },
   methods: {

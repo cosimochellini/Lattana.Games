@@ -1,14 +1,11 @@
-export enum playerRole {
+export enum role {
+  nosy = "nosy",
   admin = "admin",
   editor = "editor",
-  contributor = "contributor",
-  user = "user",
 }
 
 export enum sanityTypes {
-  role = "role",
   player = "player",
-  playerRole = "playerRole",
   trumpMatch = "trumpMatch",
   trumpMatchPlayer = "trumpMatchPlayer",
   secretHitlerMatch = "secretHitlerMatch",

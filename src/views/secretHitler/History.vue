@@ -43,8 +43,12 @@
         </div>
       </div>
 
-      <hr class="my-2" />
-      <div class="flex justify-items-center justify-around">
+      <hr class="my-2" v-show="guard.role.editor" />
+
+      <div
+        class="flex justify-items-center justify-around"
+        v-show="guard.role.editor"
+      >
         <button class="base-button danger" @click="deleteMatch(match)">
           <span v-t="'buttons.base.delete'" />
           <i class="fas fa-trash-alt" />
@@ -70,6 +74,7 @@ import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
 import { secretHitlerMatch } from "@/types";
+import { guard } from "@/services/guard.service";
 import WinBadge from "@/components/base/WinBadge.vue";
 import { tailwind } from "@/services/tailwind.service";
 import DateBadge from "@/components/base/DateBadge.vue";
@@ -95,8 +100,10 @@ export default defineComponent({
       router.push({ name: "secretHitlerNew", query: { ref: match._id } });
 
     useRouterRefresh(() => getMoreData(true));
+
     return {
       items,
+      guard,
       image,
       tailwind,
       copyMatch,
