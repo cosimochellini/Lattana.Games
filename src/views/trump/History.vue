@@ -2,8 +2,16 @@
   <h2 class="history-container base-title">
     <span class="first-capitalize" v-t="'trump.titles.recentMatches'" />
   </h2>
+  <span class="history-container p-0!" v-if="guard.role.nosy">
+    <h2
+      class="font-semibold leading-3 block tracking-wider first-capitalize"
+      v-t="'trump.form.currentPlayer'"
+    />
+    <user-autocomplete v-model="actualPlayer" allowEmpty class="block px-2" />
+  </span>
+
   <div class="history-container">
-    <article v-for="match in matches" :key="match._id" class="base-card">
+    <article v-for="match in items" :key="match._id" class="base-card">
       <div class="grid grid-cols-2">
         <span class="first-capitalize" v-t="'trump.form.matchDate'" />
         <span class="text-center">
@@ -83,18 +91,19 @@
       </div>
     </article>
 
+    <empty-card-result v-if="emptyResult" />
     <card-skeleton @visible="getMoreData" v-if="moreDataAvailable" />
   </div>
 </template>
 
 <script lang="ts">
 import { trumpMatch } from "@/types";
-import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
 import { auth } from "@/services/auth.service";
 import Badge from "@/components/base/Badge.vue";
 import { guard } from "@/services/guard.service";
+import { defineComponent, ref, watch } from "vue";
 import WinBadge from "@/components/base/WinBadge.vue";
 import { trump } from "@/services/games/trump.service";
 import { tailwind } from "@/services/tailwind.service";
@@ -102,17 +111,30 @@ import DateBadge from "@/components/base/DateBadge.vue";
 import { getCurrentPlayer } from "@/utils/sharedFunctions";
 import { useRouterRefresh } from "@/composable/routerRefresh";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
-
-const currentPlayer = auth.currentPlayer;
+import EmptyCardResult from "@/components/base/EmptyCardResult.vue";
+import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 
 export default defineComponent({
-  components: { CardSkeleton, DateBadge, Badge, WinBadge },
+  components: {
+    CardSkeleton,
+    DateBadge,
+    Badge,
+    WinBadge,
+    UserAutocomplete,
+    EmptyCardResult,
+  },
   setup() {
     const router = useRouter();
+    const actualPlayer = ref(auth.currentPlayer);
 
-    const { getMoreData, matches, moreDataAvailable } = trump.getMatches(
-      currentPlayer
-    );
+    const {
+      items,
+      emptyResult,
+      getMoreData,
+      moreDataAvailable,
+    } = trump.getMatches(actualPlayer);
+
+    watch(actualPlayer, () => getMoreData(true));
 
     const deleteMatch = (match: trumpMatch) =>
       trump
@@ -130,12 +152,14 @@ export default defineComponent({
     return {
       image,
       guard,
-      matches,
+      items,
       tailwind,
       copyMatch,
       editMatch,
       getMoreData,
+      emptyResult,
       deleteMatch,
+      actualPlayer,
       getCurrentPlayer,
       moreDataAvailable,
     };

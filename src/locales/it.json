@@ -144,7 +144,9 @@
         "fewSeconds": "questa operazione può impiegare qualche secondo",
         "version": "versione",
         "createdAt": "creato il",
-        "updatedAt": "aggiornato il"
+        "updatedAt": "aggiornato il",
+        "noElementsTitle": "nessun elemento trovato",
+        "noElementsSub": "Oops! la ricerca non ha trovato nessun elemento, nel caso sia un problema contatta l'assistenza tecnica"
     },
     "dialog": {
         "title": {

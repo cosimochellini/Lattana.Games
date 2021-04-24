@@ -19,20 +19,17 @@ export const referenceWithKey = ({ _id }: { _id: string }) => ({
   _key: uuid(),
 });
 
-type Freezable<T> = { value: T; freezed?: boolean };
-
 type Condition = { condition: string; reverse: boolean };
 
 type Order = { prop: string; desc: boolean };
 
 class QueryBuilder {
   private _type: string = "";
-  private _conditions: Freezable<Condition>[] = [];
-  private _params: Freezable<Dictionary<QueryableParam>>[] = [];
-  private _select: Freezable<string>[] = [];
-  private _orderBy: Freezable<Order>[] = [];
+  private _conditions = new Map<string, Condition>();
+  private _params = new Map<string, QueryableParam>();
+  private _select = new Set<string>();
+  private _orderBy = new Map<string, Order>();
   private _pagination: { page: number; pageSize: number } | null = null;
-  private _freezed: boolean = false;
   private _sanityClient = sanityClient;
 
   constructor(type: string | null = null) {
@@ -45,25 +42,33 @@ class QueryBuilder {
   }
 
   public where(builder: ConditionBuilder): QueryBuilder {
-    if (!builder.isValid()) return this;
-
     const { condition, params, reverse } = builder.expose();
 
-    this._conditions.push({ value: { condition, reverse } });
+    if (!builder.isValid()) {
+      this._conditions.delete(condition);
 
-    this._params.push({ value: params });
+      for (const key in params) this._params.delete(key);
+
+      return this;
+    }
+
+    this._conditions.set(condition, { condition, reverse });
+
+    for (const param in params) {
+      this._params.set(param, params[param]);
+    }
 
     return this;
   }
 
   public select(value: string): QueryBuilder {
-    this._select.push({ value });
+    this._select.add(value);
 
     return this;
   }
 
   public orderBy(order: OrderBuilder): QueryBuilder {
-    for (const value of order.expose()) this._orderBy.push({ value });
+    for (const value of order.expose()) this._orderBy.set(value.prop, value);
 
     return this;
   }
@@ -75,16 +80,9 @@ class QueryBuilder {
   }
 
   public expose(): { query: string; params: Dictionary<QueryableParam> } {
-    const params = this._params.reduce((x, y) => ({ ...x, ...y.value }), {});
+    const params = Object.fromEntries(this._params.entries());
 
     return { query: this.build(), params };
-  }
-
-  public freeze(): Readonly<QueryBuilder> {
-    this._freezed = true;
-    this.setFreezedProps();
-
-    return this;
   }
 
   public cached(): Readonly<QueryBuilder> {
@@ -93,14 +91,11 @@ class QueryBuilder {
     return this;
   }
   public fetch<T>(): Promise<T> {
-    const params = this._params.reduce((x, y) => ({ ...x, ...y.value }), {});
+    const params = Object.fromEntries(this._params.entries());
 
     const query = this.build();
 
-    return this._sanityClient.fetch<T>(query, params).then((response) => {
-      if (this._freezed) this.cleanUnFreezed();
-      return response as T;
-    });
+    return this._sanityClient.fetch<T>(query, params);
   }
 
   private handlePagination(): string {
@@ -114,8 +109,8 @@ class QueryBuilder {
   }
 
   private build(): string {
-    const conditions = this._conditions
-      .map((x) => x.value)
+    const conditions = Array.from(this._conditions.entries())
+      .map(([, value]) => value)
       .map(({ condition, reverse }) => `${reverse ? "!" : ""}(${condition})`)
       .join(" && ");
 
@@ -123,15 +118,12 @@ class QueryBuilder {
       conditions ? ` && ${conditions}` : ""
     }]`;
 
-    const select = this._select.length
-      ? this._select.map((s) => s.value).join(" ,")
-      : "...";
+    const select = this._select.size ? [...this._select].join(" ,") : "...";
 
-    const orderBy = this._orderBy.length
-      ? `| ${this._orderBy
-          .concat()
+    const orderBy = this._orderBy.size
+      ? `| ${[...this._orderBy.entries()]
+          .map(([, value]) => value)
           .reverse() //fix for groq query
-          .map((x) => x.value)
           .map(({ prop, desc }) => ` order(${prop} ${desc ? "desc" : "asc"}) `)
           .join(" | ")}`
       : "";
@@ -139,26 +131,6 @@ class QueryBuilder {
     const pagination = this.handlePagination();
 
     return `${where} {${select}} ${orderBy} ${pagination}`.trim();
-  }
-
-  private get freezedFields(): Freezable<unknown>[][] {
-    return [this._conditions, this._params, this._select, this._orderBy];
-  }
-
-  private cleanUnFreezed(): void {
-    this.freezedFields.forEach(QueryBuilder.filterFreezed);
-  }
-
-  private setFreezedProps(): void {
-    this.freezedFields.forEach(QueryBuilder.setAsFreezed);
-  }
-
-  static filterFreezed(props: Freezable<unknown>[]): void {
-    props = props.filter((p) => p.freezed);
-  }
-
-  static setAsFreezed(props: Freezable<unknown>[]): void {
-    props.forEach((p) => (p.freezed = true));
   }
 }
 
@@ -213,7 +185,7 @@ class ConditionBuilder {
 
       if (Array.isArray(obj) && obj.length) return true;
 
-      if (obj instanceof Date && obj) return true;
+      if (obj instanceof Date && obj.getTime()) return true;
     }
 
     return false;

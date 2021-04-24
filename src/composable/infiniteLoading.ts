@@ -1,4 +1,4 @@
-import { nextTick, ref, UnwrapRef } from "vue";
+import { computed, nextTick, ref, UnwrapRef } from "vue";
 import { groq, GroqTypes } from "@/utils/GroqQueryBuilder";
 import { notification } from "@/services/notification.service";
 
@@ -16,6 +16,8 @@ export const useInfiniteLoading = <T>(
 ) => {
   const items = ref([] as T[]);
   const moreDataAvailable = ref(true);
+  const isLoading = ref(true);
+
   const pagination = new groq.PaginationBuilder(
     options?.page,
     options?.pageSize
@@ -29,6 +31,8 @@ export const useInfiniteLoading = <T>(
   };
 
   const getMoreData = (reset: boolean = false) => {
+    isLoading.value = true;
+
     reset && resetMatches();
 
     options?.onFetch?.(query);
@@ -47,11 +51,16 @@ export const useInfiniteLoading = <T>(
           moreDataAvailable.value = pagination.shouldContinue(response);
         });
       })
-      .catch(notification.danger);
+      .catch(notification.danger)
+      .finally(() => (isLoading.value = false));
   };
+
+  const emptyResult = computed(() => !isLoading.value && !items.value.length);
 
   return {
     items,
+    isLoading,
+    emptyResult,
     getMoreData,
     resetMatches,
     moreDataAvailable,

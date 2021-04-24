@@ -66,6 +66,7 @@
       </div>
     </article>
     <card-skeleton v-if="moreDataAvailable" @visible="getMoreData" />
+    <empty-card-result v-if="emptyResult" />
   </div>
 </template>
 
@@ -83,13 +84,25 @@ import CardSkeleton from "@/components/base/CardSkeleton.vue";
 import { useRouterRefresh } from "@/composable/routerRefresh";
 import { secretHitler } from "@/services/games/secretHitler.service";
 import SecretHitlerBadge from "@/components/secretHitler/secretHitlerBadge.vue";
+import EmptyCardResult from "@/components/base/EmptyCardResult.vue";
 
 export default defineComponent({
-  components: { CardSkeleton, SecretHitlerBadge, DateBadge, WinBadge },
+  components: {
+    CardSkeleton,
+    SecretHitlerBadge,
+    DateBadge,
+    WinBadge,
+    EmptyCardResult,
+  },
   setup() {
     const router = useRouter();
 
-    const { items, getMoreData, moreDataAvailable } = secretHitler.getMatches();
+    const {
+      items,
+      getMoreData,
+      moreDataAvailable,
+      emptyResult,
+    } = secretHitler.getMatches();
 
     const deleteMatch = async (match: secretHitlerMatch) =>
       secretHitler
@@ -108,6 +121,7 @@ export default defineComponent({
       tailwind,
       copyMatch,
       deleteMatch,
+      emptyResult,
       getMoreData,
       getCurrentPlayer,
       moreDataAvailable,

@@ -9,17 +9,16 @@
 </template>
 
 <script lang="ts">
+import { trumpMatch } from "@/types";
 import { useRoute } from "vue-router";
 import { groq } from "@/utils/GroqQueryBuilder";
-import { trumpMatch } from "@/types";
 import { defineComponent, onMounted, ref } from "vue";
 import { sanityTypes } from "@/constants/roleConstants";
 import TrumpMatchPlayer from "@/components/form/TrumpMatchPlayer.vue";
 
 const matchQuery = new groq.QueryBuilder(sanityTypes.trumpMatch)
   .select("..., players[]-> {..., player ->}, createdBy ->, editedBy ->")
-  .get(new groq.PaginationBuilder().first())
-  .freeze();
+  .get(new groq.PaginationBuilder().first());
 
 export default defineComponent({
   components: {

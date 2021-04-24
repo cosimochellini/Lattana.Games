@@ -1,7 +1,7 @@
 <template>
   <select v-model="selectedId" class="base-select">
     <option
-      disabled
+      :disabled="!allowEmpty"
       :value="''"
       class="base-option"
       v-t="'form.userSelect.placeholder'"
@@ -11,9 +11,8 @@
       :key="player._id"
       :value="player._id"
       class="base-option"
-    >
-      {{ player.name }} {{ player.surname }}
-    </option>
+      v-text="player.name + ' ' + player.surname"
+    />
   </select>
 </template>
 
@@ -36,6 +35,10 @@ export default defineComponent({
     exactPlayers: {
       type: Array as PropType<player[]>,
       default: () => null,
+    },
+    allowEmpty: {
+      type: Boolean,
+      default: () => false,
     },
   },
   emits: ["update:modelValue"],

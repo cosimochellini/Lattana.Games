@@ -1,3 +1,4 @@
+import { Ref } from "vue";
 import { uuid } from "@/utils";
 import { auth } from "../auth.service";
 import { overlay } from "../overlay.service";
@@ -15,23 +16,20 @@ import { player, sanityDocument, trumpMatch, trumpMatchPlayer } from "@/types";
 const currentPlayer = auth.currentPlayer;
 
 export const trump = {
-  getMatches(player: player | null) {
+  getMatches(player: Ref<player | null>) {
     const matchesQuery = new groq.QueryBuilder(sanityTypes.trumpMatch)
       .select(`...,  callingPlayer ->, players[] -> {player ->,...}`)
-      .where(
-        new groq.ConditionBuilder(`$userId in players[] -> player._ref`)
-          .params({ userId: player?._id })
-          .optional()
-      )
       .orderBy(new groq.OrderBuilder("matchDate", true));
 
-    const infiniteLoading = useInfiniteLoading<trumpMatch>(matchesQuery, {
+    return useInfiniteLoading<trumpMatch>(matchesQuery, {
       pageSize: 15,
+      onFetch: (qb) =>
+        qb.where(
+          new groq.ConditionBuilder(`$userId in players[] -> player._ref`)
+            .params({ userId: player.value?._id })
+            .optional()
+        ),
     });
-
-    const { getMoreData, items: matches, moreDataAvailable } = infiniteLoading;
-
-    return { getMoreData, matches, moreDataAvailable };
   },
 
   getStats(player: player) {
