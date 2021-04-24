@@ -34,6 +34,7 @@ export const auth = {
   },
 
   logout() {
+    currentPlayer.value = null;
     localStorage.clear();
   },
 
