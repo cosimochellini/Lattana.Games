@@ -15,7 +15,7 @@ export default {
     const userAuthorized = ref(auth.isAuthorized());
 
     onBeforeRouteUpdate(() => (userAuthorized.value = auth.isAuthorized()));
-
+    auth.onPlayerUpdate(() => (userAuthorized.value = auth.isAuthorized()));
     return { userAuthorized };
   },
 };
