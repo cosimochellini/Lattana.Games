@@ -17,6 +17,7 @@
               ? 'bg-green-200'
               : 'bg-blue-200'
           "
+          v-if="statistic.percentage"
         >
           <i
             class="fas"
