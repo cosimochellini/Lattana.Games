@@ -17,3 +17,9 @@ export enum secretHitlerRole {
   hitler = "hitler",
   liberal = "liberal",
 }
+
+export const iconRoles = {
+  [role.admin]: "fad fa-jedi",
+  [role.editor]: "fas fa-typewriter",
+  [role.nosy]: "fas fa-eye-evil",
+};

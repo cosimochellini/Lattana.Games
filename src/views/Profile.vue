@@ -118,6 +118,7 @@
               :key="role"
             >
               {{ role }}
+              <i :class="iconRoles[role]"></i>
             </a>
           </div>
           <div class="pt-8 text-sm">
@@ -195,10 +196,11 @@
 
 <script lang="ts">
 import { settings } from "@/utils";
-import { HTMLInputEvent } from "@/types";
 import { image } from "@/instances/sanity";
 import { auth } from "@/services/auth.service";
 import { formatter } from "@/utils/formatters";
+import { iconRoles } from "@/constants/roleConstants";
+import { Dictionary, HTMLInputEvent } from "@/types";
 import { computed, defineComponent, ref } from "vue";
 import DateBadge from "@/components/base/DateBadge.vue";
 import { notification } from "@/services/notification.service";
@@ -242,6 +244,7 @@ export default defineComponent({
       updateProfile,
       discardChanges,
       updateProfileImage,
+      iconRoles: iconRoles as Dictionary<string>,
     };
   },
 });

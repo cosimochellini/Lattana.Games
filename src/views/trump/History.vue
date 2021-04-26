@@ -2,13 +2,11 @@
   <h2 class="history-container base-title">
     <span class="first-capitalize" v-t="'trump.titles.recentMatches'" />
   </h2>
-  <span class="history-container p-0!" v-if="guard.role.nosy">
-    <h2
-      class="font-semibold leading-3 block tracking-wider first-capitalize"
-      v-t="'trump.form.currentPlayer'"
-    />
-    <user-autocomplete v-model="actualPlayer" allowEmpty class="block px-2" />
-  </span>
+  <current-user
+    allowEmpty
+    :playerRetriever="user.getActualTrumpPlayers"
+    v-model="actualPlayer"
+  />
 
   <div class="history-container">
     <article v-for="match in items" :key="match._id" class="base-card">
@@ -101,6 +99,7 @@ import { trumpMatch } from "@/types";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
 import { auth } from "@/services/auth.service";
+import { user } from "@/services/user.service";
 import Badge from "@/components/base/Badge.vue";
 import { guard } from "@/services/guard.service";
 import { defineComponent, ref, watch } from "vue";
@@ -111,8 +110,8 @@ import DateBadge from "@/components/base/DateBadge.vue";
 import { getCurrentPlayer } from "@/utils/sharedFunctions";
 import { useRouterRefresh } from "@/composable/routerRefresh";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
+import CurrentUser from "@/components/base/CurrentUser.vue";
 import EmptyCardResult from "@/components/base/EmptyCardResult.vue";
-import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 
 export default defineComponent({
   components: {
@@ -120,8 +119,8 @@ export default defineComponent({
     DateBadge,
     Badge,
     WinBadge,
-    UserAutocomplete,
     EmptyCardResult,
+    CurrentUser,
   },
   setup() {
     const router = useRouter();
@@ -150,6 +149,7 @@ export default defineComponent({
     useRouterRefresh(() => getMoreData(true));
 
     return {
+      user,
       image,
       guard,
       items,
