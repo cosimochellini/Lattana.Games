@@ -13,8 +13,6 @@ import { TrumpStats } from "@/utils/classes/stats/trumpMatchStats";
 import { groq, reference, referenceWithKey } from "@/utils/GroqQueryBuilder";
 import { player, sanityDocument, trumpMatch, trumpMatchPlayer } from "@/types";
 
-const currentPlayer = auth.currentPlayer;
-
 export const trump = {
   getMatches(player: Ref<player | null>) {
     const matchesQuery = new groq.QueryBuilder(sanityTypes.trumpMatch)
@@ -80,7 +78,7 @@ export const trump = {
         finalScore: match.finalScore,
         callingPlayer: reference(match.callingPlayer!),
         players: [],
-        createdBy: reference(currentPlayer),
+        createdBy: reference(auth.currentPlayer),
         updatedBy: undefined,
       } as sanityDocument<trumpMatch>;
 

@@ -6,6 +6,7 @@
     allowEmpty
     :playerRetriever="user.getActualTrumpPlayers"
     v-model="actualPlayer"
+    class="history-container items-center"
   />
 
   <div class="history-container">
@@ -33,7 +34,7 @@
         <span class="first-capitalize" v-t="'trump.form.outcome'" />
 
         <span class="text-center">
-          <win-badge :win="getCurrentPlayer(match)?.win" />
+          <win-badge :win="getCurrentPlayer(match, actualPlayer._id)?.win" />
         </span>
       </div>
       <hr class="my-2" />
@@ -108,19 +109,19 @@ import { trump } from "@/services/games/trump.service";
 import { tailwind } from "@/services/tailwind.service";
 import DateBadge from "@/components/base/DateBadge.vue";
 import { getCurrentPlayer } from "@/utils/sharedFunctions";
+import CurrentUser from "@/components/base/CurrentUser.vue";
 import { useRouterRefresh } from "@/composable/routerRefresh";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
-import CurrentUser from "@/components/base/CurrentUser.vue";
 import EmptyCardResult from "@/components/base/EmptyCardResult.vue";
 
 export default defineComponent({
   components: {
-    CardSkeleton,
-    DateBadge,
     Badge,
     WinBadge,
-    EmptyCardResult,
+    DateBadge,
     CurrentUser,
+    CardSkeleton,
+    EmptyCardResult,
   },
   setup() {
     const router = useRouter();

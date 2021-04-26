@@ -1,5 +1,5 @@
 <template>
-  <span v-if="guard.role.nosy">
+  <div v-if="guard.role.nosy">
     <h2 class="font-semibold leading-3 block tracking-wider first-capitalize">
       {{ $t("trump.form.currentPlayer") }}
 
@@ -11,7 +11,7 @@
       :exactPlayers="availablePlayers"
       class="block px-2"
     />
-  </span>
+  </div>
 </template>
 
 <script lang="ts">

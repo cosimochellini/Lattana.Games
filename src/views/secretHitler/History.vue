@@ -2,6 +2,13 @@
   <h2 class="base-title history-container">
     <span class="first-capitalize" v-t="'secretHitler.titles.recentMatches'" />
   </h2>
+  <current-user
+    allowEmpty
+    :playerRetriever="user.getActualSecretHitlerPlayers"
+    v-model="actualPlayer"
+    class="history-container items-center"
+  />
+
   <div class="history-container">
     <article v-for="match in items" :key="match._id" class="base-card">
       <div class="grid grid-cols-3">
@@ -21,8 +28,10 @@
         <span class="first-capitalize" v-t="'secretHitler.form.yourMatch'" />
 
         <span class="col-span-2 text-center m-auto">
-          <secret-hitler-badge :role="getCurrentPlayer(match)?.role" />
-          <win-badge :win="getCurrentPlayer(match)?.win" />
+          <secret-hitler-badge
+            :role="getCurrentPlayer(match, actualPlayer._id)?.role"
+          />
+          <win-badge :win="getCurrentPlayer(match, actualPlayer._id)?.win" />
         </span>
       </div>
       <hr class="my-2" />
@@ -71,7 +80,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
 import { secretHitlerMatch } from "@/types";
@@ -82,9 +91,12 @@ import DateBadge from "@/components/base/DateBadge.vue";
 import { getCurrentPlayer } from "@/utils/sharedFunctions";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
 import { useRouterRefresh } from "@/composable/routerRefresh";
+import EmptyCardResult from "@/components/base/EmptyCardResult.vue";
 import { secretHitler } from "@/services/games/secretHitler.service";
 import SecretHitlerBadge from "@/components/secretHitler/secretHitlerBadge.vue";
-import EmptyCardResult from "@/components/base/EmptyCardResult.vue";
+import CurrentUser from "@/components/base/CurrentUser.vue";
+import { user } from "@/services/user.service";
+import { auth } from "@/services/auth.service";
 
 export default defineComponent({
   components: {
@@ -93,16 +105,19 @@ export default defineComponent({
     DateBadge,
     WinBadge,
     EmptyCardResult,
+    CurrentUser,
   },
   setup() {
     const router = useRouter();
+    const actualPlayer = ref(auth.currentPlayer);
 
     const {
       items,
       getMoreData,
       moreDataAvailable,
       emptyResult,
-    } = secretHitler.getMatches();
+    } = secretHitler.getMatches(actualPlayer);
+    watch(actualPlayer, () => getMoreData(true));
 
     const deleteMatch = async (match: secretHitlerMatch) =>
       secretHitler
@@ -115,6 +130,7 @@ export default defineComponent({
     useRouterRefresh(() => getMoreData(true));
 
     return {
+      user,
       items,
       guard,
       image,
@@ -123,6 +139,7 @@ export default defineComponent({
       deleteMatch,
       emptyResult,
       getMoreData,
+      actualPlayer,
       getCurrentPlayer,
       moreDataAvailable,
     };

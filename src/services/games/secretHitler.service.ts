@@ -1,3 +1,4 @@
+import { Ref } from "vue";
 import { uuid } from "@/utils";
 import { auth } from "../auth.service";
 import { overlay } from "../overlay.service";
@@ -14,22 +15,22 @@ import { groq, reference, referenceWithKey } from "@/utils/GroqQueryBuilder";
 import { secretHitlerRank } from "@/utils/classes/stats/ranks/secretHitlerRank";
 import { SecretHitlerStats } from "@/utils/classes/stats/secretHitlerMatchStats";
 
-const currentPlayer = auth.currentPlayer;
-const onResponse = (response: secretHitlerMatch[]) =>
-  response.forEach((m) => m.players.sort(byRole));
-
 export const secretHitler = {
-  getMatches() {
+  getMatches(player: Ref<player | null>) {
     const matchesQuery = new groq.QueryBuilder(sanityTypes.secretHitlerMatch)
       .select(`...,  players[] -> {..., player ->}`)
-      .where(
-        new groq.ConditionBuilder(`$userId in players[] -> player._ref`)
-          .params({ userId: currentPlayer._id })
-          .optional()
-      )
       .orderBy(new groq.OrderBuilder("matchDate", true));
 
-    return useInfiniteLoading(matchesQuery, { onResponse, pageSize: 16 });
+    return useInfiniteLoading<secretHitlerMatch>(matchesQuery, {
+      pageSize: 16,
+      onResponse: (r) => r.forEach((m) => m.players.sort(byRole)),
+      onFetch: (qb) =>
+        qb.where(
+          new groq.ConditionBuilder(`$userId in players[] -> player._ref`)
+            .params({ userId: player.value?._id })
+            .optional()
+        ),
+    });
   },
 
   getStats(player: player) {
