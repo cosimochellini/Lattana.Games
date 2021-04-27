@@ -1,8 +1,8 @@
 <template>
-  <div class="grid place-items-center mt-16 pt-16">
-    <div class="w-full md:w-1/2 lg:w-1/3 pt-4 block">
+  <div class="grid place-content-center min-h-screen gap-4">
+    <div class="base-card sm:w-96">
       <span
-        class="text-2xl text-center block font-extrabold font-sans tracking-wider leading-4 pt-2"
+        class="text-2xl text-center block font-bold font-sans tracking-wider leading-4 pt-2"
       >
         Lattana Games
       </span>
@@ -11,11 +11,11 @@
       >
         Sign in with your credentials
       </div>
-      <form class="px-8 pt-6 pb-8">
+      <form class="px-2 pt-6 text-center">
         <input
           type="text"
           v-model="form.name"
-          class="rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
+          class="base-input h-10"
           placeholder="Name (nickname or email)"
           autocomplete="email"
         />
@@ -23,12 +23,12 @@
           type="tel"
           placeholder="Pin (your personal pin)"
           v-model="form.pin"
-          class="rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
+          class="base-input h-10 mt-2"
           autocomplete="current-password"
         />
         <button
           @click.prevent="doLogin"
-          class="loginButton w-full tracking-widest"
+          class="base-button primary mt-2 full"
         >
           Sign in
         </button>

@@ -1,9 +1,9 @@
 <template>
   <div
-    class="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 clearfix"
+    class="bg-yellow-200 border-l-4 border-yellow-700 text-yellow-700 p-4 clearfix rounded-md"
     role="alert"
   >
-    <p class="font-bold">
+    <p class="font-bold tracking-wider">
       <slot name="title"> Be Warned </slot>
     </p>
     <p>
