@@ -1,6 +1,6 @@
 <template>
   <div v-if="guard.role.nosy">
-    <h2 class="font-semibold leading-3 block tracking-wider first-capitalize">
+    <h2 class="font-semibold leading-3 block tracking-wider first-capitalize mb-1">
       {{ $t("trump.form.currentPlayer") }}
 
       <i :class="iconRoles[role.nosy]"></i>
@@ -9,7 +9,7 @@
       v-model="actualPlayer"
       :allowEmpty="allowEmpty"
       :exactPlayers="availablePlayers"
-      class="block px-2"
+      class="block px-2 w-full md:w-auto"
     />
   </div>
 </template>

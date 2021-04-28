@@ -1,13 +1,16 @@
 <template>
-  <h2 class="history-container base-title">
-    <span class="first-capitalize" v-t="'trump.titles.recentMatches'" />
-  </h2>
-  <current-user
-    allowEmpty
-    :playerRetriever="user.getActualTrumpPlayers"
-    v-model="actualPlayer"
-    class="history-container items-center"
-  />
+  <span class="history-container items-center">
+    <h2
+      class="base-title first-capitalize"
+      v-t="'trump.titles.recentMatches'"
+    ></h2>
+    <current-user
+      allowEmpty
+      :playerRetriever="user.getActualTrumpPlayers"
+      v-model="actualPlayer"
+      class="items-center"
+    />
+  </span>
 
   <div class="history-container">
     <article v-for="match in items" :key="match._id" class="base-card">

@@ -1,7 +1,17 @@
 <template>
   <div class="sm:grid sm:grid-flow-row sm:gap-4 sm:grid-cols-1 md:grid-cols-2">
-    <mate-list :mates="best" :game="game" title="bestMatches" />
-    <mate-list :mates="worst" :game="game" title="worstMatches" />
+    <mate-list
+      :mates="best"
+      :game="game"
+      title="bestMatches"
+      :highBetter="true"
+    />
+    <mate-list
+      :mates="worst"
+      :game="game"
+      title="worstMatches"
+      :highBetter="false"
+    />
   </div>
 </template>
 

@@ -1,17 +1,9 @@
 <template>
   <div class="max-w-xl md:max-w-4xl px-4 py-2 mx-auto">
-    <div class="my-2">
-      <h2
-        class="base-subtitle first-capitalize"
-        v-t="'secretHitler.form.currentPlayer'"
-      />
-
-      <user-autocomplete
-        v-model="currentPlayer"
-        class="block px-2 py-1"
-        :exactPlayers="availablePlayers"
-      />
-    </div>
+    <current-user
+      :playerRetriever="user.getActualSecretHitlerPlayers"
+      v-model="currentPlayer"
+    />
 
     <stats-list :statistics="statistics" :game="'secretHitler'" />
 
@@ -28,29 +20,25 @@
 import { defineComponent } from "vue";
 import { auth } from "@/services/auth.service";
 import { user } from "@/services/user.service";
+import { secretHitlerMatchPlayer } from "@/types";
 import MateList from "@/components/base/MateSection.vue";
-import { player, secretHitlerMatchPlayer } from "@/types";
+import CurrentUser from "@/components/base/CurrentUser.vue";
 import StatsList from "@/components/base/ReadableStats.vue";
 import { secretHitler } from "@/services/games/secretHitler.service";
-import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { Mate, ReadableStats } from "@/utils/classes/stats/baseStats";
 import { SecretHitlerStats } from "@/utils/classes/stats/secretHitlerMatchStats";
 
 export default defineComponent({
-  components: { UserAutocomplete, StatsList, MateList },
+  components: { StatsList, MateList, CurrentUser },
   data() {
     return {
-      availablePlayers: [] as player[],
+      user,
       currentPlayer: auth.currentPlayer,
       stats: new SecretHitlerStats([], auth.currentPlayer),
     };
   },
   mounted() {
     this.loadMatches();
-
-    user
-      .getActualSecretHitlerPlayers()
-      .then((players) => (this.availablePlayers = players));
   },
   methods: {
     loadMatches() {

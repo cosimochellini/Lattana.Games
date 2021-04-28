@@ -1,14 +1,16 @@
 <template>
-  <h2 class="base-title history-container">
-    <span class="first-capitalize" v-t="'secretHitler.titles.recentMatches'" />
-  </h2>
-  <current-user
-    allowEmpty
-    :playerRetriever="user.getActualSecretHitlerPlayers"
-    v-model="actualPlayer"
-    class="history-container items-center"
-  />
-
+  <span class="history-container items-center">
+    <h2
+      class="base-title first-capitalize"
+      v-t="'secretHitler.titles.recentMatches'"
+    ></h2>
+    <current-user
+      allowEmpty
+      :playerRetriever="user.getActualSecretHitlerPlayers"
+      v-model="actualPlayer"
+      class="items-center"
+    />
+  </span>
   <div class="history-container">
     <article v-for="match in items" :key="match._id" class="base-card">
       <div class="grid grid-cols-3">
