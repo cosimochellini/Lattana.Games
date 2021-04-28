@@ -1,10 +1,10 @@
 <template>
   <div class="container m-auto p-4">
     <div class="flex flex-col items-center">
-      <h2
-        class="base-title first-capitalize"
-        v-t="'trump.titles.insertNewMatch'"
-      />
+      <h2 class="base-title first-capitalize">
+        {{ $t("trump.titles.insertNewMatch") }}
+        <i :class="iconRoles[role.editor]"></i>
+      </h2>
 
       <draggable
         :list="remainingPlayers"
@@ -166,11 +166,14 @@ import { dialog, dialogType } from "@/services/dialog.service";
 import { player, trumpMatch, trumpMatchPlayer } from "@/types";
 import DraggableUser from "@/components/base/DraggableUser.vue";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
+import { iconRoles, role } from "@/constants/roleConstants";
 
 let orderedPlayers = [] as player[];
 
 const initialData = () => ({
+  role,
   tailwind,
+  iconRoles,
   finalScore: 0,
   orderedPlayers,
   startingScore: 0,
@@ -179,7 +182,6 @@ const initialData = () => ({
   opposingPlayers: [] as player[],
   remainingPlayers: [] as player[],
 });
-
 export default defineComponent({
   components: { UserAutocomplete, DraggableUser, draggable },
   name: "trumpNew",

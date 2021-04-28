@@ -1,7 +1,7 @@
 import { IMatchBase } from "@/types";
 import { auth } from "@/services/auth.service";
 
-const currentPlayer = auth.currentPlayer;
-
-export const getCurrentPlayer = (match: IMatchBase) =>
-  match.players.find((p) => p.player._id === currentPlayer._id);
+export const getCurrentPlayer = (
+  match: IMatchBase,
+  playerId = auth.currentPlayer._id
+) => match.players.find((p) => p.player._id === playerId);

@@ -55,6 +55,8 @@ export default defineComponent({
     const form = ref({ name: "", pin: "" });
     const state = ref({ incorrectCredential: false });
     const router = useRouter();
+    
+    auth.logout();
 
     async function doLogin() {
       try {

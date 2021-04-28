@@ -14,7 +14,10 @@
                 "icon": "fas fa-plus-octagon",
                 "iconActive": "fad fa-plus-octagon",
                 "route": "trumpNew",
-                "activeColor": "text-blue-700"
+                "activeColor": "text-blue-700",
+                "roles": [
+                    "editor"
+                ]
             },
             {
                 "name": "stats",
@@ -47,7 +50,10 @@
                 "icon": "fas fa-plus-octagon",
                 "iconActive": "fad fa-plus-octagon",
                 "route": "secretHitlerNew",
-                "activeColor": "text-red-800"
+                "activeColor": "text-red-800",
+                "roles": [
+                    "editor"
+                ]
             },
             {
                 "name": "stats",

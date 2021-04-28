@@ -1,14 +1,11 @@
-export enum playerRole {
+export enum role {
+  nosy = "nosy",
   admin = "admin",
   editor = "editor",
-  contributor = "contributor",
-  user = "user",
 }
 
 export enum sanityTypes {
-  role = "role",
   player = "player",
-  playerRole = "playerRole",
   trumpMatch = "trumpMatch",
   trumpMatchPlayer = "trumpMatchPlayer",
   secretHitlerMatch = "secretHitlerMatch",
@@ -20,3 +17,9 @@ export enum secretHitlerRole {
   hitler = "hitler",
   liberal = "liberal",
 }
+
+export const iconRoles = {
+  [role.admin]: "fad fa-jedi",
+  [role.editor]: "fas fa-typewriter",
+  [role.nosy]: "fas fa-eye-evil",
+};

@@ -1,9 +1,19 @@
 <template>
-  <h2 class="history-container base-title">
-    <span class="first-capitalize" v-t="'trump.titles.recentMatches'" />
-  </h2>
+  <span class="history-container items-center">
+    <h2
+      class="base-title first-capitalize"
+      v-t="'trump.titles.recentMatches'"
+    ></h2>
+    <current-user
+      allowEmpty
+      :playerRetriever="user.getActualTrumpPlayers"
+      v-model="actualPlayer"
+      class="items-center"
+    />
+  </span>
+
   <div class="history-container">
-    <article v-for="match in matches" :key="match._id" class="base-card">
+    <article v-for="match in items" :key="match._id" class="base-card">
       <div class="grid grid-cols-2">
         <span class="first-capitalize" v-t="'trump.form.matchDate'" />
         <span class="text-center">
@@ -27,7 +37,7 @@
         <span class="first-capitalize" v-t="'trump.form.outcome'" />
 
         <span class="text-center">
-          <win-badge :win="getCurrentPlayer(match)?.win" />
+          <win-badge :win="getCurrentPlayer(match, actualPlayer._id)?.win" />
         </span>
       </div>
       <hr class="my-2" />
@@ -60,8 +70,12 @@
           />
         </div>
       </div>
-      <hr class="my-2" />
-      <div class="flex justify-items-center justify-around">
+      <hr class="my-2" v-show="guard.role.editor" />
+
+      <div
+        class="flex justify-items-center justify-around"
+        v-show="guard.role.editor"
+      >
         <button class="base-button danger" @click="deleteMatch(match)">
           <span v-t="'buttons.base.delete'" />
           <i class="fas fa-trash-alt" />
@@ -69,46 +83,61 @@
 
         <button class="base-button info">
           <span v-t="'buttons.base.edit'" />
-
           <i class="fas fa-edit" />
         </button>
 
         <button class="base-button primary" @click="copyMatch(match)">
           <span v-t="'buttons.base.copy'" />
-
           <i class="fas fa-copy" />
         </button>
       </div>
     </article>
+
+    <empty-card-result v-if="emptyResult" />
     <card-skeleton @visible="getMoreData" v-if="moreDataAvailable" />
   </div>
 </template>
 
 <script lang="ts">
 import { trumpMatch } from "@/types";
-import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
 import { auth } from "@/services/auth.service";
+import { user } from "@/services/user.service";
 import Badge from "@/components/base/Badge.vue";
+import { guard } from "@/services/guard.service";
+import { defineComponent, ref, watch } from "vue";
 import WinBadge from "@/components/base/WinBadge.vue";
 import { trump } from "@/services/games/trump.service";
 import { tailwind } from "@/services/tailwind.service";
 import DateBadge from "@/components/base/DateBadge.vue";
 import { getCurrentPlayer } from "@/utils/sharedFunctions";
+import CurrentUser from "@/components/base/CurrentUser.vue";
 import { useRouterRefresh } from "@/composable/routerRefresh";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
-
-const currentPlayer = auth.currentPlayer;
+import EmptyCardResult from "@/components/base/EmptyCardResult.vue";
 
 export default defineComponent({
-  components: { CardSkeleton, DateBadge, Badge, WinBadge },
+  components: {
+    Badge,
+    WinBadge,
+    DateBadge,
+    CurrentUser,
+    CardSkeleton,
+    EmptyCardResult,
+  },
   setup() {
     const router = useRouter();
+    const actualPlayer = ref(auth.currentPlayer);
 
-    const { getMoreData, matches, moreDataAvailable } = trump.getMatches(
-      currentPlayer
-    );
+    const {
+      items,
+      emptyResult,
+      getMoreData,
+      moreDataAvailable,
+    } = trump.getMatches(actualPlayer);
+
+    watch(actualPlayer, () => getMoreData(true));
 
     const deleteMatch = (match: trumpMatch) =>
       trump
@@ -124,13 +153,17 @@ export default defineComponent({
     useRouterRefresh(() => getMoreData(true));
 
     return {
+      user,
       image,
-      matches,
+      guard,
+      items,
       tailwind,
       copyMatch,
       editMatch,
       getMoreData,
+      emptyResult,
       deleteMatch,
+      actualPlayer,
       getCurrentPlayer,
       moreDataAvailable,
     };

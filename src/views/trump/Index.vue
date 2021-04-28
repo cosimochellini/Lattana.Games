@@ -15,6 +15,3 @@ export default defineComponent({
   components: { BottomBar },
 });
 </script>
-
-<style>
-</style>

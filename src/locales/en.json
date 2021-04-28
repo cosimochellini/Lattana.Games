@@ -144,7 +144,9 @@
         "fewSeconds": "this operation can take a few seconds",
         "version": "version",
         "createdAt": "created at",
-        "updatedAt": "updated at"
+        "updatedAt": "updated at",
+        "noElementsTitle": "no elements found",
+        "noElementsSub": "Oops! The search has not found any element, if it is a problem contact technical support."
     },
     "dialog": {
         "title": {

@@ -1,7 +1,16 @@
 <template>
-  <h2 class="base-title history-container">
-    <span class="first-capitalize" v-t="'secretHitler.titles.recentMatches'" />
-  </h2>
+  <span class="history-container items-center">
+    <h2
+      class="base-title first-capitalize"
+      v-t="'secretHitler.titles.recentMatches'"
+    ></h2>
+    <current-user
+      allowEmpty
+      :playerRetriever="user.getActualSecretHitlerPlayers"
+      v-model="actualPlayer"
+      class="items-center"
+    />
+  </span>
   <div class="history-container">
     <article v-for="match in items" :key="match._id" class="base-card">
       <div class="grid grid-cols-3">
@@ -21,8 +30,10 @@
         <span class="first-capitalize" v-t="'secretHitler.form.yourMatch'" />
 
         <span class="col-span-2 text-center m-auto">
-          <secret-hitler-badge :role="getCurrentPlayer(match)?.role" />
-          <win-badge :win="getCurrentPlayer(match)?.win" />
+          <secret-hitler-badge
+            :role="getCurrentPlayer(match, actualPlayer._id)?.role"
+          />
+          <win-badge :win="getCurrentPlayer(match, actualPlayer._id)?.win" />
         </span>
       </div>
       <hr class="my-2" />
@@ -43,8 +54,12 @@
         </div>
       </div>
 
-      <hr class="my-2" />
-      <div class="flex justify-items-center justify-around">
+      <hr class="my-2" v-show="guard.role.editor" />
+
+      <div
+        class="flex justify-items-center justify-around"
+        v-show="guard.role.editor"
+      >
         <button class="base-button danger" @click="deleteMatch(match)">
           <span v-t="'buttons.base.delete'" />
           <i class="fas fa-trash-alt" />
@@ -62,29 +77,49 @@
       </div>
     </article>
     <card-skeleton v-if="moreDataAvailable" @visible="getMoreData" />
+    <empty-card-result v-if="emptyResult" />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
 import { secretHitlerMatch } from "@/types";
+import { guard } from "@/services/guard.service";
 import WinBadge from "@/components/base/WinBadge.vue";
 import { tailwind } from "@/services/tailwind.service";
 import DateBadge from "@/components/base/DateBadge.vue";
 import { getCurrentPlayer } from "@/utils/sharedFunctions";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
 import { useRouterRefresh } from "@/composable/routerRefresh";
+import EmptyCardResult from "@/components/base/EmptyCardResult.vue";
 import { secretHitler } from "@/services/games/secretHitler.service";
 import SecretHitlerBadge from "@/components/secretHitler/secretHitlerBadge.vue";
+import CurrentUser from "@/components/base/CurrentUser.vue";
+import { user } from "@/services/user.service";
+import { auth } from "@/services/auth.service";
 
 export default defineComponent({
-  components: { CardSkeleton, SecretHitlerBadge, DateBadge, WinBadge },
+  components: {
+    CardSkeleton,
+    SecretHitlerBadge,
+    DateBadge,
+    WinBadge,
+    EmptyCardResult,
+    CurrentUser,
+  },
   setup() {
     const router = useRouter();
+    const actualPlayer = ref(auth.currentPlayer);
 
-    const { items, getMoreData, moreDataAvailable } = secretHitler.getMatches();
+    const {
+      items,
+      getMoreData,
+      moreDataAvailable,
+      emptyResult,
+    } = secretHitler.getMatches(actualPlayer);
+    watch(actualPlayer, () => getMoreData(true));
 
     const deleteMatch = async (match: secretHitlerMatch) =>
       secretHitler
@@ -95,13 +130,18 @@ export default defineComponent({
       router.push({ name: "secretHitlerNew", query: { ref: match._id } });
 
     useRouterRefresh(() => getMoreData(true));
+
     return {
+      user,
       items,
+      guard,
       image,
       tailwind,
       copyMatch,
       deleteMatch,
+      emptyResult,
       getMoreData,
+      actualPlayer,
       getCurrentPlayer,
       moreDataAvailable,
     };

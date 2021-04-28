@@ -1,5 +1,6 @@
 import { i18n } from "@/instances/i18n";
 import { auth } from "@/services/auth.service";
+import { role } from "@/constants/roleConstants";
 import { overlay } from "@/services/overlay.service";
 import { currentLanguage } from "@/services/language.service";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
@@ -33,19 +34,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
         children: [
           {
-            path: "new",
-            name: "trumpNew",
-            component: () => import("../views/trump/New.vue"),
-          },
-          {
-            path: "edit/:id",
-            name: "trumpEdit",
-            component: () => import("../views/trump/Edit.vue"),
-          },
-          {
             path: "history",
             name: "trumpHistory",
             component: () => import("../views/trump/History.vue"),
+          },
+          {
+            path: "new",
+            name: "trumpNew",
+            component: () => import("../views/trump/New.vue"),
+            meta: { requiresAuth: true, roles: [role.editor] },
           },
           {
             path: "stats",
@@ -56,6 +53,12 @@ const routes: RouteRecordRaw[] = [
             path: "rankings",
             name: "trumpRankings",
             component: () => import("../views/trump/rankings/Index.vue"),
+          },
+          {
+            path: "edit/:id",
+            name: "trumpEdit",
+            component: () => import("../views/trump/Edit.vue"),
+            meta: { requiresAuth: true, roles: [role.editor] },
           },
         ],
       },
@@ -74,6 +77,7 @@ const routes: RouteRecordRaw[] = [
             path: "new",
             name: "secretHitlerNew",
             component: () => import("../views/secretHitler/New.vue"),
+            meta: { requiresAuth: true, roles: [role.editor] },
           },
           {
             path: "stats",
@@ -119,8 +123,9 @@ export function setupRouter() {
   // navigation guards
   router.beforeEach(async (to, from, next) => {
     const paramsLocale = to.params.locale as string;
+    const roles = to.meta.roles as role[] | null;
 
-    if (to.meta.requiresAuth && !auth.isAuthorized())
+    if (to.meta.requiresAuth && !auth.isAuthorized(roles))
       next({ path: "/it/login" });
 
     // use locale if paramsLocale is not in SUPPORT_LOCALES

@@ -35,16 +35,16 @@
           >
             {{ formatter.percentageFormatter(mate.ratio) }}
           </span>
-          <span v-if="selectedMates.has(mate.player._id)">
+          <span v-else>
             <span
               class="rounded-xl px-2 py-1 font-semibold"
-              :class="tailwind.base.background(true)"
+              :class="tailwind.base.background(!highBetter)"
             >
               {{ formatter.smallNumberFormatter(mate.lose) }}
             </span>
             <span
               class="rounded-xl px-2 py-1 font-semibold ml-1"
-              :class="tailwind.base.background(false)"
+              :class="tailwind.base.background(highBetter)"
             >
               {{ formatter.smallNumberFormatter(mate.win) }}
             </span>

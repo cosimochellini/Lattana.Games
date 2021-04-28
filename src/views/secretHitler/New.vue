@@ -1,10 +1,10 @@
 <template>
   <div class="container m-auto p-4">
     <div class="flex flex-col items-center">
-      <h2
-        class="base-title first-capitalize"
-        v-t="'secretHitler.titles.insertNewMatch'"
-      />
+      <h2 class="base-title first-capitalize">
+        {{ $t("secretHitler.titles.insertNewMatch") }}
+        <i :class="iconRoles[role.editor]"></i>
+      </h2>
       <draggable
         :list="remainingPlayers"
         group="people"
@@ -143,17 +143,19 @@ import { mergeObjects, range } from "@/utils";
 import { user } from "@/services/user.service";
 import { tailwind } from "@/services/tailwind.service";
 import { queryRefresh } from "@/composable/routerRefresh";
-import { secretHitlerRole } from "@/constants/roleConstants";
 import { dialog, dialogType } from "@/services/dialog.service";
 import DraggableUser from "@/components/base/DraggableUser.vue";
 import { secretHitler } from "@/services/games/secretHitler.service";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { player, secretHitlerMatch, secretHitlerMatchPlayer } from "@/types";
+import { iconRoles, role, secretHitlerRole } from "@/constants/roleConstants";
 
 let orderedPlayers = [] as player[];
 
 const initialData = () => ({
+  role,
   tailwind,
+  iconRoles,
   orderedPlayers,
   secretHitlerRole,
   hitlerPlayer: {} as player,

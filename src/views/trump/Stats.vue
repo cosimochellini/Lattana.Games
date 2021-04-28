@@ -1,17 +1,9 @@
 <template>
   <div class="max-w-xl md:max-w-4xl px-4 py-2 mx-auto">
-    <div class="font-semibold my-2">
-      <h2
-        class="base-subtitle my-1 py-1 first-capitalize"
-        v-t="'trump.form.currentPlayer'"
-      />
-
-      <user-autocomplete
-        v-model="currentPlayer"
-        class="block px-2 py-1"
-        :exactPlayers="availablePlayers"
-      />
-    </div>
+    <current-user
+      :playerRetriever="user.getActualTrumpPlayers"
+      v-model="currentPlayer"
+    />
     <stats-list :statistics="statistics" :game="'trump'" />
 
     <mate-section
@@ -30,15 +22,16 @@ import { user } from "@/services/user.service";
 import { player, trumpMatchPlayer } from "@/types";
 import { trump } from "@/services/games/trump.service";
 import MateSection from "@/components/base/MateSection.vue";
+import CurrentUser from "@/components/base/CurrentUser.vue";
 import StatsList from "@/components/base/ReadableStats.vue";
 import { TrumpStats } from "@/utils/classes/stats/trumpMatchStats";
 import { Mate, ReadableStats } from "@/utils/classes/stats/baseStats";
-import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 
 export default defineComponent({
-  components: { UserAutocomplete, StatsList, MateSection },
+  components: { StatsList, MateSection, CurrentUser },
   data() {
     return {
+      user,
       availablePlayers: [] as player[],
       currentPlayer: auth.currentPlayer,
       stats: new TrumpStats([], auth.currentPlayer),

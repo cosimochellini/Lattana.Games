@@ -15,7 +15,7 @@ import { defineAsyncComponent, defineComponent, onMounted, ref } from "vue";
 
 export default defineComponent({
   components: {
-    Overlay: defineAsyncComponent(
+    overlay: defineAsyncComponent(
       () => import("@/components/base/Overlay.vue")
     ),
     Dialog,

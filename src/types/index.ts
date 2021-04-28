@@ -1,6 +1,6 @@
 import { sanityTypes } from "@/constants/roleConstants";
+import { secretHitlerRole } from "@/constants/roleConstants";
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
-import { playerRole, secretHitlerRole } from "@/constants/roleConstants";
 
 export interface IMatch<
   TMatch extends IMatch<TMatch, TPlayer>,
@@ -35,7 +35,7 @@ export interface player extends sanityEntity {
   email: string;
   pin: number;
   birthday: string;
-  roles: playerRole[];
+  roles: string | null;
   profileImage: SanityImageSource;
 }
 
