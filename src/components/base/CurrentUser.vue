@@ -20,7 +20,7 @@ import { auth } from "@/services/auth.service";
 import { defineComponent, PropType } from "vue";
 import { guard } from "@/services/guard.service";
 import UserAutocomplete from "../form/UserAutocomplete.vue";
-import { iconRoles, role } from "@/constants/roleConstants";
+import { iconRoles, role } from "@/constants";
 
 export default defineComponent({
   components: { UserAutocomplete },

@@ -1,5 +1,5 @@
-import { sanityTypes } from "@/constants/roleConstants";
-import { secretHitlerRole } from "@/constants/roleConstants";
+import { sanityTypes } from "@/constants";
+import { secretHitlerRole } from "@/constants";
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 
 export interface IMatch<

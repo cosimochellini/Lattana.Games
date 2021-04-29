@@ -16,6 +16,7 @@
 </template>
 
 <script lang="ts">
+import { games } from "@/constants";
 import MateList from "./MateList.vue";
 import { defineComponent, PropType } from "vue";
 import { Mate } from "@/utils/classes/stats/baseStats";
@@ -33,7 +34,7 @@ export default defineComponent({
       required: true,
     },
     game: {
-      type: String,
+      type: String as PropType<games>,
       required: true,
     },
   },

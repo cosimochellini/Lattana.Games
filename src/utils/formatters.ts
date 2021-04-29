@@ -71,7 +71,7 @@ export const formatter = {
 
     // "Math.abs" accounts for both "past" & "future" scenarios
     for (const unit of Object.keys(units)) {
-      if (Math.abs(elapsed) > units[unit] || unit == "second")
+      if (Math.abs(elapsed) > units[unit] || unit === "second")
         return relativeTimeFormat.value.format(
           Math.round(elapsed / units[unit]),
           unit as Intl.RelativeTimeFormatUnit

@@ -13,7 +13,7 @@ import { trumpMatch } from "@/types";
 import { useRoute } from "vue-router";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { defineComponent, onMounted, ref } from "vue";
-import { sanityTypes } from "@/constants/roleConstants";
+import { sanityTypes } from "@/constants";
 import TrumpMatchPlayer from "@/components/form/TrumpMatchPlayer.vue";
 
 const matchQuery = new groq.QueryBuilder(sanityTypes.trumpMatch)

@@ -166,7 +166,7 @@ import { dialog, dialogType } from "@/services/dialog.service";
 import { player, trumpMatch, trumpMatchPlayer } from "@/types";
 import DraggableUser from "@/components/base/DraggableUser.vue";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
-import { iconRoles, role } from "@/constants/roleConstants";
+import { iconRoles, role } from "@/constants";
 
 let orderedPlayers = [] as player[];
 

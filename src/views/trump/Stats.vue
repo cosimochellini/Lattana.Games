@@ -4,12 +4,12 @@
       :playerRetriever="user.getActualTrumpPlayers"
       v-model="currentPlayer"
     />
-    <stats-list :statistics="statistics" :game="'trump'" />
+    <stats-list :statistics="statistics" :game="currentGame" />
 
     <mate-section
       :best="mates.best"
       :worst="mates.worst"
-      :game="'trump'"
+      :game="currentGame"
       class="mt-2 pt-2"
     />
   </div>
@@ -26,6 +26,7 @@ import CurrentUser from "@/components/base/CurrentUser.vue";
 import StatsList from "@/components/base/ReadableStats.vue";
 import { TrumpStats } from "@/utils/classes/stats/trumpMatchStats";
 import { Mate, ReadableStats } from "@/utils/classes/stats/baseStats";
+import { games } from "@/constants";
 
 export default defineComponent({
   components: { StatsList, MateSection, CurrentUser },
@@ -35,6 +36,7 @@ export default defineComponent({
       availablePlayers: [] as player[],
       currentPlayer: auth.currentPlayer,
       stats: new TrumpStats([], auth.currentPlayer),
+      currentGame: games.trump,
     };
   },
   mounted() {

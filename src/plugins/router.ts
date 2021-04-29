@@ -1,6 +1,6 @@
 import { i18n } from "@/instances/i18n";
 import { auth } from "@/services/auth.service";
-import { role } from "@/constants/roleConstants";
+import { games, role } from "@/constants";
 import { overlay } from "@/services/overlay.service";
 import { currentLanguage } from "@/services/language.service";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
@@ -28,8 +28,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import("../views/layouts/DefaultLayout.vue"),
     children: [
       {
-        path: "trump",
-        name: "trump",
+        path: games.trump,
+        name: games.trump,
         component: () => import("../views/trump/Index.vue"),
         meta: { requiresAuth: true },
         children: [
@@ -63,8 +63,8 @@ const routes: RouteRecordRaw[] = [
         ],
       },
       {
-        path: "secretHitler",
-        name: "secretHitler",
+        path: games.secretHitler,
+        name: games.secretHitler,
         component: () => import("../views/secretHitler/Index.vue"),
         meta: { requiresAuth: true },
         children: [

@@ -1,5 +1,5 @@
 import { auth } from "./auth.service";
-import { role } from "@/constants/roleConstants";
+import { role } from "@/constants";
 
 type EagerRoles = { [K in role]: boolean };
 

@@ -53,6 +53,7 @@
 
 <script lang="ts">
 import { Toggle } from "@/utils";
+import { games } from "@/constants";
 import { formatter } from "@/utils/formatters";
 import { defineComponent, PropType } from "vue";
 import { ReadableStats } from "@/utils/classes/stats/baseStats";
@@ -65,7 +66,7 @@ export default defineComponent({
       required: true,
     },
     game: {
-      type: String,
+      type: String as PropType<games>,
       required: true,
     },
   },

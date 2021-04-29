@@ -1,4 +1,4 @@
-import { role } from "@/constants/roleConstants";
+import { games, role } from "@/constants";
 
 export type BottomTab = {
   name: string;
@@ -10,7 +10,7 @@ export type BottomTab = {
 };
 
 export type BottomElement = {
-  game: string;
+  game: games;
   elements: BottomTab[];
 };
 

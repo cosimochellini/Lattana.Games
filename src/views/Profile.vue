@@ -199,7 +199,7 @@ import { settings } from "@/utils";
 import { image } from "@/instances/sanity";
 import { auth } from "@/services/auth.service";
 import { formatter } from "@/utils/formatters";
-import { iconRoles } from "@/constants/roleConstants";
+import { iconRoles } from "@/constants";
 import { Dictionary, HTMLInputEvent } from "@/types";
 import { computed, defineComponent, ref } from "vue";
 import DateBadge from "@/components/base/DateBadge.vue";

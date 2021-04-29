@@ -6,7 +6,7 @@ import { groq } from "@/utils/GroqQueryBuilder";
 import { sanityClient } from "@/instances/sanity";
 import { notification } from "./notification.service";
 import { reactiveStorage } from "./reactiveStorage.service";
-import { role, sanityTypes } from "@/constants/roleConstants";
+import { role, sanityTypes } from "@/constants";
 
 const currentPlayer = reactiveStorage<player | null>("LG_STORED_USER", null);
 

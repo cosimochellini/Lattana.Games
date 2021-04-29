@@ -57,6 +57,7 @@
 
 <script lang="ts">
 import { Toggle } from "@/utils";
+import { games } from "@/constants";
 import { image } from "@/instances/sanity";
 import { formatter } from "@/utils/formatters";
 import { defineComponent, PropType } from "vue";
@@ -71,7 +72,7 @@ export default defineComponent({
       required: true,
     },
     game: {
-      type: String,
+      type: String as PropType<games>,
       required: true,
     },
     title: {
@@ -84,7 +85,6 @@ export default defineComponent({
     },
   },
   data() {
-    formatter;
     return {
       tailwind,
       formatter,

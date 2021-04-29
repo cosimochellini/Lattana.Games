@@ -23,3 +23,10 @@ export const iconRoles = {
   [role.editor]: "fas fa-typewriter",
   [role.nosy]: "fas fa-eye-evil",
 };
+
+export enum games {
+  trump = "trump",
+  secretHitler = "secretHitler",
+}
+
+export const allAvailableGames = [games.trump, games.secretHitler];

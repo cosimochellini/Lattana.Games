@@ -1,7 +1,7 @@
 import { byValue } from "sort-es";
 import { secretHitlerMatchPlayer } from "@/types";
 import { sortable } from "sort-es/lib/src/types/types";
-import { secretHitlerRole } from "@/constants/roleConstants";
+import { secretHitlerRole } from "@/constants";
 
 export const byRole: sortable<secretHitlerMatchPlayer> = byValue(
   "role",

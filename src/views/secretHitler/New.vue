@@ -148,7 +148,7 @@ import DraggableUser from "@/components/base/DraggableUser.vue";
 import { secretHitler } from "@/services/games/secretHitler.service";
 import UserAutocomplete from "@/components/form/UserAutocomplete.vue";
 import { player, secretHitlerMatch, secretHitlerMatchPlayer } from "@/types";
-import { iconRoles, role, secretHitlerRole } from "@/constants/roleConstants";
+import { iconRoles, role, secretHitlerRole } from "@/constants";
 
 let orderedPlayers = [] as player[];
 

@@ -1,5 +1,5 @@
 import { BaseStats } from "./baseStats";
-import { secretHitlerRole } from "@/constants/roleConstants";
+import { secretHitlerRole } from "@/constants";
 import { secretHitlerMatch, secretHitlerMatchPlayer } from "@/types";
 
 /**

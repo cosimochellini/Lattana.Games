@@ -1,7 +1,7 @@
 import { byString, byValue } from "sort-es";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { IMatchPlayerBase, player } from "@/types";
-import { sanityTypes } from "@/constants/roleConstants";
+import { sanityTypes } from "@/constants";
 
 export const user = {
   getUsersDropdown({ excluded }: { excluded: string[] }) {

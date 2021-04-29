@@ -5,7 +5,7 @@ import { overlay } from "../overlay.service";
 import { sanityClient } from "@/instances/sanity";
 import { notification } from "../notification.service";
 import { dialog, dialogType } from "../dialog.service";
-import { sanityTypes } from "@/constants/roleConstants";
+import { sanityTypes } from "@/constants";
 import { useInfiniteLoading } from "@/composable/infiniteLoading";
 import { trumpRank } from "@/utils/classes/stats/ranks/trumpRank";
 import { RankingList } from "@/utils/classes/stats/ranks/baseRank";

@@ -1,6 +1,6 @@
 import { uuid } from "@/utils";
 import { Dictionary } from "@/types";
-import { sanityTypes } from "@/constants/roleConstants";
+import { sanityTypes } from "@/constants";
 import { readOnlySanityClient, sanityClient } from "@/instances/sanity";
 import { QueryableParam, sanityEntity, sanityReference } from "@/types";
 

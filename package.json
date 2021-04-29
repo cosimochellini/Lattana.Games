@@ -1,6 +1,6 @@
 {
   "name": "lattana-games",
-  "version": "0.11.12",
+  "version": "0.12.3",
   "private": false,
   "license": "MIT",
   "scripts": {
@@ -13,7 +13,7 @@
     "@sanity/client": "^2.1.0",
     "@sanity/image-url": "^0.140.19",
     "@tailwindcss/postcss7-compat": "npm:@tailwindcss/postcss7-compat@^2.0.2",
-    "@vueuse/core": "^4.9.0",
+    "@vueuse/core": "^4.9.1",
     "autoprefixer": "^9",
     "mitt": "^2.1.0",
     "postcss": "^7",

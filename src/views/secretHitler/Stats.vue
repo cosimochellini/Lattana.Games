@@ -5,12 +5,12 @@
       v-model="currentPlayer"
     />
 
-    <stats-list :statistics="statistics" :game="'secretHitler'" />
+    <stats-list :statistics="statistics" :game="currentGame" />
 
     <mate-list
       :best="mates.best"
       :worst="mates.worst"
-      :game="'secretHitler'"
+      :game="currentGame"
       class="mt-2 pt-2"
     />
   </div>
@@ -27,12 +27,14 @@ import StatsList from "@/components/base/ReadableStats.vue";
 import { secretHitler } from "@/services/games/secretHitler.service";
 import { Mate, ReadableStats } from "@/utils/classes/stats/baseStats";
 import { SecretHitlerStats } from "@/utils/classes/stats/secretHitlerMatchStats";
+import { games } from "@/constants";
 
 export default defineComponent({
   components: { StatsList, MateList, CurrentUser },
   data() {
     return {
       user,
+      currentGame: games.secretHitler,
       currentPlayer: auth.currentPlayer,
       stats: new SecretHitlerStats([], auth.currentPlayer),
     };

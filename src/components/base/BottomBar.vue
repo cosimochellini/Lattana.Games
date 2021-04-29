@@ -1,36 +1,39 @@
 <template>
-  <div class="mt-16"></div>
-  <section class="bottom-bar">
-    <div class="flex justify-between">
-      <router-link
-        class="w-full focus:text-teal-500 hover:text-teal-500 justify-center inline-block text-center pt-2 pb-1"
-        :class="
-          isActive(element.name)
-            ? `${element.activeColor} font-bold tracking-widest `
-            : ''
-        "
-        v-for="element in currentButtonBar"
-        :key="element.name"
-        :to="{ name: element.route }"
-      >
-        <i
-          :class="isActive(element.name) ? element.iconActive : element.icon"
-          class="fa-lg"
-        />
-        <span
-          class="block text-sm capitalize tracking-wider"
-          v-t="`bottom.route.${element.name}`"
-        />
-      </router-link>
-    </div>
-  </section>
+  <span v-if="currentButtonBar">
+    <div class="mt-16"></div>
+    <section class="bottom-bar">
+      <div class="flex justify-between">
+        <router-link
+          class="w-full focus:text-teal-500 hover:text-teal-500 justify-center inline-block text-center pt-2 pb-1"
+          :class="
+            isActive(element.name)
+              ? `${element.activeColor} font-bold tracking-widest `
+              : ''
+          "
+          v-for="element in currentButtonBar"
+          :key="element.name"
+          :to="{ name: element.route }"
+        >
+          <i
+            :class="isActive(element.name) ? element.iconActive : element.icon"
+            class="fa-lg"
+          />
+          <span
+            class="block text-sm capitalize tracking-wider"
+            v-t="`bottom.route.${element.name}`"
+          />
+        </router-link>
+      </div>
+    </section>
+  </span>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { games } from "@/constants";
 import { BottomTab } from "@/types/shared";
 import routes from "@/configuration/bottomBar";
 import { auth } from "@/services/auth.service";
+import { defineComponent, PropType } from "vue";
 
 export default defineComponent({
   data() {
@@ -38,16 +41,15 @@ export default defineComponent({
   },
   props: {
     game: {
-      type: String,
+      type: String as PropType<games>,
       required: true,
     },
   },
   computed: {
-    currentButtonBar(): BottomTab[] {
-      const availableTabs =
-        this.routes.find((r) => r.game == this.game)?.elements ?? [];
-
-      return availableTabs.filter((tab) => auth.isAuthorized(tab.roles));
+    currentButtonBar(): BottomTab[] | undefined {
+      return this.routes
+        .find((r) => r.game === this.game)
+        ?.elements.filter((tab) => auth.isAuthorized(tab.roles));
     },
   },
   methods: {

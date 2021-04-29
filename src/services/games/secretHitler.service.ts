@@ -1,11 +1,11 @@
 import { Ref } from "vue";
 import { uuid } from "@/utils";
 import { auth } from "../auth.service";
+import { sanityTypes } from "@/constants";
 import { overlay } from "../overlay.service";
 import { sanityClient } from "@/instances/sanity";
 import { notification } from "../notification.service";
 import { dialog, dialogType } from "../dialog.service";
-import { sanityTypes } from "@/constants/roleConstants";
 import { player, secretHitlerMatchPlayer } from "@/types";
 import { sanityDocument, secretHitlerMatch } from "@/types";
 import { byRole } from "@/utils/sortables/secretHitlerSortables";

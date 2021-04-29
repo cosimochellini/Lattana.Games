@@ -1,6 +1,6 @@
 import { BaseRank, Rankable } from "./baseRank";
 import { secretHitlerOrderBy } from "@/types/ranking";
-import { secretHitlerRole } from "@/constants/roleConstants";
+import { secretHitlerRole } from "@/constants";
 import { secretHitlerMatch, secretHitlerMatchPlayer } from "@/types";
 
 export class secretHitlerRank extends BaseRank<

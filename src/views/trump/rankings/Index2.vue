@@ -17,7 +17,7 @@
 <script lang="ts">
 import { trumpMatch } from "@/types";
 import { groq } from "@/utils/GroqQueryBuilder";
-import { sanityTypes } from "@/constants/roleConstants";
+import { sanityTypes } from "@/constants";
 import { defineAsyncComponent, defineComponent } from "vue";
 import { notification } from "@/services/notification.service";
 
