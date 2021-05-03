@@ -84,10 +84,11 @@ export const auth = {
 
       if (!roles?.length) return true;
 
-      if (currentPlayer.value.roles?.includes(role.admin)) return true;
+      const userRoles = currentPlayer.value.roles?.toLocaleLowerCase() ?? "";
 
-      for (const role of roles)
-        if (currentPlayer.value.roles?.includes(role)) return true;
+      if (userRoles.includes(role.admin)) return true;
+
+      for (const role of roles) if (userRoles.includes(role)) return true;
 
       return false;
     } catch (error) {
