@@ -14,9 +14,9 @@ export const useInfiniteLoading = <T>(
   query: GroqTypes.QueryBuilderType,
   options: Partial<InfinityLoadingOptions<T>> | null = null
 ) => {
+  const isLoading = ref(true);
   const items = ref([] as T[]);
   const moreDataAvailable = ref(true);
-  const isLoading = ref(true);
 
   const pagination = new groq.PaginationBuilder(
     options?.page,

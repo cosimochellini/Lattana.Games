@@ -35,6 +35,7 @@ import routes from "@/configuration/bottomBar";
 import { auth } from "@/services/auth.service";
 import { defineComponent, PropType } from "vue";
 
+
 export default defineComponent({
   data() {
     return { routes };

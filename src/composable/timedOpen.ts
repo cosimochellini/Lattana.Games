@@ -16,9 +16,5 @@ export const useTimedOpen = (
       ? (interval = setTimeout(() => (isOpen.value = false), timeInterval))
       : clearTimeout(interval)
   );
-
-  return {
-    isOpen,
-    toggle,
-  };
+  return { isOpen, toggle };
 };

@@ -22,6 +22,7 @@ export interface IMatchPlayer<
 > extends IMatchPlayerBase {
   match: TMatch;
 }
+
 export interface IMatchPlayerBase extends sanityEntity {
   player: player;
   win: boolean;
