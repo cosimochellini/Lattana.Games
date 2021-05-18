@@ -28,8 +28,8 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, watch, onUnmounted } from "vue";
 import { useIntersectionObserver } from "@vueuse/core";
+import { ref, defineComponent, watch, onUnmounted } from "vue";
 
 export default defineComponent({
   name: "card-skeleton",

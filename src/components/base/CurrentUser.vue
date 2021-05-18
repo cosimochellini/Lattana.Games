@@ -1,6 +1,8 @@
 <template>
   <div v-if="guard.role.nosy">
-    <h2 class="font-semibold leading-3 block tracking-wider first-capitalize mb-1">
+    <h2
+      class="font-semibold leading-3 block tracking-wider first-capitalize mb-1"
+    >
       {{ $t("trump.form.currentPlayer") }}
 
       <i :class="iconRoles[role.nosy]"></i>
@@ -16,11 +18,11 @@
 
 <script lang="ts">
 import { player } from "@/types";
+import { iconRoles, role } from "@/constants";
 import { auth } from "@/services/auth.service";
 import { defineComponent, PropType } from "vue";
 import { guard } from "@/services/guard.service";
 import UserAutocomplete from "../form/UserAutocomplete.vue";
-import { iconRoles, role } from "@/constants";
 
 export default defineComponent({
   components: { UserAutocomplete },
