@@ -1,13 +1,13 @@
 import { Ref } from "vue";
 import { uuid } from "@/utils";
-import { auth } from "../auth.service";
 import { sanityTypes } from "@/constants";
-import { overlay } from "../overlay.service";
+import { auth } from "@/services/auth.service";
 import { sanityClient } from "@/instances/sanity";
-import { notification } from "../notification.service";
-import { dialog, dialogType } from "../dialog.service";
+import { overlay } from "@/services/overlay.service";
 import { player, secretHitlerMatchPlayer } from "@/types";
 import { sanityDocument, secretHitlerMatch } from "@/types";
+import { notification } from "@/services/notification.service";
+import { dialog, dialogType } from "@/services/dialog.service";
 import { byRole } from "@/utils/sortables/secretHitlerSortables";
 import { useInfiniteLoading } from "@/composable/infiniteLoading";
 import { RankingList } from "@/utils/classes/stats/ranks/baseRank";

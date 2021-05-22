@@ -82,68 +82,62 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { image } from "@/instances/sanity";
 import { secretHitlerMatch } from "@/types";
+import { user } from "@/services/user.service";
+import { auth } from "@/services/auth.service";
 import { guard } from "@/services/guard.service";
+import { defineComponent, ref, watch } from "vue";
 import WinBadge from "@/components/base/WinBadge.vue";
 import { tailwind } from "@/services/tailwind.service";
 import DateBadge from "@/components/base/DateBadge.vue";
 import { getCurrentPlayer } from "@/utils/sharedFunctions";
+import CurrentUser from "@/components/base/CurrentUser.vue";
 import CardSkeleton from "@/components/base/CardSkeleton.vue";
 import { useRouterRefresh } from "@/composable/routerRefresh";
 import EmptyCardResult from "@/components/base/EmptyCardResult.vue";
 import { secretHitler } from "@/services/games/secretHitler.service";
 import SecretHitlerBadge from "@/components/secretHitler/secretHitlerBadge.vue";
-import CurrentUser from "@/components/base/CurrentUser.vue";
-import { user } from "@/services/user.service";
-import { auth } from "@/services/auth.service";
 
 export default defineComponent({
   components: {
-    CardSkeleton,
-    SecretHitlerBadge,
-    DateBadge,
     WinBadge,
-    EmptyCardResult,
+    DateBadge,
     CurrentUser,
+    CardSkeleton,
+    EmptyCardResult,
+    SecretHitlerBadge,
   },
   setup() {
     const router = useRouter();
     const actualPlayer = ref(auth.currentPlayer);
 
-    const {
-      items,
-      getMoreData,
-      moreDataAvailable,
-      emptyResult,
-    } = secretHitler.getMatches(actualPlayer);
-    watch(actualPlayer, () => getMoreData(true));
+    const infiniteLoading = secretHitler.getMatches(actualPlayer);
 
-    const deleteMatch = async (match: secretHitlerMatch) =>
+    watch(actualPlayer, () => infiniteLoading.getMoreData(true));
+
+    const deleteMatch = (match: secretHitlerMatch) => {
       secretHitler
         .deleteExistingMatch(match)
-        .then((success) => success && getMoreData(true));
+        .then((success) => success && infiniteLoading.getMoreData(true));
+    };
 
     const copyMatch = (match: secretHitlerMatch) =>
       router.push({ name: "secretHitlerNew", query: { ref: match._id } });
 
-    useRouterRefresh(() => getMoreData(true));
+    useRouterRefresh(() => infiniteLoading.getMoreData(true));
 
     return {
       user,
-      items,
       guard,
       image,
       tailwind,
       copyMatch,
       deleteMatch,
-      emptyResult,
-      getMoreData,
       actualPlayer,
       getCurrentPlayer,
-      moreDataAvailable,
+      ...infiniteLoading,
     };
   },
 });
