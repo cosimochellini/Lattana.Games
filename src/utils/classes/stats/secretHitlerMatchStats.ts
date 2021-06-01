@@ -88,8 +88,12 @@ export class SecretHitlerStats extends BaseStats<
     this._hitlerMatches = new SecretHitlerStats(hitlers, this._player);
   }
 
-  private get areRolesMatchesLoaded() {
-    return this._liberalMatches || this._fascistMatches || this._hitlerMatches;
+  private get areRolesMatchesLoaded(): boolean {
+    return !!(
+      this._liberalMatches ??
+      this._fascistMatches ??
+      this._hitlerMatches
+    );
   }
 
   public GetReadableStats() {
