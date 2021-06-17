@@ -77,11 +77,10 @@ export class SecretHitlerStats extends BaseStats<
     const fascists = [] as secretHitlerMatchPlayer[];
     const hitlers = [] as secretHitlerMatchPlayer[];
 
-    for (const match of this._matches) {
+    for (const match of this._matches)
       if (match.role === secretHitlerRole.liberal) liberals.push(match);
       else if (match.role === secretHitlerRole.fascist) fascists.push(match);
       else hitlers.push(match);
-    }
 
     this._liberalMatches = new SecretHitlerStats(liberals, this._player);
     this._fascistMatches = new SecretHitlerStats(fascists, this._player);
