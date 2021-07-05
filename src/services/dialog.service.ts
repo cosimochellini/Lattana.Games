@@ -41,6 +41,6 @@ export const dialog = {
   },
 
   onConfirm(func: (option: DialogOption) => void) {
-    dialogEmitter.on(dialogEnum.confirm, (op) => func(op));
+    dialogEmitter.on(dialogEnum.confirm, (op) => func(op as DialogOption));
   },
 };
