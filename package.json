@@ -13,7 +13,7 @@
     "@sanity/client": "^2.11.0",
     "@sanity/image-url": "^0.140.19",
     "@tailwindcss/postcss7-compat": "npm:@tailwindcss/postcss7-compat@^2.0.2",
-    "@vueuse/core": "^5.0.3",
+    "@vueuse/core": "^5.1.3",
     "autoprefixer": "^9",
     "mitt": "^3.0.0",
     "postcss": "^7",
@@ -27,8 +27,8 @@
     "vuedraggable": "^4.0.1"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.28.1",
-    "@typescript-eslint/parser": "^4.28.1",
+    "@typescript-eslint/eslint-plugin": "^4.28.2",
+    "@typescript-eslint/parser": "^4.28.2",
     "@vue/cli-plugin-babel": "~4.5.13",
     "@vue/cli-plugin-eslint": "~4.5.13",
     "@vue/cli-plugin-pwa": "~4.5.13",
@@ -39,8 +39,8 @@
     "@vue/eslint-config-typescript": "^7.0.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.30.0",
-    "eslint-plugin-vue": "^7.12.1",
-    "type-fest": "^1.1.3",
+    "eslint-plugin-vue": "^7.13.0",
+    "type-fest": "^1.2.2",
     "typescript": "~4.3.5",
     "vue-cli-plugin-tailwind": "~2.0.6",
     "vue3-chart-v2": "^0.8.1"
