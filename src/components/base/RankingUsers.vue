@@ -1,6 +1,19 @@
 <template>
   <div
-    class="flex flex-col justify-center p-3 bg-white rounded-2xl shadow-lg m-2 lg:my-3 max-w-2xl text-center lg:m-auto lg:mt-1"
+    class="
+      flex flex-col
+      justify-center
+      p-3
+      bg-white
+      rounded-2xl
+      shadow-lg
+      m-2
+      lg:my-3
+      max-w-2xl
+      text-center
+      lg:m-auto
+      lg:mt-1
+    "
     v-for="(rank, index) in rankingList"
     :key="rank.profile.nickname"
   >
@@ -69,7 +82,6 @@ export default defineComponent({
     bindImageRing(index: number): Dictionary<boolean> {
       return tailwind.shared.bindImageRing(this.bindRealIndex(index));
     },
-
     bindBadgeColor(index: number): string {
       const realIndex = this.bindRealIndex(index);
 

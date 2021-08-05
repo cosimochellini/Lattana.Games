@@ -30,6 +30,8 @@ export const user = {
     match: string,
     type: sanityTypes
   ) {
+
+
     return new groq.QueryBuilder(type)
       .select("player ->")
       .where(new groq.ConditionBuilder("match._ref== $match").params({ match }))
