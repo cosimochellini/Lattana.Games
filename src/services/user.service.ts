@@ -1,7 +1,7 @@
+import { sanityTypes } from "@/constants";
 import { byString, byValue } from "sort-es";
 import { groq } from "@/utils/GroqQueryBuilder";
 import { IMatchPlayerBase, player } from "@/types";
-import { sanityTypes } from "@/constants";
 
 export const user = {
   getUsersDropdown({ excluded }: { excluded: string[] }) {
@@ -30,8 +30,6 @@ export const user = {
     match: string,
     type: sanityTypes
   ) {
-
-
     return new groq.QueryBuilder(type)
       .select("player ->")
       .where(new groq.ConditionBuilder("match._ref== $match").params({ match }))
