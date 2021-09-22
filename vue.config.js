@@ -16,4 +16,15 @@ module.exports = {
     // configure the workbox plugin
     workboxPluginMode: "GenerateSW",
   },
+  configureWebpack: {
+    module: {
+      rules: [
+        {
+          test: /\.mjs$/,
+          include: /node_modules/,
+          type: "javascript/auto",
+        },
+      ],
+    },
+  },
 };

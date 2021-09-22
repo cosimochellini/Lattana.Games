@@ -1,6 +1,6 @@
 {
   "name": "lattana-games",
-  "version": "0.12.13",
+  "version": "0.12.16",
   "private": false,
   "license": "MIT",
   "scripts": {
@@ -10,15 +10,15 @@
     "increase": "npm --no-git-tag-version version patch"
   },
   "dependencies": {
-    "@sanity/client": "^2.16.0",
-    "@sanity/image-url": "^0.140.19",
+    "@sanity/client": "^2.19.0",
+    "@sanity/image-url": "^1.0.1",
     "@tailwindcss/postcss7-compat": "npm:@tailwindcss/postcss7-compat@^2.0.2",
     "@vueuse/core": "^6.0.0",
     "autoprefixer": "^9",
     "mitt": "^3.0.0",
     "postcss": "^7",
     "register-service-worker": "^1.7.1",
-    "sort-es": "^1.3.8",
+    "sort-es": "^1.3.9",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
     "vue": "^3.0.0-0",
     "vue-i18n": "^9.1.4",
@@ -27,23 +27,23 @@
     "vuedraggable": "^4.0.1"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.29.3",
-    "@typescript-eslint/parser": "^4.29.3",
+    "@typescript-eslint/eslint-plugin": "^4.31.2",
+    "@typescript-eslint/parser": "^4.31.2",
     "@vue/cli-plugin-babel": "~4.5.13",
     "@vue/cli-plugin-eslint": "~4.5.13",
     "@vue/cli-plugin-pwa": "~4.5.13",
     "@vue/cli-plugin-router": "~4.5.13",
     "@vue/cli-plugin-typescript": "^4.5.13",
     "@vue/cli-service": "~4.5.13",
-    "@vue/compiler-sfc": "^3.2.6",
+    "@vue/compiler-sfc": "^3.2.13",
     "@vue/eslint-config-typescript": "^7.0.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^7.16.0",
-    "type-fest": "^1.3.0",
-    "typescript": "~4.3.5",
+    "eslint-plugin-vue": "^7.18.0",
+    "type-fest": "^2.3.4",
+    "typescript": "~4.4.3",
     "vue-cli-plugin-tailwind": "~2.0.6",
-    "vue3-chart-v2": "^0.8.1"
+    "vue3-chart-v2": "^0.8.3"
   },
   "eslintConfig": {
     "root": true,
