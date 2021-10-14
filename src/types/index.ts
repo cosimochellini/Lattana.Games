@@ -61,9 +61,9 @@ export interface secretHitlerMatch
 
 //-------------------CUSTOM--------------------
 
-export interface Dictionary<T> {
-  [key: string]: T;
-}
+export type Dictionary<T, TKey extends string = string> = {
+  [key in TKey]: T;
+};
 
 export type QueryableParam =
   | string

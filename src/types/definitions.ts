@@ -8,7 +8,9 @@ declare module "@/configuration/bottomBar" {
 
 declare module "@/configuration/navbar" {
   const ex: {
-    states: import("./").Dictionary<import("./shared").ApplicationState>;
+    states: import("./").Dictionary<
+      import("./shared").ApplicationState
+    >;
     navbarRoutes: { name: string; route: string }[];
     profileRoutes: { name: string; route: string }[];
   };

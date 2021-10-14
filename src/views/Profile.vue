@@ -1,31 +1,91 @@
 <template>
   <div>
     <div
-      class="max-w-4xl flex items-center h-auto lg:h-screen flex-wrap mx-auto my-20 lg:my-0"
+      class="
+        max-w-4xl
+        flex
+        items-center
+        h-auto
+        lg:h-screen
+        flex-wrap
+        mx-auto
+        my-20
+        lg:my-0
+      "
     >
       <!--Main Col-->
       <div
-        class="w-full lg:w-3/5 rounded-lg shadow-2xl bg-white opacity-75 mx-6 lg:mx-0"
+        class="
+          w-full
+          lg:w-3/5
+          rounded-lg
+          shadow-2xl
+          bg-white
+          opacity-75
+          mx-6
+          lg:mx-0
+        "
       >
         <div class="p-4 md:p-12 text-center lg:text-left">
           <div
-            class="lg:hidden mx-auto -mt-16 h-48 w-48 bg-cover bg-center relative"
+            class="
+              lg:hidden
+              mx-auto
+              -mt-16
+              h-48
+              w-48
+              bg-cover bg-center
+              relative
+            "
           >
             <div
-              class="absolute inset-0 bg-cover bg-center z-0 rounded-full shadow-2xl border"
+              class="
+                absolute
+                inset-0
+                bg-cover bg-center
+                z-0
+                rounded-full
+                shadow-2xl
+                border
+              "
               :class="editMode ? 'blur' : ''"
               :style="{ backgroundImage: ` url('${profileImage}')` }"
             ></div>
             <div
               v-if="editMode"
-              class="opacity-100 absolute inset-0 z-10 flex justify-center items-center text-xl text-white font-semibold"
+              class="
+                opacity-100
+                absolute
+                inset-0
+                z-10
+                flex
+                justify-center
+                items-center
+                text-xl text-white
+                font-semibold
+              "
             >
               <span
-                class="border border-white rounded-lg px-2 py-1 tracking-wide first-capitalize"
+                class="
+                  border border-white
+                  rounded-lg
+                  px-2
+                  py-1
+                  tracking-wide
+                  first-capitalize
+                "
               >
                 <span v-t="'form.profile.uploadPhoto'" />
                 <input
-                  class="cursor-pointer absolute block opacity-0 w-48 inset-0 pin-r pin-t"
+                  class="
+                    cursor-pointer
+                    absolute
+                    block
+                    opacity-0
+                    w-48
+                    inset-0
+                    pin-r pin-t
+                  "
                   type="file"
                   accept="image/*"
                   name="profileImage"
@@ -42,11 +102,27 @@
             {{ currentPlayer.name }} {{ currentPlayer.surname }}
           </h1>
           <div
-            class="mx-auto lg:mx-0 w-full pt-3 border-b-2 border-green-500 opacity-25"
+            class="
+              mx-auto
+              lg:mx-0
+              w-full
+              pt-3
+              border-b-2 border-green-500
+              opacity-25
+            "
           ></div>
           <div class="pt-4 text-base font-bold grid grid-cols-4">
             <i
-              class="fad fa-id-card h-4 fill-current text-green-700 pr-4 fa-lg col-span-1"
+              class="
+                fad
+                fa-id-card
+                h-4
+                fill-current
+                text-green-700
+                pr-4
+                fa-lg
+                col-span-1
+              "
             />
             <span v-if="editMode" class="input-width">
               <input
@@ -62,7 +138,16 @@
 
           <div class="pt-4 text-base font-bold grid grid-cols-4">
             <i
-              class="fad fa-at h-4 fill-current text-green-700 pr-4 fa-lg col-span-1"
+              class="
+                fad
+                fa-at
+                h-4
+                fill-current
+                text-green-700
+                pr-4
+                fa-lg
+                col-span-1
+              "
             />
             <span v-if="editMode" class="input-width">
               <input
@@ -78,7 +163,16 @@
 
           <div class="pt-4 text-base font-bold grid grid-cols-4">
             <i
-              class="fad fa-birthday-cake h-4 fill-current text-green-700 pr-4 fa-lg col-span-1"
+              class="
+                fad
+                fa-birthday-cake
+                h-4
+                fill-current
+                text-green-700
+                pr-4
+                fa-lg
+                col-span-1
+              "
             />
 
             <span class="input-width" v-if="editMode">
@@ -94,7 +188,16 @@
           </div>
           <div class="pt-4 text-base font-bold grid grid-cols-4">
             <i
-              class="fad fa-key h-4 fill-current text-green-700 pr-4 fa-lg col-span-1"
+              class="
+                fad
+                fa-key
+                h-4
+                fill-current
+                text-green-700
+                pr-4
+                fa-lg
+                col-span-1
+              "
             />
 
             <span class="input-width" v-if="editMode">
@@ -109,11 +212,26 @@
             </span>
           </div>
           <div
-            class="mt-6 w-4/5 lg:w-full mx-auto flex flex-wrap items-center justify-evenly"
+            class="
+              mt-6
+              w-4/5
+              lg:w-full
+              mx-auto
+              flex flex-wrap
+              items-center
+              justify-evenly
+            "
             v-if="currentPlayer.roles?.length"
           >
             <a
-              class="link border-2 p-2 rounded-lg first-capitalize tracking-wider"
+              class="
+                link
+                border-2
+                p-2
+                rounded-lg
+                first-capitalize
+                tracking-wider
+              "
               v-for="role in currentPlayer.roles.split(';')"
               :key="role"
             >
@@ -200,7 +318,7 @@ import { image } from "@/instances/sanity";
 import { auth } from "@/services/auth.service";
 import { formatter } from "@/utils/formatters";
 import { iconRoles } from "@/constants";
-import { Dictionary, HTMLInputEvent } from "@/types";
+import { HTMLInputEvent } from "@/types";
 import { computed, defineComponent, ref } from "vue";
 import DateBadge from "@/components/base/DateBadge.vue";
 import { notification } from "@/services/notification.service";
@@ -244,7 +362,7 @@ export default defineComponent({
       updateProfile,
       discardChanges,
       updateProfileImage,
-      iconRoles: iconRoles as Dictionary<string>,
+      iconRoles,
     };
   },
 });

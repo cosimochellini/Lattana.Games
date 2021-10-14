@@ -1,3 +1,5 @@
+import { Dictionary } from "@/types";
+
 export enum role {
   nosy = "nosy",
   admin = "admin",
@@ -18,7 +20,7 @@ export enum secretHitlerRole {
   liberal = "liberal",
 }
 
-export const iconRoles = {
+export const iconRoles: Dictionary<string, role> = {
   [role.admin]: "fad fa-jedi",
   [role.editor]: "fas fa-typewriter",
   [role.nosy]: "fas fa-eye-evil",
