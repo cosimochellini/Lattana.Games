@@ -5,7 +5,7 @@
 - This project allows you to save, use and add new games of various games
 - This project allows you to have many statistics of the matches you played
 - This project gives you the possibility to set many roles for each user and give specific features for each role
-- This project is meant to be mobile first but has also a pretty decent responsiveness
+- This project is meant to be mobile-first but is pretty decent responsiveness
 
 ## Project technologies
 
