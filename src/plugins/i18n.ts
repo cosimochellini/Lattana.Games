@@ -3,7 +3,12 @@ import { createI18n } from "vue-i18n";
 import { currentLanguage } from "@/services/language.service";
 import { setI18n } from "@/instances/i18n";
 
-export const SUPPORT_LOCALES = ["en", "it"];
+export enum Languages {
+  it = "it",
+  en = "en",
+}
+
+export const SUPPORT_LOCALES = [Languages.it, Languages.en];
 
 export async function setupI18n() {
   const initialLanguage = unref(currentLanguage);
@@ -12,7 +17,7 @@ export async function setupI18n() {
     globalInjection: true,
     legacy: false,
     locale: initialLanguage,
-    fallbackLocale: "it",
+    fallbackLocale: Languages.en,
     messages: {
       [initialLanguage]: await import(
         /* webpackChunkName: "locale-[request]" */ `../locales/${initialLanguage}.json`

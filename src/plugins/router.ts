@@ -4,13 +4,13 @@ import { games, role } from "@/constants";
 import { overlay } from "@/services/overlay.service";
 import { currentLanguage } from "@/services/language.service";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import { SUPPORT_LOCALES, setI18nLanguage, loadLocaleMessages } from "./i18n";
+import { SUPPORT_LOCALES, setI18nLanguage, loadLocaleMessages, Languages } from "./i18n";
 
 const routes: RouteRecordRaw[] = [
   {
     path: "",
     redirect: {
-      name: "trumpHistory",
+      name: "secretHitlerHistory",
       params: { locale: currentLanguage.value },
     },
   },
@@ -122,11 +122,11 @@ export function setupRouter() {
 
   // navigation guards
   router.beforeEach(async (to, from, next) => {
-    const paramsLocale = to.params.locale as string;
+    const paramsLocale = to.params.locale as Languages;
     const roles = to.meta.roles as role[] | null;
 
     if (to.meta.requiresAuth && !auth.isAuthorized(roles))
-      next({ path: "/it/login" });
+      next({ path: "/en/login" });
 
     // use locale if paramsLocale is not in SUPPORT_LOCALES
     if (!SUPPORT_LOCALES.includes(paramsLocale)) {
