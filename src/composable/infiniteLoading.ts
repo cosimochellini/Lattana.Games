@@ -7,11 +7,11 @@ type InfinityLoadingOptions<T> = {
   pageSize: number;
   onReset: (items: UnwrapRef<T[]>) => void;
   onResponse: (items: UnwrapRef<T[]>) => void;
-  onFetch: (qb: GroqTypes.QueryBuilderType) => void;
+  onFetch: (qb: GroqTypes["QueryBuilder"]) => void;
 };
 
 export const useInfiniteLoading = <T>(
-  query: GroqTypes.QueryBuilderType,
+  query: GroqTypes["QueryBuilder"],
   options: Partial<InfinityLoadingOptions<T>> | null = null
 ) => {
   const isLoading = ref(true);

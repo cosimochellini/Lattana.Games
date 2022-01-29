@@ -11,12 +11,12 @@ export const startWith = (param: string) => `*${param}`;
 export const endWith = (param: string) => `${param}*`;
 
 export const reference = <T extends sanityEntity>({
-  _id,
+    _id,
 }: T): sanityReference<T> => ({ _ref: _id });
 
 export const referenceWithKey = ({ _id }: { _id: string }) => ({
-  _ref: _id,
-  _key: uuid(),
+    _ref: _id,
+    _key: uuid(),
 });
 
 type Condition = { condition: string; reverse: boolean };
@@ -24,242 +24,244 @@ type Condition = { condition: string; reverse: boolean };
 type Order = { prop: string; desc: boolean };
 
 class QueryBuilder {
-  private _type: string = "";
-  private _conditions = new Map<string, Condition>();
-  private _params = new Map<string, QueryableParam>();
-  private _select = new Set<string>();
-  private _orderBy = new Map<string, Order>();
-  private _pagination: { page: number; pageSize: number } | null = null;
-  private _sanityClient = sanityClient;
+    private _type: string = "";
+    private _conditions = new Map<string, Condition>();
+    private _params = new Map<string, QueryableParam>();
+    private _select = new Set<string>();
+    private _orderBy = new Map<string, Order>();
+    private _pagination: { page: number; pageSize: number } | null = null;
+    private _sanityClient = sanityClient;
 
-  constructor(type: string | null = null) {
-    this._type = type ?? "";
-  }
-
-  public type(type: sanityTypes): QueryBuilder {
-    this._type = type;
-    return this;
-  }
-
-  public where(builder: ConditionBuilder): QueryBuilder {
-    const { condition, params, reverse } = builder.expose();
-
-    if (!builder.isValid()) {
-      this._conditions.delete(condition);
-
-      for (const key in params) this._params.delete(key);
-
-      return this;
+    constructor(type: string | null = null) {
+        this._type = type ?? "";
     }
 
-    this._conditions.set(condition, { condition, reverse });
-
-    for (const param in params) {
-      this._params.set(param, params[param]);
+    public type(type: sanityTypes): QueryBuilder {
+        this._type = type;
+        return this;
     }
 
-    return this;
-  }
+    public where(builder: ConditionBuilder): QueryBuilder {
+        const { condition, params, reverse } = builder.expose();
 
-  public select(value: string): QueryBuilder {
-    this._select.add(value);
+        if (!builder.isValid()) {
+            this._conditions.delete(condition);
 
-    return this;
-  }
+            for (const key in params) this._params.delete(key);
 
-  public orderBy(order: OrderBuilder): QueryBuilder {
-    for (const value of order.expose()) this._orderBy.set(value.prop, value);
+            return this;
+        }
 
-    return this;
-  }
+        this._conditions.set(condition, { condition, reverse });
 
-  public get(pagination: PaginationBuilder): QueryBuilder {
-    this._pagination = pagination.expose();
+        for (const param in params) {
+            this._params.set(param, params[param]);
+        }
 
-    return this;
-  }
+        return this;
+    }
 
-  public expose(): { query: string; params: Dictionary<QueryableParam> } {
-    const params = Object.fromEntries(this._params.entries());
+    public select(value: string): QueryBuilder {
+        this._select.add(value);
 
-    return { query: this.build(), params };
-  }
+        return this;
+    }
 
-  public cached(): Readonly<QueryBuilder> {
-    this._sanityClient = readOnlySanityClient;
+    public orderBy(order: OrderBuilder): QueryBuilder {
+        for (const value of order.expose()) this._orderBy.set(value.prop, value);
 
-    return this;
-  }
-  public fetch<T>(): Promise<T> {
-    const params = Object.fromEntries(this._params.entries());
+        return this;
+    }
 
-    const query = this.build();
+    public get(pagination: PaginationBuilder): QueryBuilder {
+        this._pagination = pagination.expose();
 
-    return this._sanityClient.fetch<T>(query, params);
-  }
+        return this;
+    }
 
-  private handlePagination(): string {
-    if (!this._pagination) return "";
+    public expose(): { query: string; params: Dictionary<QueryableParam> } {
+        const params = Object.fromEntries(this._params.entries());
 
-    const { page, pageSize } = this._pagination;
+        return { query: this.build(), params };
+    }
 
-    if (pageSize === 1) return `[${page - 1}]`;
+    public cached(): Readonly<QueryBuilder> {
+        this._sanityClient = readOnlySanityClient;
 
-    return `[${(page - 1) * pageSize}...${page * pageSize}]`;
-  }
+        return this;
+    }
+    public fetch<T>(): Promise<T> {
+        const params = Object.fromEntries(this._params.entries());
 
-  private build(): string {
-    const conditions = Array.from(this._conditions.entries())
-      .map(([, value]) => value)
-      .map(({ condition, reverse }) => `${reverse ? "!" : ""}(${condition})`)
-      .join(" && ");
+        const query = this.build();
 
-    const where = `*[_type == '${this._type}' ${
-      conditions ? ` && ${conditions}` : ""
-    }]`;
+        return this._sanityClient.fetch<T>(query, params);
+    }
 
-    const select = this._select.size ? [...this._select].join(" ,") : "...";
+    private handlePagination(): string {
+        if (!this._pagination) return "";
 
-    const orderBy = this._orderBy.size
-      ? `| ${[...this._orderBy.entries()]
-          .map(([, value]) => value)
-          .reverse() //fix for groq query
-          .map(({ prop, desc }) => ` order(${prop} ${desc ? "desc" : "asc"}) `)
-          .join(" | ")}`
-      : "";
+        const { page, pageSize } = this._pagination;
 
-    const pagination = this.handlePagination();
+        if (pageSize === 1) return `[${page - 1}]`;
 
-    return `${where} {${select}} ${orderBy} ${pagination}`.trim();
-  }
+        return `[${(page - 1) * pageSize}...${page * pageSize}]`;
+    }
+
+    private build(): string {
+        const conditions = Array.from(this._conditions.entries())
+            .map(([, value]) => value)
+            .map(({ condition, reverse }) => `${reverse ? "!" : ""}(${condition})`)
+            .join(" && ");
+
+        const where = `*[_type == '${this._type}' ${conditions ? ` && ${conditions}` : ""
+            }]`;
+
+        const select = this._select.size ? [...this._select].join(" ,") : "...";
+
+        const orderBy = this._orderBy.size
+            ? `| ${[...this._orderBy.entries()]
+                .map(([, value]) => value)
+                .reverse() //fix for groq query
+                .map(({ prop, desc }) => ` order(${prop} ${desc ? "desc" : "asc"}) `)
+                .join(" | ")}`
+            : "";
+
+        const pagination = this.handlePagination();
+
+        return `${where} {${select}} ${orderBy} ${pagination}`.trim();
+    }
 }
 
 class ConditionBuilder {
-  private _condition: string = "";
-  private _params: Dictionary<QueryableParam> = {};
-  private _optional: boolean = false;
-  private _reverse: boolean = false;
+    private _condition: string = "";
+    private _params: Dictionary<QueryableParam> = {};
+    private _optional: boolean = false;
+    private _reverse: boolean = false;
 
-  constructor(condition: string) {
-    this._condition = condition;
-  }
-
-  optional(): ConditionBuilder {
-    this._optional = true;
-
-    return this;
-  }
-
-  reverse(): ConditionBuilder {
-    this._reverse = true;
-
-    return this;
-  }
-
-  params(params: Dictionary<QueryableParam>): ConditionBuilder {
-    this._params = { ...this._params, ...params };
-
-    return this;
-  }
-
-  isValid() {
-    return !this._optional || ConditionBuilder.check(this._params);
-  }
-
-  expose() {
-    return {
-      condition: this._condition,
-      params: this._params,
-      reverse: this._reverse,
-    };
-  }
-
-  private static check(params: Dictionary<QueryableParam>): boolean {
-    for (const prop in params) {
-      const obj = params[prop];
-
-      // if is number -> standard check
-      if (typeof obj === "number" && obj) return true;
-
-      if (typeof obj === "string" && obj.replace(/[*]/g, "")) return true;
-
-      if (Array.isArray(obj) && obj.length) return true;
-
-      if (obj instanceof Date && obj.getTime()) return true;
+    constructor(condition: string) {
+        this._condition = condition;
     }
 
-    return false;
-  }
+    optional(): ConditionBuilder {
+        this._optional = true;
+
+        return this;
+    }
+
+    reverse(): ConditionBuilder {
+        this._reverse = true;
+
+        return this;
+    }
+
+    params(params: Dictionary<QueryableParam>): ConditionBuilder {
+        this._params = { ...this._params, ...params };
+
+        return this;
+    }
+
+    isValid() {
+        return !this._optional || ConditionBuilder.check(this._params);
+    }
+
+    expose() {
+        return {
+            condition: this._condition,
+            params: this._params,
+            reverse: this._reverse,
+        };
+    }
+
+    private static check(params: Dictionary<QueryableParam>): boolean {
+        for (const prop in params) {
+            const obj = params[prop];
+
+            // if is number -> standard check
+            if (typeof obj === "number" && obj) return true;
+
+            if (typeof obj === "string" && obj.replace(/[*]/g, "")) return true;
+
+            if (Array.isArray(obj) && obj.length) return true;
+
+            if (obj instanceof Date && obj.getTime()) return true;
+        }
+
+        return false;
+    }
 }
 
 class OrderBuilder {
-  private _orders: Order[] = [];
+    private _orders: Order[] = [];
 
-  constructor(prop: string, desc: boolean = false) {
-    this._orders.push({ prop, desc });
-  }
+    constructor(prop: string, desc: boolean = false) {
+        this._orders.push({ prop, desc });
+    }
 
-  then(condition: OrderBuilder): OrderBuilder {
-    this._orders = [...this._orders, ...condition.expose()];
+    then(condition: OrderBuilder): OrderBuilder {
+        this._orders = [...this._orders, ...condition.expose()];
 
-    return this;
-  }
+        return this;
+    }
 
-  expose(): Order[] {
-    return this._orders;
-  }
+    expose(): Order[] {
+        return this._orders;
+    }
 }
 
 class PaginationBuilder {
-  private _page: number;
-  private _pageSize: number;
+    private _page: number;
+    private _pageSize: number;
 
-  constructor(page: number = 0, pageSize: number = 10) {
-    this._page = page;
-    this._pageSize = pageSize;
-  }
+    constructor(page: number = 0, pageSize: number = 10) {
+        this._page = page;
+        this._pageSize = pageSize;
+    }
 
-  public first(): PaginationBuilder {
-    this._page = 1;
-    this._pageSize = 1;
+    public first(): PaginationBuilder {
+        this._page = 1;
+        this._pageSize = 1;
 
-    return this;
-  }
+        return this;
+    }
 
-  public all(): PaginationBuilder {
-    this._page = 1;
-    this._pageSize = -1;
+    public all(): PaginationBuilder {
+        this._page = 1;
+        this._pageSize = -1;
 
-    return this;
-  }
+        return this;
+    }
 
-  public next(): PaginationBuilder {
-    this._page++;
+    public next(): PaginationBuilder {
+        this._page++;
 
-    return this;
-  }
+        return this;
+    }
 
-  public shouldContinue(response: unknown[]): boolean {
-    return response.length === this._pageSize;
-  }
+    public shouldContinue(response: unknown[]): boolean {
+        return response.length === this._pageSize;
+    }
 
-  public resetPage(): PaginationBuilder {
-    this._page = 0;
-    return this;
-  }
+    public resetPage(): PaginationBuilder {
+        this._page = 0;
+        return this;
+    }
 
-  public expose() {
-    return { page: this._page, pageSize: this._pageSize };
-  }
+    public expose() {
+        return { page: this._page, pageSize: this._pageSize };
+    }
 }
 
 export const groq = {
-  QueryBuilder,
-  ConditionBuilder,
-  OrderBuilder,
-  PaginationBuilder,
+    QueryBuilder,
+    ConditionBuilder,
+    OrderBuilder,
+    PaginationBuilder,
 };
 
-export namespace GroqTypes {
-  export class QueryBuilderType extends QueryBuilder {}
+
+export type GroqTypes = {
+    QueryBuilder: QueryBuilder;
+    ConditionBuilder: ConditionBuilder;
+    OrderBuilder: OrderBuilder;
 }
