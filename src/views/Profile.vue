@@ -297,7 +297,7 @@ export default defineComponent({
 
 <style>
 .input-width {
-  @apply col-span-3 md: col-span-2;
+  @apply col-span-3 md:col-span-2;
 }
 
 .blur {

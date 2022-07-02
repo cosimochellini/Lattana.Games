@@ -185,7 +185,7 @@ export default defineComponent({
 
 <style>
 .lang-button {
-  @apply w-24 bg-white text-gray-900 font-bold border appearance-none focus: ring border-blue-600 outline-none tracking-widest;
+  @apply w-24 bg-white text-gray-900 font-bold border appearance-none focus:ring border-blue-600 outline-none tracking-widest;
 }
 
 .lang-button.active {

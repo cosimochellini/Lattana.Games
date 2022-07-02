@@ -95,8 +95,8 @@ export type sanityPostProp<T> = T extends null
   ? sanityReference<T>[]
   : sanityReference<T>;
 
-export type sanityDocument<T> = {
+export type sanityDocument<T> = Omit<{
   [key in keyof T]: sanityPostProp<T[key]>;
-};
+}, "_createdAt" | "_updatedAt">;
 
 export type datable = string | Date | null | number | undefined;
