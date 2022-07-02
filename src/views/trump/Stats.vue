@@ -30,6 +30,7 @@ import { games } from "@/constants";
 
 export default defineComponent({
   components: { StatsList, MateSection, CurrentUser },
+  name: "StatsComponent",
   data() {
     return {
       user,

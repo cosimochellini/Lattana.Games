@@ -1,15 +1,8 @@
 <template>
   <span class="history-container items-center">
-    <h2
-      class="base-title first-capitalize"
-      v-t="'secretHitler.titles.recentMatches'"
-    ></h2>
-    <current-user
-      allowEmpty
-      :playerRetriever="user.getActualSecretHitlerPlayers"
-      v-model="actualPlayer"
-      class="items-center"
-    />
+    <h2 class="base-title first-capitalize" v-t="'secretHitler.titles.recentMatches'"></h2>
+    <current-user allowEmpty :playerRetriever="user.getActualSecretHitlerPlayers" v-model="actualPlayer"
+      class="items-center" />
   </span>
   <div class="history-container">
     <article v-for="match in items" :key="match._id" class="base-card">
@@ -30,36 +23,23 @@
         <span class="first-capitalize" v-t="'secretHitler.form.yourMatch'" />
 
         <span class="col-span-2 text-center m-auto">
-          <secret-hitler-badge
-            :role="getCurrentPlayer(match, actualPlayer._id)?.role"
-          />
+          <secret-hitler-badge :role="(getCurrentPlayer(match, actualPlayer._id) as any)?.role" />
           <win-badge :win="getCurrentPlayer(match, actualPlayer._id)?.win" />
         </span>
       </div>
       <hr class="my-2" />
       <div class="flex flex-row items-center justify-around">
         <span class="first-capitalize" v-t="'secretHitler.form.players'" />
-        <div
-          class="flex overflow-hidden px-1"
-          :class="tailwind.secretHitler.bindSpace(match)"
-        >
-          <img
-            v-for="p in match.players"
-            :key="p._id"
-            :src="image(p.player.profileImage, 500)"
-            :title="`${p.player.name} ${p.player.surname}`"
-            :class="tailwind.secretHitler.borderColor(p.role)"
-            class="inline-block h-8 w-8 rounded-full ring-2 my-2"
-          />
+        <div class="flex overflow-hidden px-1" :class="tailwind.secretHitler.bindSpace(match)">
+          <img v-for="p in match.players" :key="p._id" :src="image(p.player.profileImage, 500)"
+            :title="`${p.player.name} ${p.player.surname}`" :class="tailwind.secretHitler.borderColor(p.role)"
+            class="inline-block h-8 w-8 rounded-full ring-2 my-2" />
         </div>
       </div>
 
       <hr class="my-2" v-show="guard.role.editor" />
 
-      <div
-        class="flex justify-items-center justify-around"
-        v-show="guard.role.editor"
-      >
+      <div class="flex justify-items-center justify-around" v-show="guard.role.editor">
         <button class="base-button danger" @click="deleteMatch(match)">
           <span v-t="'buttons.base.delete'" />
           <i class="fas fa-trash-alt" />
@@ -109,6 +89,7 @@ export default defineComponent({
     EmptyCardResult,
     SecretHitlerBadge,
   },
+  name: "SecretHitlerHistory",
   setup() {
     const router = useRouter();
     const actualPlayer = ref(auth.currentPlayer);
@@ -146,6 +127,6 @@ export default defineComponent({
 
 <style scoped>
 .history-container {
-  @apply grid grid-flow-row gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:max-w-screen-2xl m-auto p-3;
+  @apply grid grid-flow-row gap-4 grid-cols-1 sm: grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:max-w-screen-2xl m-auto p-3;
 }
 </style>

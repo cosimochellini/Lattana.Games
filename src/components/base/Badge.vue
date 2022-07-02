@@ -10,7 +10,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "badge",
+  name: "BadgeComponent",
   props: {
     text: {
       type: String,

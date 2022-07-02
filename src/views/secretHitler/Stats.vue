@@ -31,6 +31,7 @@ import { games } from "@/constants";
 
 export default defineComponent({
   components: { StatsList, MateList, CurrentUser },
+  name: "SecretHitlerStatsComponent",
   data() {
     return {
       user,

@@ -55,7 +55,7 @@ const allOrderBy = { ...orderby, ...secretHitlerOrderBy };
 
 export default defineComponent({
   components: { RankingUsers },
-  name: "Ranking",
+  name: "RankingComponent",
   data() {
     return {
       allOrderBy,

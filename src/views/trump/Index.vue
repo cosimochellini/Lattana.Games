@@ -14,6 +14,7 @@ import BottomBar from "@/components/base/BottomBar.vue";
 
 export default defineComponent({
   components: { BottomBar },
+  name: "TrumpIndex",
   setup() {
     const currentGame = games.trump;
 

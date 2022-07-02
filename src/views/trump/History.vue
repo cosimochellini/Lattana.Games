@@ -126,6 +126,7 @@ export default defineComponent({
     CardSkeleton,
     EmptyCardResult,
   },
+  name: "HistoryComponent",
   setup() {
     const router = useRouter();
     const actualPlayer = ref(auth.currentPlayer);

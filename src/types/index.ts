@@ -61,9 +61,7 @@ export interface secretHitlerMatch
 
 //-------------------CUSTOM--------------------
 
-export type Dictionary<T, TKey extends string = string> = {
-  [key in TKey]: T;
-};
+export type Dictionary<T, TKey extends string = string> = Record<TKey, T>;
 
 export type QueryableParam =
   | string
@@ -77,6 +75,8 @@ export type QueryableParam =
 export interface sanityEntity {
   _id: string;
   _type: sanityTypes;
+  _createdAt: Date;
+  _updatedAt: Date;
 }
 
 export interface sanityReference<T> {

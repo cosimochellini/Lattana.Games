@@ -3,12 +3,13 @@
     Logging out...
   </div>
 </template>
- 
+
  <script lang="ts">
 import { auth } from "@/services/auth.service";
 import { defineComponent, onMounted } from "vue";
 
 export default defineComponent({
+  name: "LogoutComponent",
   setup() {
     onMounted(() => {
       auth.logout();
@@ -17,6 +18,6 @@ export default defineComponent({
   },
 });
 </script>
- 
+
  <style>
 </style>

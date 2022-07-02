@@ -70,6 +70,7 @@ import { defineComponent } from "vue";
 import { dialog, DialogOption } from "@/services/dialog.service";
 
 export default defineComponent({
+  name: "DialogComponent",
   data() {
     return {
       dialogCurrentOpen: false,
@@ -95,4 +96,3 @@ export default defineComponent({
   },
 });
 </script>
-

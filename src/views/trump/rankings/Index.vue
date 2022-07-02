@@ -51,7 +51,7 @@ import { RankingList } from "@/utils/classes/stats/ranks/baseRank";
 const allOrderBy = { ...orderby, ...trumpOrderBy };
 export default defineComponent({
   components: { RankingUsers },
-  name: "Ranking",
+  name: "RankingComponent",
   data() {
     return {
       allOrderBy,

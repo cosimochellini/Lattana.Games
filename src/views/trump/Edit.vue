@@ -24,6 +24,7 @@ export default defineComponent({
   components: {
     TrumpMatchPlayer,
   },
+  name: "trumpMatchEdit",
   setup() {
     const route = useRoute();
     const currentMatch = ref({} as trumpMatch);

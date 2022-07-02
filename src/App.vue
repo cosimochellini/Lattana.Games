@@ -4,12 +4,12 @@
       <component :is="Component" />
     </keep-alive>
   </router-view>
-  <Dialog />
+  <DialogComponent />
   <overlay v-if="showOverlay" />
 </template>
 
 <script lang="ts">
-import Dialog from "./components/base/Dialog.vue";
+import DialogComponent from "./components/base/Dialog.vue";
 import { overlay } from "./services/overlay.service";
 import { defineAsyncComponent, defineComponent, onMounted, ref } from "vue";
 
@@ -18,7 +18,7 @@ export default defineComponent({
     overlay: defineAsyncComponent(
       () => import("@/components/base/Overlay.vue")
     ),
-    Dialog,
+    DialogComponent,
   },
   setup() {
     const showOverlay = ref(false);

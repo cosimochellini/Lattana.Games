@@ -51,11 +51,12 @@ import Alert from "@/components/base/Alert.vue";
 
 export default defineComponent({
   components: { Alert },
+  name: "LoginComponent",
   setup() {
     const form = ref({ name: "", pin: "" });
     const state = ref({ incorrectCredential: false });
     const router = useRouter();
-    
+
     auth.logout();
 
     async function doLogin() {

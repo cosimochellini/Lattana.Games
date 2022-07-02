@@ -26,7 +26,7 @@ const matchesQuery = new groq.QueryBuilder(sanityTypes.trumpMatch)
   .cached();
 
 export default defineComponent({
-  name: "ranking",
+  name: "rankingComponent",
   components: {
     total: defineAsyncComponent(
       () => import("@/views/trump/rankings/Total.vue")
@@ -47,4 +47,3 @@ export default defineComponent({
   },
 });
 </script>
-
