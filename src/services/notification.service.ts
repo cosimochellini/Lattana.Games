@@ -1,10 +1,11 @@
-import { i18n } from "@/instances/i18n";
+import { translate } from "@/instances/i18n";
 import { TYPE, useToast } from "vue-toastification";
 import { ToastOptions } from "vue-toastification/dist/types/types";
 
 declare type notifyOptions = ToastOptions & {
   type?: TYPE.INFO | undefined;
 };
+
 const getErrorMessage = (error: any) => {
   if (!error) return "";
 
@@ -20,12 +21,12 @@ export const notification = {
     return useToast().info(notification, option);
   },
   success(translation: string) {
-    return useToast().success(i18n.global.t(translation));
+    return useToast().success(translate(translation));
   },
   warning(translation: string) {
-    return useToast().warning(i18n.global.t(translation));
+    return useToast().warning(translate(translation));
   },
   danger(error: any) {
     return useToast().error(getErrorMessage(error));
   },
-};
+} as const;

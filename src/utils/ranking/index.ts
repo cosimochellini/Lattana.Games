@@ -17,7 +17,9 @@ export class Ranking<T extends Object> {
     this.items = items;
   }
 
-  public groupBy<TGroup>(func: (item: T) => TGroup): GroupedRanking<T, TGroup> {
+  public groupBy<TGroup extends {}>(
+    func: (item: T) => TGroup
+  ): GroupedRanking<T, TGroup> {
     return new GroupedRanking<T, TGroup>(this.items, func);
   }
 }
