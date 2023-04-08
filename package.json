@@ -1,6 +1,6 @@
 {
     "name": "lattana-games",
-    "version": "0.12.25",
+    "version": "0.13.1",
     "private": false,
     "license": "MIT",
     "scripts": {
@@ -10,7 +10,7 @@
         "increase": "npm --no-git-tag-version version patch"
     },
     "dependencies": {
-        "@sanity/client": "^3.4.1",
+        "@sanity/client": "^5.4.2",
         "@sanity/image-url": "^1.0.2",
         "@tailwindcss/postcss7-compat": "npm:@tailwindcss/postcss7-compat@^2.0.2",
         "@vueuse/core": "^9.13.0",
@@ -41,7 +41,7 @@
         "eslint": "^8.38.0",
         "eslint-plugin-vue": "^9.10.0",
         "type-fest": "^3.8.0",
-        "typescript": "~4.9.5",
+        "typescript": "~5.0.4",
         "vue-cli-plugin-tailwind": "~3.0.0",
         "vue3-chart-v2": "^0.8.3"
     },
