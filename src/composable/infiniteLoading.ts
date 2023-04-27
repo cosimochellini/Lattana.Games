@@ -40,14 +40,14 @@ export const useInfiniteLoading = <T>(
     query
       .get(pagination.next())
       .fetch<UnwrapRef<T[]>>() //fix to trick TS to accept the [...value,...response]
-      .then((response) => {
+      .then(async(response) => {
         options?.onResponse?.(response);
 
         items.value = [...items.value, ...response];
 
         moreDataAvailable.value = false;
 
-        nextTick(() => {
+        await nextTick(() => {
           moreDataAvailable.value = pagination.shouldContinue(response);
         });
       })
