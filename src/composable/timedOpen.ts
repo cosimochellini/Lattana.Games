@@ -4,7 +4,7 @@ export const useTimedOpen = (
     timeInterval: number = 2000,
     startOpen: boolean = false
 ) => {
-    let interval: NodeJS.Timer;
+    let interval: NodeJS.Timeout | undefined = undefined;
     const isOpen = ref(startOpen);
 
     const toggle = () => {
